@@ -1,0 +1,17 @@
+{
+  "name": "irishield",
+  "version": "1.0.0",
+  "description": "Security package used to provide security",
+  "keywords": [
+    "irishield",
+    "security",
+    "secure"
+  ],
+  "license": "ISC",
+  "author": "ansari-in",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
