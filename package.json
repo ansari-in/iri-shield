@@ -1,17 +1,39 @@
 {
-  "name": "irishield",
+  "name": "iri-shield",
   "version": "1.0.0",
-  "description": "Security package used to provide security",
+  "description": "Express API security middleware for anomaly detection, threat mitigation, sensitive-data redaction and dashboard monitoring.",
   "keywords": [
-    "irishield",
+    "iri-shield",
     "security",
-    "secure"
+    "secure",
+    "api-security",
+    "express-middleware",
+    "anomaly-detection",
+    "redaction"
   ],
   "license": "ISC",
   "author": "ansari-in",
   "type": "commonjs",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ansari-in/iri-shield.git"
+  },
+  "homepage": "https://github.com/ansari-in/iri-shield#readme",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pino": "^10.3.1"
   }
 }
