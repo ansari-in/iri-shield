@@ -12,6 +12,8 @@ class MemoryStorage {
     this.totalLatencyMs = 0;
     this.redactions = 0;
     this.events = [];
+    this.requests = [];
+    this.clients = new Map();
     this.endpointStats = new Map();
     this.ipWindows = new Map();
     this.failedAuth = new Map();
@@ -20,6 +22,22 @@ class MemoryStorage {
   }
 
   recordRequest(request) {
+    const row = {
+      timestamp: new Date().toISOString(),
+      ip: request.ip || 'unknown',
+      clientId: request.clientId || null,
+      fingerprint: request.fingerprint || null,
+      userAgent: request.userAgent || '',
+      cookie: request.cookie || '',
+      sessionId: request.sessionId || '',
+      endpoint: request.endpoint || '/',
+      method: request.method || 'GET',
+      statusCode: request.statusCode || 0,
+      durationMs: request.durationMs || 0,
+      blocked: Boolean(request.blocked)
+    };
+    this.requests.unshift(row);
+    this.requests = this.requests.slice(0, 1000);
     this.totalRequests += 1;
     if (request.blocked) this.blockedRequests += 1;
     this.totalLatencyMs += request.durationMs || 0;
@@ -90,6 +108,45 @@ class MemoryStorage {
     this.threatDistribution.set(threat, (this.threatDistribution.get(threat) || 0) + 1);
   }
 
+  recordClient(client) {
+    const current = this.clients.get(client.clientId) || {
+      clientId: client.clientId,
+      userId: client.userId || client.clientId,
+      firstSeenAt: client.timestamp,
+      lastSeenAt: client.timestamp,
+      requestCount: 0,
+      ips: [],
+      userAgents: [],
+      fingerprints: [],
+      changes: 0,
+      lastRisk: 'none'
+    };
+
+    const beforeIps = new Set(current.ips);
+    const beforeAgents = new Set(current.userAgents);
+    const beforePrints = new Set(current.fingerprints);
+    current.lastSeenAt = client.timestamp;
+    current.requestCount += 1;
+    current.lastIp = client.ip;
+    current.lastUserAgent = client.userAgent;
+    current.lastFingerprint = client.fingerprint;
+    current.userId = client.userId || current.userId || client.clientId;
+    current.lastRisk = client.riskLevel || current.lastRisk;
+    pushUnique(current.ips, client.ip);
+    pushUnique(current.userAgents, client.userAgent);
+    pushUnique(current.fingerprints, client.fingerprint);
+    if ((client.ip && !beforeIps.has(client.ip)) || (client.userAgent && !beforeAgents.has(client.userAgent)) || (client.fingerprint && !beforePrints.has(client.fingerprint))) {
+      current.changes += current.requestCount === 1 ? 0 : 1;
+    }
+    this.clients.set(client.clientId, current);
+    return current;
+  }
+
+  findClientsByUserId(userId) {
+    if (!userId) return [];
+    return Array.from(this.clients.values()).filter((client) => client.userId === userId);
+  }
+
   recordRedaction(count) {
     this.redactions += count || 0;
   }
@@ -103,14 +160,23 @@ class MemoryStorage {
       anomalyEvents: this.events.filter((event) => ['medium', 'high', 'critical'].includes(event.riskLevel)).length,
       redactions: this.redactions,
       averageLatencyMs: this.totalRequests ? Number((this.totalLatencyMs / this.totalRequests).toFixed(2)) : 0,
+      storageMode: 'memory',
       blockedIps: Array.from(this.blocks.entries())
         .filter(([, block]) => !block.expiresAt || block.expiresAt > Date.now())
         .map(([ip, block]) => ({ ip, reason: block.reason, expiresAt: block.expiresAt ? new Date(block.expiresAt).toISOString() : null })),
       endpoints: Array.from(this.endpointStats.values()).sort((a, b) => b.count - a.count).slice(0, 20),
       recentEvents: this.events.slice(0, 50),
-      threatDistribution: Array.from(this.threatDistribution.entries()).map(([name, count]) => ({ name, count }))
+      threatDistribution: Array.from(this.threatDistribution.entries()).map(([name, count]) => ({ name, count })),
+      clients: Array.from(this.clients.values()).sort((a, b) => b.requestCount - a.requestCount).slice(0, 50),
+      recentRequests: this.requests.slice(0, 50)
     };
   }
+}
+
+function pushUnique(list, value) {
+  if (!value || list.includes(value)) return;
+  list.push(value);
+  if (list.length > 10) list.shift();
 }
 
 module.exports = { MemoryStorage };

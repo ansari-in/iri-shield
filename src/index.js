@@ -8,8 +8,10 @@ const pino = require('pino');
 const { randomUUID } = require('crypto');
 const { createDashboardRouter } = require('./dashboard');
 const { MemoryStorage } = require('./storage');
+const { SQLiteStorage } = require('./sqlite-storage');
 const { analyzeRequest } = require('./threats');
 const { redactPayload } = require('./redactor');
+const { buildClientContext, detectIdentityChange } = require('./identity');
 
 const defaultConfig = {
   appName: 'iri-shield',
@@ -22,6 +24,9 @@ const defaultConfig = {
   cors: false,
   logger: true,
   requestIdHeader: 'x-iri-request-id',
+  testing: {
+    allowClientOverrides: true
+  },
   rateLimit: {
     enabled: true,
     windowMs: 60 * 1000,
@@ -62,7 +67,12 @@ const defaultConfig = {
     enabled: true,
     path: '/iri-shield',
     username: 'admin',
-    password: 'admin'
+    password: 'admin',
+    refreshMs: 5 * 60 * 1000
+  },
+  storage: {
+    mode: 'memory',
+    sqliteFile: './data/iri-shield.sqlite'
   }
 };
 
@@ -100,7 +110,7 @@ function buildEvent(req, extra) {
 
 function createShield(options = {}) {
   const config = mergeConfig(defaultConfig, options);
-  const storage = options.storage || new MemoryStorage();
+  const storage = options.storage || createStorage(config.storage);
   const logger = options.logger || (config.logger ? pino({ name: config.appName }) : null);
 
   const baseMiddlewares = [];
@@ -124,7 +134,8 @@ function createShield(options = {}) {
 
   const middleware = async function iriShield(req, res, next) {
     const start = process.hrtime.bigint();
-    const ip = getClientIp(req);
+    const client = buildClientContext(req, res, config);
+    const ip = client.ip;
     const requestId = req.headers[config.requestIdHeader] || randomUUID();
     res.setHeader(config.requestIdHeader, requestId);
 
@@ -133,6 +144,10 @@ function createShield(options = {}) {
         return next();
       }
 
+      req.iriShieldClient = client;
+      const knownClient = storage.clients?.get?.(client.clientId) || null;
+      const sameUserClients = typeof storage.findClientsByUserId === 'function' ? storage.findClientsByUserId(client.userId) : [];
+      const identityChange = detectIdentityChange(client, knownClient || sameUserClients[0]);
       const activeBlock = storage.getBlock(ip);
       if (activeBlock) {
         const event = buildEvent(req, {
@@ -144,7 +159,7 @@ function createShield(options = {}) {
           reason: activeBlock.reason || 'temporary_ip_block'
         });
         storage.recordEvent(event);
-        storage.recordRequest({ blocked: true, endpoint: event.endpoint, method: req.method, statusCode: 403, durationMs: 0 });
+        storage.recordRequest({ ...client, blocked: true, endpoint: event.endpoint, method: req.method, statusCode: 403, durationMs: 0 });
         return res.status(403).json({ error: 'Request blocked by iri-shield', requestId });
       }
 
@@ -159,12 +174,21 @@ function createShield(options = {}) {
           reason: `request_limit_${config.rateLimit.max}_per_${config.rateLimit.windowMs}ms`
         });
         storage.recordEvent(event);
-        storage.recordRequest({ blocked: true, endpoint: event.endpoint, method: req.method, statusCode: 429, durationMs: 0 });
+        storage.recordRequest({ ...client, blocked: true, endpoint: event.endpoint, method: req.method, statusCode: 429, durationMs: 0 });
         return res.status(429).json({ error: 'Too many requests', requestId });
       }
 
       const analysis = analyzeRequest(req, storage, config);
-      req.iriShield = { requestId, ip, analysis };
+      if (identityChange.score > 0) {
+        analysis.score = Math.min(100, analysis.score + identityChange.score);
+        analysis.threats.push(...identityChange.threats);
+        analysis.reasons.push(...identityChange.reasons);
+        analysis.riskLevel = riskFromScore(analysis.score, config);
+        analysis.action = actionFromRisk(analysis.riskLevel);
+      }
+      client.riskLevel = analysis.riskLevel;
+      storage.recordClient(client);
+      req.iriShield = { requestId, ip, client, analysis };
 
       if (analysis.score >= config.block.threshold && config.block.enabled) {
         storage.blockIp(ip, {
@@ -188,7 +212,7 @@ function createShield(options = {}) {
       }
 
       if (analysis.score >= config.anomaly.criticalThreshold) {
-        storage.recordRequest({ blocked: true, endpoint: req.originalUrl || req.url, method: req.method, statusCode: 403, durationMs: 0 });
+        storage.recordRequest({ ...client, blocked: true, endpoint: req.originalUrl || req.url, method: req.method, statusCode: 403, durationMs: 0 });
         return res.status(403).json({ error: 'Critical request blocked by iri-shield', requestId });
       }
 
@@ -197,6 +221,7 @@ function createShield(options = {}) {
       res.on('finish', () => {
         const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
         storage.recordRequest({
+          ...client,
           endpoint: req.route?.path || req.originalUrl || req.url,
           method: req.method,
           statusCode: res.statusCode,
@@ -227,8 +252,17 @@ function createShield(options = {}) {
     middleware: runBase,
     dashboard: createDashboardRouter({ storage, config }),
     getStats: () => storage.getStats(),
+    getConfig: () => sanitizeConfig(config),
+    updateConfig: (patch) => mergeInto(config, patch),
     clear: () => storage.clear()
   };
+}
+
+function createStorage(storageConfig = {}) {
+  if (storageConfig.mode === 'sqlite') {
+    return new SQLiteStorage({ file: storageConfig.sqliteFile });
+  }
+  return new MemoryStorage();
 }
 
 function patchResponse(res, storage, config) {
@@ -292,9 +326,43 @@ async function comparePassword(password, hash) {
   return bcrypt.compare(password, hash);
 }
 
+function riskFromScore(score, config) {
+  if (score >= config.anomaly.criticalThreshold) return 'critical';
+  if (score >= config.anomaly.highThreshold) return 'high';
+  if (score >= config.anomaly.mediumThreshold) return 'medium';
+  if (score > 0) return 'low';
+  return 'none';
+}
+
+function actionFromRisk(riskLevel) {
+  if (riskLevel === 'critical') return 'blocked';
+  if (riskLevel === 'high') return 'temporary_block';
+  if (riskLevel === 'medium') return 'rate_limited';
+  if (riskLevel === 'low') return 'logged';
+  return 'none';
+}
+
+function mergeInto(target, patch) {
+  for (const [key, value] of Object.entries(patch || {})) {
+    if (value && typeof value === 'object' && !Array.isArray(value) && target[key] && typeof target[key] === 'object') {
+      mergeInto(target[key], value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return sanitizeConfig(target);
+}
+
+function sanitizeConfig(config) {
+  const copy = JSON.parse(JSON.stringify(config));
+  if (copy.dashboard?.password) copy.dashboard.password = '';
+  return copy;
+}
+
 module.exports = {
   createShield,
   MemoryStorage,
+  SQLiteStorage,
   redactPayload,
   analyzeRequest,
   apiKeyAuth,
