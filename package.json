@@ -1,15 +1,18 @@
 {
   "name": "iri-shield",
-  "version": "1.0.0",
-  "description": "Express API security middleware for anomaly detection, threat mitigation, sensitive-data redaction and dashboard monitoring.",
+  "version": "1.1.0",
+  "description": "Enterprise Express.js security middleware — anomaly detection, threat mitigation, identity fingerprinting, sensitive-data redaction, and dashboard monitoring.",
   "keywords": [
     "iri-shield",
     "security",
-    "secure",
     "api-security",
     "express-middleware",
     "anomaly-detection",
-    "redaction"
+    "threat-detection",
+    "rate-limiting",
+    "fingerprinting",
+    "redaction",
+    "dashboard"
   ],
   "license": "ISC",
   "author": "ansari-in",
@@ -31,9 +34,23 @@
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "express-rate-limit": "^8.6.2",
+    "express": "^5.2.1",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "pino": "^10.3.1"
+  },
+  "optionalDependencies": {
+    "mongodb": "^6.12.0"
+  },
+  "peerDependencies": {
+    "express": ">=4.18.0"
+  },
+  "peerDependenciesMeta": {
+    "express": {
+      "optional": false
+    }
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

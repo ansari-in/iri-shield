@@ -1,8 +1,14 @@
 'use strict';
 
+// ---------------------------------------------------------------------------
+// MemoryStorage — in-process storage for iri-shield
+// ---------------------------------------------------------------------------
+
 class MemoryStorage {
   constructor(options = {}) {
     this.maxEvents = options.maxEvents || 500;
+    this.maxRequests = options.maxRequests || 500;
+    this.maxClients = options.maxClients || 1000;
     this.clear();
   }
 
@@ -18,8 +24,13 @@ class MemoryStorage {
     this.ipWindows = new Map();
     this.failedAuth = new Map();
     this.blocks = new Map();
+    this.alerts = new Map();                // clientId -> alert record
     this.threatDistribution = new Map();
   }
+
+  // -------------------------------------------------------------------------
+  // Request recording
+  // -------------------------------------------------------------------------
 
   recordRequest(request) {
     const row = {
@@ -36,19 +47,35 @@ class MemoryStorage {
       durationMs: request.durationMs || 0,
       blocked: Boolean(request.blocked)
     };
+
     this.requests.unshift(row);
-    this.requests = this.requests.slice(0, 1000);
+    // Enforce size limit
+    if (this.requests.length > this.maxRequests) {
+      this.requests = this.requests.slice(0, this.maxRequests);
+    }
+
     this.totalRequests += 1;
     if (request.blocked) this.blockedRequests += 1;
     this.totalLatencyMs += request.durationMs || 0;
 
     const key = `${request.method || 'GET'} ${request.endpoint || '/'}`;
-    const current = this.endpointStats.get(key) || { endpoint: request.endpoint || '/', method: request.method || 'GET', count: 0, errors: 0, avgLatencyMs: 0 };
+    const current = this.endpointStats.get(key) || {
+      endpoint: request.endpoint || '/',
+      method: request.method || 'GET',
+      count: 0,
+      errors: 0,
+      avgLatencyMs: 0
+    };
     current.count += 1;
     current.errors += request.statusCode >= 400 ? 1 : 0;
-    current.avgLatencyMs = ((current.avgLatencyMs * (current.count - 1)) + (request.durationMs || 0)) / current.count;
+    current.avgLatencyMs =
+      (current.avgLatencyMs * (current.count - 1) + (request.durationMs || 0)) / current.count;
     this.endpointStats.set(key, current);
   }
+
+  // -------------------------------------------------------------------------
+  // Rate limiting
+  // -------------------------------------------------------------------------
 
   hitRateLimit(ip, config) {
     if (!config?.enabled) return { blocked: false, count: 0 };
@@ -76,6 +103,10 @@ class MemoryStorage {
     return current + 1;
   }
 
+  // -------------------------------------------------------------------------
+  // Failed auth tracking
+  // -------------------------------------------------------------------------
+
   recordFailedAuth(ip) {
     const current = this.failedAuth.get(ip) || { count: 0, startedAt: Date.now() };
     current.count += 1;
@@ -87,8 +118,30 @@ class MemoryStorage {
     return this.failedAuth.get(ip)?.count || 0;
   }
 
+  // -------------------------------------------------------------------------
+  // Block management
+  // -------------------------------------------------------------------------
+
   blockIp(ip, block) {
-    this.blocks.set(ip, block);
+    this.blocks.set(ip, {
+      ...block,
+      blockedAt: block.blockedAt || new Date().toISOString(),
+      manual: block.manual || false
+    });
+  }
+
+  unblockIp(ip) {
+    return this.blocks.delete(ip);
+  }
+
+  manualBlockIp(ip, { reason = 'manual_block', durationMs = 60 * 60 * 1000, score = 100 } = {}) {
+    this.blockIp(ip, {
+      expiresAt: durationMs > 0 ? Date.now() + durationMs : null, // null = permanent
+      reason,
+      score,
+      manual: true,
+      blockedAt: new Date().toISOString()
+    });
   }
 
   getBlock(ip) {
@@ -101,12 +154,44 @@ class MemoryStorage {
     return block;
   }
 
+  getBlockedIps({ page = 1, perPage = 20 } = {}) {
+    const active = Array.from(this.blocks.entries())
+      .filter(([, block]) => !block.expiresAt || block.expiresAt > Date.now())
+      .map(([ip, block]) => ({
+        ip,
+        reason: block.reason || '',
+        score: block.score || 0,
+        manual: Boolean(block.manual),
+        blockedAt: block.blockedAt || null,
+        expiresAt: block.expiresAt ? new Date(block.expiresAt).toISOString() : null
+      }))
+      .sort((a, b) => (b.blockedAt > a.blockedAt ? 1 : -1));
+
+    return paginate(active, page, perPage);
+  }
+
+  // -------------------------------------------------------------------------
+  // Events
+  // -------------------------------------------------------------------------
+
   recordEvent(event) {
     this.events.unshift(event);
-    this.events = this.events.slice(0, this.maxEvents);
+    if (this.events.length > this.maxEvents) {
+      this.events = this.events.slice(0, this.maxEvents);
+    }
     const threat = event.threat || 'unknown';
     this.threatDistribution.set(threat, (this.threatDistribution.get(threat) || 0) + 1);
   }
+
+  getEvents({ page = 1, perPage = 20, riskLevel = null } = {}) {
+    let filtered = this.events;
+    if (riskLevel) filtered = filtered.filter((e) => e.riskLevel === riskLevel);
+    return paginate(filtered, page, perPage);
+  }
+
+  // -------------------------------------------------------------------------
+  // Client tracking
+  // -------------------------------------------------------------------------
 
   recordClient(client) {
     const current = this.clients.get(client.clientId) || {
@@ -118,6 +203,7 @@ class MemoryStorage {
       ips: [],
       userAgents: [],
       fingerprints: [],
+      platforms: [],
       changes: 0,
       lastRisk: 'none'
     };
@@ -125,6 +211,7 @@ class MemoryStorage {
     const beforeIps = new Set(current.ips);
     const beforeAgents = new Set(current.userAgents);
     const beforePrints = new Set(current.fingerprints);
+
     current.lastSeenAt = client.timestamp;
     current.requestCount += 1;
     current.lastIp = client.ip;
@@ -132,46 +219,138 @@ class MemoryStorage {
     current.lastFingerprint = client.fingerprint;
     current.userId = client.userId || current.userId || client.clientId;
     current.lastRisk = client.riskLevel || current.lastRisk;
+
     pushUnique(current.ips, client.ip);
     pushUnique(current.userAgents, client.userAgent);
     pushUnique(current.fingerprints, client.fingerprint);
-    if ((client.ip && !beforeIps.has(client.ip)) || (client.userAgent && !beforeAgents.has(client.userAgent)) || (client.fingerprint && !beforePrints.has(client.fingerprint))) {
+    if (client.secChUaPlatform) pushUnique(current.platforms, client.secChUaPlatform);
+
+    if (
+      (client.ip && !beforeIps.has(client.ip)) ||
+      (client.userAgent && !beforeAgents.has(client.userAgent)) ||
+      (client.fingerprint && !beforePrints.has(client.fingerprint))
+    ) {
       current.changes += current.requestCount === 1 ? 0 : 1;
     }
+
     this.clients.set(client.clientId, current);
+
+    // Enforce client map size limit (LRU-like: remove oldest by lastSeenAt)
+    if (this.clients.size > this.maxClients) {
+      pruneOldestClient(this.clients);
+    }
+
     return current;
   }
 
   findClientsByUserId(userId) {
     if (!userId) return [];
-    return Array.from(this.clients.values()).filter((client) => client.userId === userId);
+    return Array.from(this.clients.values()).filter((c) => c.userId === userId);
   }
+
+  getClients({ page = 1, perPage = 20 } = {}) {
+    const all = Array.from(this.clients.values()).sort(
+      (a, b) => b.requestCount - a.requestCount
+    );
+    return paginate(all, page, perPage);
+  }
+
+  // -------------------------------------------------------------------------
+  // Alerts
+  // -------------------------------------------------------------------------
+
+  recordAlert(clientId, alertData) {
+    const existing = this.alerts.get(clientId) || {
+      clientId,
+      firstAlertAt: new Date().toISOString(),
+      count: 0,
+      dismissed: false
+    };
+    existing.lastAlertAt = new Date().toISOString();
+    existing.count += 1;
+    existing.lastScore = alertData.score;
+    existing.lastRisk = alertData.riskLevel;
+    existing.lastIp = alertData.ip;
+    existing.threats = alertData.threats || [];
+    existing.dismissed = false; // re-activate on new alert
+    this.alerts.set(clientId, existing);
+  }
+
+  dismissAlert(clientId) {
+    const alert = this.alerts.get(clientId);
+    if (alert) {
+      alert.dismissed = true;
+      this.alerts.set(clientId, alert);
+      return true;
+    }
+    return false;
+  }
+
+  getAlerts({ page = 1, perPage = 20, dismissed = false } = {}) {
+    const all = Array.from(this.alerts.values())
+      .filter((a) => a.dismissed === dismissed)
+      .sort((a, b) => (b.lastAlertAt > a.lastAlertAt ? 1 : -1));
+    return paginate(all, page, perPage);
+  }
+
+  // -------------------------------------------------------------------------
+  // Redaction
+  // -------------------------------------------------------------------------
 
   recordRedaction(count) {
     this.redactions += count || 0;
   }
 
+  // -------------------------------------------------------------------------
+  // Stats
+  // -------------------------------------------------------------------------
+
   getStats() {
-    const threats = this.events.length;
+    const activeBlocks = Array.from(this.blocks.entries()).filter(
+      ([, block]) => !block.expiresAt || block.expiresAt > Date.now()
+    );
+    const activeAlerts = Array.from(this.alerts.values()).filter((a) => !a.dismissed);
+
     return {
       totalRequests: this.totalRequests,
-      detectedThreats: threats,
+      detectedThreats: this.events.length,
       blockedRequests: this.blockedRequests,
-      anomalyEvents: this.events.filter((event) => ['medium', 'high', 'critical'].includes(event.riskLevel)).length,
+      anomalyEvents: this.events.filter((e) =>
+        ['medium', 'high', 'critical'].includes(e.riskLevel)
+      ).length,
       redactions: this.redactions,
-      averageLatencyMs: this.totalRequests ? Number((this.totalLatencyMs / this.totalRequests).toFixed(2)) : 0,
+      averageLatencyMs: this.totalRequests
+        ? Number((this.totalLatencyMs / this.totalRequests).toFixed(2))
+        : 0,
       storageMode: 'memory',
-      blockedIps: Array.from(this.blocks.entries())
-        .filter(([, block]) => !block.expiresAt || block.expiresAt > Date.now())
-        .map(([ip, block]) => ({ ip, reason: block.reason, expiresAt: block.expiresAt ? new Date(block.expiresAt).toISOString() : null })),
-      endpoints: Array.from(this.endpointStats.values()).sort((a, b) => b.count - a.count).slice(0, 20),
+      activeAlerts: activeAlerts.length,
+      blockedIps: activeBlocks.map(([ip, block]) => ({
+        ip,
+        reason: block.reason,
+        score: block.score || 0,
+        manual: Boolean(block.manual),
+        blockedAt: block.blockedAt || null,
+        expiresAt: block.expiresAt ? new Date(block.expiresAt).toISOString() : null
+      })),
+      endpoints: Array.from(this.endpointStats.values())
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 20),
       recentEvents: this.events.slice(0, 50),
-      threatDistribution: Array.from(this.threatDistribution.entries()).map(([name, count]) => ({ name, count })),
-      clients: Array.from(this.clients.values()).sort((a, b) => b.requestCount - a.requestCount).slice(0, 50),
+      threatDistribution: Array.from(this.threatDistribution.entries()).map(([name, count]) => ({
+        name,
+        count
+      })),
+      clients: Array.from(this.clients.values())
+        .sort((a, b) => b.requestCount - a.requestCount)
+        .slice(0, 50),
       recentRequests: this.requests.slice(0, 50)
     };
   }
 }
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 function pushUnique(list, value) {
   if (!value || list.includes(value)) return;
@@ -179,4 +358,26 @@ function pushUnique(list, value) {
   if (list.length > 10) list.shift();
 }
 
-module.exports = { MemoryStorage };
+function paginate(array, page, perPage) {
+  const total = array.length;
+  const totalPages = Math.ceil(total / perPage) || 1;
+  const safePage = Math.max(1, Math.min(page, totalPages));
+  const start = (safePage - 1) * perPage;
+  const data = array.slice(start, start + perPage);
+  return { data, total, page: safePage, perPage, totalPages };
+}
+
+function pruneOldestClient(clientsMap) {
+  let oldestKey = null;
+  let oldestTime = Infinity;
+  for (const [key, client] of clientsMap.entries()) {
+    const t = new Date(client.lastSeenAt || 0).getTime();
+    if (t < oldestTime) {
+      oldestTime = t;
+      oldestKey = key;
+    }
+  }
+  if (oldestKey) clientsMap.delete(oldestKey);
+}
+
+module.exports = { MemoryStorage, paginate };
