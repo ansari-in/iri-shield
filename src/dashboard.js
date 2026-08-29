@@ -215,11 +215,11 @@ function renderDashboard(config, baseUrl) {
     .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
     .btn-danger { background: #dc2626; color: #fff; border-radius: 8px; padding: 7px 16px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: background 0.15s; }
     .btn-danger:hover { background: #b91c1c; }
-    .btn-unblock { background: #fff; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-unblock { background: #fff; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn-unblock:hover { background: #ecfdf5; border-color: #34d399; }
     .btn-dismiss { background: #fff; color: #6b7280; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
     .btn-dismiss:hover { background: #f9fafb; color: #111827; }
-    .btn-block-small { background: #fff; color: #dc2626; border: 1px solid #fecaca; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-block-small { background: #fff; color: #dc2626; border: 1px solid #fecaca; border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn-block-small:hover { background: #fef2f2; border-color: #f87171; }
     
     /* Pagination */
@@ -628,6 +628,7 @@ let refreshMs = ${refreshMs};
 let timer;
 let chart;
 let rawEventsData = [];
+let activeBlockedIps = new Set();
 let currentPage = { events: 1, clients: 1, blocked: 1, alerts: 1 };
 
 // Friendly shortened labels mapping for threat chart
@@ -736,6 +737,81 @@ document.querySelectorAll('.mode-card').forEach(card => {
 });
 
 // -------------------------------------------------------------------------
+// Reactive Block / Unblock Helpers
+// -------------------------------------------------------------------------
+
+function renderIpAction(ip, reason = '') {
+  if (!ip || ip === '-' || ip === 'unknown') return '';
+  const isBlocked = activeBlockedIps.has(ip);
+  if (isBlocked) {
+    return \`<span class="inline-flex items-center gap-1.5" data-ip-ctrl="\${clean(ip)}">
+      <span class="badge badge-critical text-[10px] font-semibold">Blocked</span>
+      <button class="btn-unblock text-[11px]" onclick="event.stopPropagation(); doToggleBlock('\${clean(ip)}', false)">Unblock</button>
+    </span>\`;
+  } else {
+    return \`<span class="inline-flex items-center gap-1.5" data-ip-ctrl="\${clean(ip)}">
+      <button class="btn-block-small text-[11px]" onclick="event.stopPropagation(); doToggleBlock('\${clean(ip)}', true, '\${clean(reason)}')">Block IP</button>
+    </span>\`;
+  }
+}
+
+function updateIpControlsOnPage(ip, isBlocked) {
+  document.querySelectorAll(\`[data-ip-ctrl="\${ip}"]\`).forEach(el => {
+    if (isBlocked) {
+      el.innerHTML = \`
+        <span class="badge badge-critical text-[10px] font-semibold">Blocked</span>
+        <button class="btn-unblock text-[11px]" onclick="event.stopPropagation(); doToggleBlock('\${clean(ip)}', false)">Unblock</button>
+      \`;
+    } else {
+      el.innerHTML = \`
+        <button class="btn-block-small text-[11px]" onclick="event.stopPropagation(); doToggleBlock('\${clean(ip)}', true)">Block IP</button>
+      \`;
+    }
+  });
+}
+
+async function doToggleBlock(ip, shouldBlock, reason = 'manual_action', durationMs = 86400000) {
+  if (!ip) return;
+  const actionName = shouldBlock ? 'Block' : 'Unblock';
+  if (!confirm(\`\${actionName} IP \${ip}?\`)) return;
+
+  // Immediate optimistic update
+  if (shouldBlock) {
+    activeBlockedIps.add(ip);
+  } else {
+    activeBlockedIps.delete(ip);
+  }
+  updateIpControlsOnPage(ip, shouldBlock);
+
+  try {
+    if (shouldBlock) {
+      await fetch(BASE + '/api/block', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ip, reason: reason || 'manual_action', durationMs })
+      });
+    } else {
+      await fetch(BASE + '/api/unblock', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ip })
+      });
+    }
+
+    // Refresh active panel data to reflect changes immediately
+    const activeTab = localStorage.getItem('iri_active_panel') || 'overview';
+    if (activeTab === 'blocked') loadBlocked(currentPage.blocked);
+    if (activeTab === 'alerts') loadAlerts(currentPage.alerts);
+    if (activeTab === 'events') loadEvents(currentPage.events);
+    loadStats();
+  } catch (e) {
+    console.error('Toggle block error', e);
+    if (shouldBlock) activeBlockedIps.delete(ip); else activeBlockedIps.add(ip);
+    updateIpControlsOnPage(ip, !shouldBlock);
+  }
+}
+
+// -------------------------------------------------------------------------
 // Stats (Header, Footer, Badges & Overview)
 // -------------------------------------------------------------------------
 
@@ -752,6 +828,9 @@ async function loadStats() {
     if (data.config?.security) {
       selectMode(data.config.security);
     }
+
+    // Sync active blocked IPs set
+    activeBlockedIps = new Set((data.blockedIps || []).map(b => b.ip));
 
     // Stat cards
     setText('totalRequests', fmt.format(data.totalRequests || 0));
@@ -826,7 +905,7 @@ function renderEndpoints(rows) {
 }
 
 // -------------------------------------------------------------------------
-// Security Events (with interactive expand on click)
+// Security Events (with interactive expand on click and reactive block button)
 // -------------------------------------------------------------------------
 
 async function loadEvents(page) {
@@ -868,8 +947,10 @@ async function loadEvents(page) {
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div>
                   <span class="text-gray-400 block">IP Address:</span>
-                  <span class="font-mono text-gray-900 font-semibold">\${clean(r.ip)}</span>
-                  <button class="btn-block-small ml-2 text-[11px]" onclick="event.stopPropagation(); doBlockFromAlert('\${clean(r.ip)}')">Block IP</button>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span class="font-mono text-gray-900 font-semibold">\${clean(r.ip)}</span>
+                    \${renderIpAction(r.ip, r.threat || r.reason)}
+                  </div>
                 </div>
                 <div>
                   <span class="text-gray-400 block">Client ID:</span>
@@ -938,7 +1019,7 @@ async function loadClients(page) {
     } else {
       tbody.innerHTML = data.data.map(r => {
         const fullIps = (r.ips || []).join(', ');
-        const fullFps = (r.fingerprints || []).join('');
+        const fullFps = (r.fingerprints || []).join(', ');
         return \`<tr>
           <td class="px-4 py-2.5 font-mono text-xs text-gray-800 max-w-[130px] truncate" title="\${clean(r.clientId)}">\${clean(r.clientId)}</td>
           <td class="px-4 py-2.5 text-xs text-gray-700 max-w-[100px] truncate" title="\${clean(r.userId || 'N/A')}">\${clean(r.userId || '-')}</td>
@@ -982,11 +1063,11 @@ async function loadBlocked(page) {
 
         let actionButtons = '';
         if (r.status === 'active' || r.status === 'permanent' || !r.isExpired) {
-          actionButtons = \`<button class="btn-unblock" onclick="doUnblock('\${clean(r.ip)}')">Unblock IP</button>\`;
+          actionButtons = \`<button class="btn-unblock" onclick="doToggleBlock('\${clean(r.ip)}', false)">Unblock IP</button>\`;
         } else {
           actionButtons = \`
             <div class="flex items-center gap-1.5">
-              <button class="btn-primary text-xs py-1 px-2.5 rounded" onclick="doReblock('\${clean(r.ip)}', '\${clean(r.reason)}')">Re-block</button>
+              <button class="btn-primary text-xs py-1 px-2.5 rounded" onclick="doToggleBlock('\${clean(r.ip)}', true, '\${clean(r.reason)}')">Re-block</button>
               <button class="btn-dismiss text-xs py-1 px-2 rounded" onclick="doDeleteBlock('\${clean(r.ip)}')">Remove</button>
             </div>\`;
         }
@@ -1007,19 +1088,6 @@ async function loadBlocked(page) {
   } catch(e) { console.error('Blocked error', e); }
 }
 
-async function doUnblock(ip) {
-  if (!confirm('Unblock IP ' + ip + '?')) return;
-  try {
-    await fetch(BASE + '/api/unblock', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip })
-    });
-    loadBlocked(currentPage.blocked);
-    loadStats();
-  } catch(e) { console.error('Unblock error', e); }
-}
-
 async function doDeleteBlock(ip) {
   if (!confirm('Permanently remove IP ' + ip + ' from block history?')) return;
   try {
@@ -1028,21 +1096,11 @@ async function doDeleteBlock(ip) {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ ip })
     });
+    activeBlockedIps.delete(ip);
+    updateIpControlsOnPage(ip, false);
     loadBlocked(currentPage.blocked);
     loadStats();
   } catch(e) { console.error('Delete block error', e); }
-}
-
-async function doReblock(ip, reason) {
-  try {
-    await fetch(BASE + '/api/block', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip, reason: reason || 'reblocked_from_history', durationMs: 86400000 })
-    });
-    loadBlocked(currentPage.blocked);
-    loadStats();
-  } catch(e) { console.error('Re-block error', e); }
 }
 
 // -------------------------------------------------------------------------
@@ -1069,7 +1127,7 @@ async function loadAlerts(page) {
           <td class="px-4 py-2.5 text-xs text-gray-500" title="\${clean(r.lastAlertAt)}">\${r.lastAlertAt ? clean(new Date(r.lastAlertAt).toLocaleString()) : '-'}</td>
           <td class="px-4 py-2.5 text-right text-gray-800 font-semibold">\${r.count||1}</td>
           <td class="px-4 py-2.5 flex items-center gap-1.5">
-            <button class="btn-block-small" onclick="doBlockFromAlert('\${clean(r.lastIp||'')}')">Block IP</button>
+            \${renderIpAction(r.lastIp, 'alert_action')}
             <button class="btn-dismiss" onclick="doDismiss('\${clean(r.clientId)}')">Dismiss</button>
           </td>
         </tr>\`;
@@ -1087,20 +1145,6 @@ async function doDismiss(clientId) {
   } catch(e) { console.error('Dismiss error', e); }
 }
 
-async function doBlockFromAlert(ip) {
-  if (!ip || !confirm('Block IP ' + ip + ' for 24 hours?')) return;
-  try {
-    await fetch(BASE + '/api/block', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip, reason: 'blocked_from_alert', durationMs: 86400000 })
-    });
-    loadBlocked(1);
-    loadAlerts(currentPage.alerts);
-    loadStats();
-  } catch(e) { console.error('Block from alert error', e); }
-}
-
 // -------------------------------------------------------------------------
 // Block Modal
 // -------------------------------------------------------------------------
@@ -1113,18 +1157,10 @@ async function submitBlock() {
   const reason = document.getElementById('blockReasonInput').value.trim() || 'manual_block';
   const durationMs = Number(document.getElementById('blockDurationInput').value);
   if (!ip) { alert('Please enter a valid IP address'); return; }
-  try {
-    await fetch(BASE + '/api/block', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip, reason, durationMs: isNaN(durationMs) ? 86400000 : durationMs })
-    });
-    document.getElementById('blockIpInput').value = '';
-    document.getElementById('blockReasonInput').value = '';
-    hideBlockModal();
-    loadBlocked(1);
-    loadStats();
-  } catch(e) { console.error('Block error', e); }
+  hideBlockModal();
+  document.getElementById('blockIpInput').value = '';
+  document.getElementById('blockReasonInput').value = '';
+  await doToggleBlock(ip, true, reason, isNaN(durationMs) ? 86400000 : durationMs);
 }
 
 // -------------------------------------------------------------------------
