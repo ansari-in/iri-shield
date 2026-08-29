@@ -464,13 +464,22 @@ async function comparePassword(password, hash) {
 // ---------------------------------------------------------------------------
 
 function buildEvent(req, extra) {
+  const client = req.iriShieldClient || {};
   return {
     id: randomUUID(),
     timestamp: new Date().toISOString(),
-    ip: req.iriShieldClient?.ip || getClientIp(req),
+    ip: client.ip || getClientIp(req),
+    clientId: client.clientId || null,
+    userId: client.userId || null,
+    sessionId: client.sessionId || null,
+    deviceId: client.deviceId || null,
+    fingerprint: client.fingerprint || null,
+    platform: client.secChUaPlatform || null,
     method: req.method,
     endpoint: req.originalUrl || req.url,
-    userAgent: req.headers['user-agent'] || '',
+    userAgent: client.userAgent || req.headers['user-agent'] || '',
+    referer: client.referer || req.headers['referer'] || '',
+    acceptLanguage: client.acceptLanguage || req.headers['accept-language'] || '',
     ...extra
   };
 }

@@ -34,18 +34,18 @@ class SQLiteStorage extends MemoryStorage {
       PRAGMA synchronous = NORMAL;
 
       CREATE TABLE IF NOT EXISTS iri_requests (
-        id         INTEGER PRIMARY KEY AUTOINCREMENT,
-        timestamp  TEXT,
-        ip         TEXT,
-        client_id  TEXT,
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp   TEXT,
+        ip          TEXT,
+        client_id   TEXT,
         fingerprint TEXT,
-        user_agent TEXT,
-        session_id TEXT,
-        endpoint   TEXT,
-        method     TEXT,
+        user_agent  TEXT,
+        session_id  TEXT,
+        endpoint    TEXT,
+        method      TEXT,
         status_code INTEGER,
         duration_ms REAL,
-        blocked    INTEGER
+        blocked     INTEGER
       );
 
       CREATE TABLE IF NOT EXISTS iri_events (
@@ -60,7 +60,8 @@ class SQLiteStorage extends MemoryStorage {
         risk_level TEXT,
         risk_score INTEGER,
         action     TEXT,
-        reason     TEXT
+        reason     TEXT,
+        data       TEXT
       );
 
       CREATE TABLE IF NOT EXISTS iri_clients (
@@ -93,7 +94,23 @@ class SQLiteStorage extends MemoryStorage {
       CREATE INDEX IF NOT EXISTS idx_req_ts ON iri_requests (timestamp);
       CREATE INDEX IF NOT EXISTS idx_evt_risk ON iri_events (risk_level);
       CREATE INDEX IF NOT EXISTS idx_evt_ts  ON iri_events (timestamp);
+      CREATE INDEX IF NOT EXISTS idx_blk_exp ON iri_blocks (expires_at);
     `);
+
+    // Automatic migration for existing tables
+    try {
+      const eventCols = this.db.prepare('PRAGMA table_info(iri_events)').all().map(c => c.name);
+      if (eventCols.length && !eventCols.includes('data')) {
+        this.db.exec('ALTER TABLE iri_events ADD COLUMN data TEXT;');
+      }
+      const blockCols = this.db.prepare('PRAGMA table_info(iri_blocks)').all().map(c => c.name);
+      if (blockCols.length && !blockCols.includes('blocked_at')) {
+        this.db.exec('ALTER TABLE iri_blocks ADD COLUMN blocked_at TEXT;');
+      }
+      if (blockCols.length && !blockCols.includes('manual')) {
+        this.db.exec('ALTER TABLE iri_blocks ADD COLUMN manual INTEGER DEFAULT 0;');
+      }
+    } catch { /* table might be fresh */ }
   }
 
   // ---------------------------------------------------------------------------
@@ -109,13 +126,15 @@ class SQLiteStorage extends MemoryStorage {
   _loadPersistentBlocks() {
     const rows = this.db.prepare('SELECT * FROM iri_blocks').all();
     for (const row of rows) {
-      this.blocks.set(row.ip, {
-        reason: row.reason || '',
-        score: row.score || 0,
-        manual: Boolean(row.manual),
-        blockedAt: row.blocked_at || null,
-        expiresAt: row.expires_at || null
-      });
+      if (!row.expires_at || row.expires_at > Date.now()) {
+        this.blocks.set(row.ip, {
+          reason: row.reason || '',
+          score: row.score || 0,
+          manual: Boolean(row.manual),
+          blockedAt: row.blocked_at || null,
+          expiresAt: row.expires_at || null
+        });
+      }
     }
   }
 
@@ -181,8 +200,8 @@ class SQLiteStorage extends MemoryStorage {
     this.db
       .prepare(
         `INSERT OR REPLACE INTO iri_events
-          (id, timestamp, ip, method, endpoint, user_agent, request_id, threat, risk_level, risk_score, action, reason)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          (id, timestamp, ip, method, endpoint, user_agent, request_id, threat, risk_level, risk_score, action, reason, data)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         event.id,
@@ -196,7 +215,8 @@ class SQLiteStorage extends MemoryStorage {
         event.riskLevel || '',
         event.riskScore || 0,
         event.action || '',
-        event.reason || ''
+        event.reason || '',
+        JSON.stringify(event)
       );
 
     this._maybeCleanEvents();
@@ -230,7 +250,12 @@ class SQLiteStorage extends MemoryStorage {
   // ---------------------------------------------------------------------------
 
   blockIp(ip, block) {
-    super.blockIp(ip, block);
+    const fullBlock = {
+      ...block,
+      blockedAt: block.blockedAt || new Date().toISOString(),
+      manual: Boolean(block.manual)
+    };
+    super.blockIp(ip, fullBlock);
     this.db
       .prepare(
         `INSERT OR REPLACE INTO iri_blocks (ip, reason, score, manual, blocked_at, expires_at)
@@ -238,11 +263,11 @@ class SQLiteStorage extends MemoryStorage {
       )
       .run(
         ip,
-        block.reason || '',
-        block.score || 0,
-        block.manual ? 1 : 0,
-        block.blockedAt || new Date().toISOString(),
-        block.expiresAt || null
+        fullBlock.reason || '',
+        fullBlock.score || 0,
+        fullBlock.manual ? 1 : 0,
+        fullBlock.blockedAt,
+        fullBlock.expiresAt || null
       );
   }
 
@@ -253,22 +278,54 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   manualBlockIp(ip, options = {}) {
-    super.manualBlockIp(ip, options);
-    const block = this.blocks.get(ip);
-    if (block) {
-      this.db
-        .prepare(
-          `INSERT OR REPLACE INTO iri_blocks (ip, reason, score, manual, blocked_at, expires_at)
-           VALUES (?, ?, ?, 1, ?, ?)`
-        )
-        .run(ip, block.reason, block.score || 100, block.blockedAt, block.expiresAt || null);
-    }
+    const duration = options.durationMs !== undefined ? options.durationMs : 60 * 60 * 1000;
+    const fullBlock = {
+      expiresAt: duration > 0 ? Date.now() + duration : null,
+      reason: options.reason || 'manual_block',
+      score: options.score !== undefined ? options.score : 100,
+      manual: true,
+      blockedAt: new Date().toISOString()
+    };
+    super.blockIp(ip, fullBlock);
+    this.db
+      .prepare(
+        `INSERT OR REPLACE INTO iri_blocks (ip, reason, score, manual, blocked_at, expires_at)
+         VALUES (?, ?, ?, 1, ?, ?)`
+      )
+      .run(ip, fullBlock.reason, fullBlock.score, fullBlock.blockedAt, fullBlock.expiresAt);
   }
 
   getBlockedIps({ page = 1, perPage = 20 } = {}) {
-    // Sync expired from DB first
     this._cleanupExpiredBlocks();
-    return super.getBlockedIps({ page, perPage });
+    const now = Date.now();
+    const rows = this.db
+      .prepare(
+        'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC'
+      )
+      .all(now);
+
+    const formatted = rows.map((row) => ({
+      ip: row.ip,
+      reason: row.reason || '',
+      score: row.score || 0,
+      manual: Boolean(row.manual),
+      blockedAt: row.blocked_at || null,
+      expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
+    }));
+
+    // Keep in-memory cache in sync
+    this.blocks.clear();
+    for (const item of rows) {
+      this.blocks.set(item.ip, {
+        reason: item.reason,
+        score: item.score,
+        manual: Boolean(item.manual),
+        blockedAt: item.blocked_at,
+        expiresAt: item.expires_at
+      });
+    }
+
+    return paginate(formatted, page, perPage);
   }
 
   // ---------------------------------------------------------------------------
@@ -311,20 +368,38 @@ class SQLiteStorage extends MemoryStorage {
   // ---------------------------------------------------------------------------
 
   getStats() {
-    const { total_req } = this.db
-      .prepare('SELECT COUNT(*) as total_req FROM iri_requests')
-      .get() || {};
-    const { total_evt } = this.db
-      .prepare('SELECT COUNT(*) as total_evt FROM iri_events')
-      .get() || {};
-    const { total_clients } = this.db
-      .prepare('SELECT COUNT(*) as total_clients FROM iri_clients')
-      .get() || {};
+    this._cleanupExpiredBlocks();
+    const now = Date.now();
+    const activeBlocks = this.db
+      .prepare(
+        'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC'
+      )
+      .all(now)
+      .map((row) => ({
+        ip: row.ip,
+        reason: row.reason || '',
+        score: row.score || 0,
+        manual: Boolean(row.manual),
+        blockedAt: row.blocked_at || null,
+        expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
+      }));
+
+    const { total_req } =
+      this.db.prepare('SELECT COUNT(*) as total_req FROM iri_requests').get() || {};
+    const { total_evt } =
+      this.db.prepare('SELECT COUNT(*) as total_evt FROM iri_events').get() || {};
+    const { total_clients } =
+      this.db.prepare('SELECT COUNT(*) as total_clients FROM iri_clients').get() || {};
+
+    const activeAlerts =
+      this.db.prepare('SELECT COUNT(*) as cnt FROM iri_alerts WHERE dismissed = 0').get()?.cnt || 0;
 
     return {
       ...super.getStats(),
       storageMode: 'sqlite',
       sqliteFile: this.file,
+      blockedIps: activeBlocks,
+      activeAlerts: activeAlerts || (super.getStats().activeAlerts || 0),
       dbStats: {
         totalRequestRows: total_req || 0,
         maxRequestRows: this.maxRequestRows,
