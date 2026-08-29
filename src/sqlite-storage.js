@@ -21,11 +21,11 @@ class SQLiteStorage extends MemoryStorage {
     this.db = new DatabaseSync(this.file);
     this._initSchema();
     this._cleanupExpiredBlocks();
-    this._loadPersistentBlocks();
+    this._loadAllPersistentData();
   }
 
   // ---------------------------------------------------------------------------
-  // Schema
+  // Schema & Migration
   // ---------------------------------------------------------------------------
 
   _initSchema() {
@@ -99,43 +99,193 @@ class SQLiteStorage extends MemoryStorage {
 
     // Automatic migration for existing tables
     try {
-      const eventCols = this.db.prepare('PRAGMA table_info(iri_events)').all().map(c => c.name);
+      const eventCols = this.db.prepare('PRAGMA table_info(iri_events)').all().map((c) => c.name);
       if (eventCols.length && !eventCols.includes('data')) {
         this.db.exec('ALTER TABLE iri_events ADD COLUMN data TEXT;');
       }
-      const blockCols = this.db.prepare('PRAGMA table_info(iri_blocks)').all().map(c => c.name);
+      const blockCols = this.db.prepare('PRAGMA table_info(iri_blocks)').all().map((c) => c.name);
       if (blockCols.length && !blockCols.includes('blocked_at')) {
         this.db.exec('ALTER TABLE iri_blocks ADD COLUMN blocked_at TEXT;');
       }
       if (blockCols.length && !blockCols.includes('manual')) {
         this.db.exec('ALTER TABLE iri_blocks ADD COLUMN manual INTEGER DEFAULT 0;');
       }
-    } catch { /* table might be fresh */ }
+    } catch { /* table is fresh */ }
   }
 
   // ---------------------------------------------------------------------------
-  // Persistent blocks
+  // Load All Persistent Data from SQLite on Startup / Restart
   // ---------------------------------------------------------------------------
 
+  _loadAllPersistentData() {
+    this._loadPersistentBlocks();
+    this._loadPersistentClients();
+    this._loadPersistentAlerts();
+    this._loadPersistentEvents();
+    this._loadPersistentRequests();
+  }
+
   _cleanupExpiredBlocks() {
-    this.db
-      .prepare('DELETE FROM iri_blocks WHERE expires_at IS NOT NULL AND expires_at <= ?')
-      .run(Date.now());
+    try {
+      this.db
+        .prepare('DELETE FROM iri_blocks WHERE expires_at IS NOT NULL AND expires_at <= ?')
+        .run(Date.now());
+    } catch { /* ignore */ }
   }
 
   _loadPersistentBlocks() {
-    const rows = this.db.prepare('SELECT * FROM iri_blocks').all();
-    for (const row of rows) {
-      if (!row.expires_at || row.expires_at > Date.now()) {
-        this.blocks.set(row.ip, {
-          reason: row.reason || '',
-          score: row.score || 0,
-          manual: Boolean(row.manual),
-          blockedAt: row.blocked_at || null,
-          expiresAt: row.expires_at || null
+    try {
+      const rows = this.db.prepare('SELECT * FROM iri_blocks').all();
+      const now = Date.now();
+      for (const row of rows) {
+        if (!row.expires_at || row.expires_at > now) {
+          this.blocks.set(row.ip, {
+            reason: row.reason || '',
+            score: row.score || 0,
+            manual: Boolean(row.manual),
+            blockedAt: row.blocked_at || null,
+            expiresAt: row.expires_at || null
+          });
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
+  _loadPersistentClients() {
+    try {
+      const rows = this.db.prepare('SELECT data FROM iri_clients').all();
+      for (const row of rows) {
+        if (row.data) {
+          try {
+            const client = JSON.parse(row.data);
+            if (client && client.clientId) {
+              this.clients.set(client.clientId, client);
+            }
+          } catch { /* ignore bad row */ }
+        }
+      }
+    } catch { /* ignore */ }
+  }
+
+  _loadPersistentAlerts() {
+    try {
+      const rows = this.db.prepare('SELECT * FROM iri_alerts').all();
+      for (const row of rows) {
+        let threats = [];
+        try { threats = JSON.parse(row.threats || '[]'); } catch { /* ignore */ }
+        this.alerts.set(row.client_id, {
+          clientId: row.client_id,
+          firstAlertAt: row.first_alert_at,
+          lastAlertAt: row.last_alert_at,
+          count: row.count || 1,
+          lastScore: row.last_score || 0,
+          lastRisk: row.last_risk || 'medium',
+          lastIp: row.last_ip || '',
+          threats,
+          dismissed: Boolean(row.dismissed)
         });
       }
-    }
+    } catch { /* ignore */ }
+  }
+
+  _loadPersistentEvents() {
+    try {
+      const rows = this.db
+        .prepare('SELECT * FROM iri_events ORDER BY rowid DESC LIMIT ?')
+        .all(this.maxEvents);
+
+      this.events = [];
+      this.threatDistribution = new Map();
+
+      for (const row of rows) {
+        let eventObj = null;
+        if (row.data) {
+          try { eventObj = JSON.parse(row.data); } catch { /* ignore */ }
+        }
+        if (!eventObj) {
+          eventObj = {
+            id: row.id,
+            timestamp: row.timestamp,
+            ip: row.ip,
+            method: row.method,
+            endpoint: row.endpoint,
+            userAgent: row.user_agent,
+            requestId: row.request_id,
+            threat: row.threat,
+            riskLevel: row.risk_level,
+            riskScore: row.risk_score,
+            action: row.action,
+            reason: row.reason
+          };
+        }
+        this.events.push(eventObj);
+        const threat = eventObj.threat || row.threat || 'unknown';
+        this.threatDistribution.set(threat, (this.threatDistribution.get(threat) || 0) + 1);
+      }
+    } catch { /* ignore */ }
+  }
+
+  _loadPersistentRequests() {
+    try {
+      // Aggregates for totals
+      const { total_count, blocked_count, sum_lat } =
+        this.db.prepare(`
+          SELECT
+            COUNT(*) as total_count,
+            SUM(CASE WHEN blocked = 1 THEN 1 ELSE 0 END) as blocked_count,
+            SUM(duration_ms) as sum_lat
+          FROM iri_requests
+        `).get() || {};
+
+      this.totalRequests = total_count || 0;
+      this.blockedRequests = blocked_count || 0;
+      this.totalLatencyMs = sum_lat || 0;
+
+      // Endpoint stats aggregation
+      const epRows = this.db.prepare(`
+        SELECT
+          method,
+          endpoint,
+          COUNT(*) as count,
+          SUM(CASE WHEN status_code >= 400 THEN 1 ELSE 0 END) as errors,
+          AVG(duration_ms) as avgLatencyMs
+        FROM iri_requests
+        GROUP BY method, endpoint
+        ORDER BY count DESC
+        LIMIT 50
+      `).all();
+
+      this.endpointStats = new Map();
+      for (const row of epRows) {
+        const key = `${row.method || 'GET'} ${row.endpoint || '/'}`;
+        this.endpointStats.set(key, {
+          endpoint: row.endpoint || '/',
+          method: row.method || 'GET',
+          count: row.count || 0,
+          errors: row.errors || 0,
+          avgLatencyMs: row.avgLatencyMs || 0
+        });
+      }
+
+      // Recent requests list (for memory view)
+      const reqRows = this.db
+        .prepare('SELECT * FROM iri_requests ORDER BY id DESC LIMIT ?')
+        .all(this.maxRequests);
+
+      this.requests = reqRows.map((r) => ({
+        timestamp: r.timestamp,
+        ip: r.ip,
+        clientId: r.client_id,
+        fingerprint: r.fingerprint,
+        userAgent: r.user_agent,
+        sessionId: r.session_id,
+        endpoint: r.endpoint,
+        method: r.method,
+        statusCode: r.status_code,
+        durationMs: r.duration_ms,
+        blocked: Boolean(r.blocked)
+      }));
+    } catch { /* ignore */ }
   }
 
   // ---------------------------------------------------------------------------
@@ -177,12 +327,11 @@ class SQLiteStorage extends MemoryStorage {
         request.blocked ? 1 : 0
       );
 
-    // FIFO cleanup to keep DB size manageable
     this._maybeCleanRequests();
   }
 
   _maybeCleanRequests() {
-    const { count } = this.db.prepare('SELECT COUNT(*) as count FROM iri_requests').get();
+    const { count } = this.db.prepare('SELECT COUNT(*) as count FROM iri_requests').get() || {};
     if (count > this.maxRequestRows) {
       const deleteCount = Math.ceil(this.maxRequestRows * CLEANUP_RATIO);
       this.db.exec(
@@ -223,12 +372,53 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   _maybeCleanEvents() {
-    const { count } = this.db.prepare('SELECT COUNT(*) as count FROM iri_events').get();
+    const { count } = this.db.prepare('SELECT COUNT(*) as count FROM iri_events').get() || {};
     if (count > this.maxEventRows) {
       const deleteCount = Math.ceil(this.maxEventRows * CLEANUP_RATIO);
       this.db.exec(
-        `DELETE FROM iri_events WHERE id IN (SELECT id FROM iri_events ORDER BY timestamp ASC LIMIT ${deleteCount})`
+        `DELETE FROM iri_events WHERE id IN (SELECT id FROM iri_events ORDER BY rowid ASC LIMIT ${deleteCount})`
       );
+    }
+  }
+
+  getEvents({ page = 1, perPage = 20, riskLevel = null } = {}) {
+    try {
+      const offset = (Math.max(1, page) - 1) * perPage;
+      let rows;
+      let total;
+
+      if (riskLevel) {
+        total = this.db.prepare('SELECT COUNT(*) as total FROM iri_events WHERE risk_level = ?').get(riskLevel)?.total || 0;
+        rows = this.db.prepare('SELECT * FROM iri_events WHERE risk_level = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?').all(riskLevel, perPage, offset);
+      } else {
+        total = this.db.prepare('SELECT COUNT(*) as total FROM iri_events').get()?.total || 0;
+        rows = this.db.prepare('SELECT * FROM iri_events ORDER BY timestamp DESC LIMIT ? OFFSET ?').all(perPage, offset);
+      }
+
+      const data = rows.map((row) => {
+        if (row.data) {
+          try { return JSON.parse(row.data); } catch { /* ignore */ }
+        }
+        return {
+          id: row.id,
+          timestamp: row.timestamp,
+          ip: row.ip,
+          method: row.method,
+          endpoint: row.endpoint,
+          userAgent: row.user_agent,
+          requestId: row.request_id,
+          threat: row.threat,
+          riskLevel: row.risk_level,
+          riskScore: row.risk_score,
+          action: row.action,
+          reason: row.reason
+        };
+      });
+
+      const totalPages = Math.ceil(total / perPage) || 1;
+      return { data, total, page: Math.max(1, page), perPage, totalPages };
+    } catch {
+      return super.getEvents({ page, perPage, riskLevel });
     }
   }
 
@@ -245,8 +435,26 @@ class SQLiteStorage extends MemoryStorage {
     return row;
   }
 
+  getClients({ page = 1, perPage = 20 } = {}) {
+    try {
+      const offset = (Math.max(1, page) - 1) * perPage;
+      const { total } = this.db.prepare('SELECT COUNT(*) as total FROM iri_clients').get() || { total: 0 };
+      const rows = this.db.prepare('SELECT data FROM iri_clients LIMIT ? OFFSET ?').all(perPage, offset);
+
+      const clients = rows.map((r) => {
+        try { return JSON.parse(r.data); } catch { return null; }
+      }).filter(Boolean);
+
+      clients.sort((a, b) => (b.requestCount || 0) - (a.requestCount || 0));
+      const totalPages = Math.ceil(total / perPage) || 1;
+      return { data: clients, total, page: Math.max(1, page), perPage, totalPages };
+    } catch {
+      return super.getClients({ page, perPage });
+    }
+  }
+
   // ---------------------------------------------------------------------------
-  // Blocks (persistent)
+  // Blocks (Persistent)
   // ---------------------------------------------------------------------------
 
   blockIp(ip, block) {
@@ -313,7 +521,7 @@ class SQLiteStorage extends MemoryStorage {
       expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
     }));
 
-    // Keep in-memory cache in sync
+    // Keep in-memory cache synchronized
     this.blocks.clear();
     for (const item of rows) {
       this.blocks.set(item.ip, {
@@ -329,7 +537,7 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   // ---------------------------------------------------------------------------
-  // Alerts (persistent)
+  // Alerts (Persistent)
   // ---------------------------------------------------------------------------
 
   recordAlert(clientId, alertData) {
@@ -363,13 +571,44 @@ class SQLiteStorage extends MemoryStorage {
     return result;
   }
 
+  getAlerts({ page = 1, perPage = 20, dismissed = false } = {}) {
+    try {
+      const offset = (Math.max(1, page) - 1) * perPage;
+      const { total } = this.db.prepare('SELECT COUNT(*) as total FROM iri_alerts WHERE dismissed = ?').get(dismissed ? 1 : 0) || { total: 0 };
+      const rows = this.db.prepare('SELECT * FROM iri_alerts WHERE dismissed = ? ORDER BY last_alert_at DESC LIMIT ? OFFSET ?').all(dismissed ? 1 : 0, perPage, offset);
+
+      const data = rows.map((r) => {
+        let threats = [];
+        try { threats = JSON.parse(r.threats || '[]'); } catch { /* ignore */ }
+        return {
+          clientId: r.client_id,
+          firstAlertAt: r.first_alert_at,
+          lastAlertAt: r.last_alert_at,
+          count: r.count || 1,
+          lastScore: r.last_score || 0,
+          lastRisk: r.last_risk || 'medium',
+          lastIp: r.last_ip || '',
+          threats,
+          dismissed: Boolean(r.dismissed)
+        };
+      });
+
+      const totalPages = Math.ceil(total / perPage) || 1;
+      return { data, total, page: Math.max(1, page), perPage, totalPages };
+    } catch {
+      return super.getAlerts({ page, perPage, dismissed });
+    }
+  }
+
   // ---------------------------------------------------------------------------
-  // Stats
+  // Real-time Database Stats (accurate after restarts)
   // ---------------------------------------------------------------------------
 
   getStats() {
     this._cleanupExpiredBlocks();
     const now = Date.now();
+
+    // Active blocks
     const activeBlocks = this.db
       .prepare(
         'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC'
@@ -384,22 +623,125 @@ class SQLiteStorage extends MemoryStorage {
         expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
       }));
 
-    const { total_req } =
-      this.db.prepare('SELECT COUNT(*) as total_req FROM iri_requests').get() || {};
-    const { total_evt } =
-      this.db.prepare('SELECT COUNT(*) as total_evt FROM iri_events').get() || {};
+    // Request metrics directly from SQLite
+    const { total_req, blocked_req, avg_lat } =
+      this.db.prepare(`
+        SELECT
+          COUNT(*) as total_req,
+          SUM(CASE WHEN blocked = 1 THEN 1 ELSE 0 END) as blocked_req,
+          AVG(duration_ms) as avg_lat
+        FROM iri_requests
+      `).get() || {};
+
+    // Event metrics directly from SQLite
+    const { total_evt, anomaly_evt } =
+      this.db.prepare(`
+        SELECT
+          COUNT(*) as total_evt,
+          SUM(CASE WHEN risk_level IN ('medium', 'high', 'critical') THEN 1 ELSE 0 END) as anomaly_evt
+        FROM iri_events
+      `).get() || {};
+
+    // Threat distribution aggregated directly from SQLite
+    const threatDistribution = this.db.prepare(`
+      SELECT threat as name, COUNT(*) as count
+      FROM iri_events
+      WHERE threat IS NOT NULL AND threat != ''
+      GROUP BY threat
+      ORDER BY count DESC
+    `).all();
+
+    // Top endpoints aggregated directly from SQLite
+    const endpoints = this.db.prepare(`
+      SELECT
+        endpoint,
+        method,
+        COUNT(*) as count,
+        SUM(CASE WHEN status_code >= 400 THEN 1 ELSE 0 END) as errors,
+        AVG(duration_ms) as avgLatencyMs
+      FROM iri_requests
+      GROUP BY method, endpoint
+      ORDER BY count DESC
+      LIMIT 20
+    `).all();
+
+    // Client counts
     const { total_clients } =
       this.db.prepare('SELECT COUNT(*) as total_clients FROM iri_clients').get() || {};
 
+    // Active alerts count
     const activeAlerts =
       this.db.prepare('SELECT COUNT(*) as cnt FROM iri_alerts WHERE dismissed = 0').get()?.cnt || 0;
 
+    // Recent events list (latest 50)
+    const recentEvents = this.db
+      .prepare('SELECT * FROM iri_events ORDER BY timestamp DESC LIMIT 50')
+      .all()
+      .map((row) => {
+        if (row.data) {
+          try { return JSON.parse(row.data); } catch { /* ignore */ }
+        }
+        return {
+          id: row.id,
+          timestamp: row.timestamp,
+          ip: row.ip,
+          method: row.method,
+          endpoint: row.endpoint,
+          userAgent: row.user_agent,
+          requestId: row.request_id,
+          threat: row.threat,
+          riskLevel: row.risk_level,
+          riskScore: row.risk_score,
+          action: row.action,
+          reason: row.reason
+        };
+      });
+
+    // Recent requests list (latest 50)
+    const recentRequests = this.db
+      .prepare('SELECT * FROM iri_requests ORDER BY id DESC LIMIT 50')
+      .all()
+      .map((r) => ({
+        timestamp: r.timestamp,
+        ip: r.ip,
+        clientId: r.client_id,
+        fingerprint: r.fingerprint,
+        userAgent: r.user_agent,
+        sessionId: r.session_id,
+        endpoint: r.endpoint,
+        method: r.method,
+        statusCode: r.status_code,
+        durationMs: r.duration_ms,
+        blocked: Boolean(r.blocked)
+      }));
+
+    // Clients list (top 50)
+    const clients = this.db
+      .prepare('SELECT data FROM iri_clients LIMIT 50')
+      .all()
+      .map((r) => {
+        try { return JSON.parse(r.data); } catch { return null; }
+      })
+      .filter(Boolean);
+
+    clients.sort((a, b) => (b.requestCount || 0) - (a.requestCount || 0));
+
     return {
-      ...super.getStats(),
+      totalRequests: total_req || 0,
+      detectedThreats: total_evt || 0,
+      blockedRequests: blocked_req || 0,
+      anomalyEvents: anomaly_evt || 0,
+      redactions: this.redactions || 0,
+      averageLatencyMs: avg_lat ? Number(Number(avg_lat).toFixed(2)) : 0,
       storageMode: 'sqlite',
       sqliteFile: this.file,
+      activeAlerts,
       blockedIps: activeBlocks,
-      activeAlerts: activeAlerts || (super.getStats().activeAlerts || 0),
+      endpoints,
+      threatDistribution,
+      recentEvents,
+      recentRequests,
+      clients,
       dbStats: {
         totalRequestRows: total_req || 0,
         maxRequestRows: this.maxRequestRows,
