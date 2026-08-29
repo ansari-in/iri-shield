@@ -252,7 +252,6 @@ function renderDashboard(config, baseUrl) {
         <div>
           <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Security</p>
           <h1 class="text-base font-bold text-gray-900 leading-none mt-0.5">iri-shield</h1>
-          <img src="https://img.shields.io/badge/v-${escapeHtml(config.version || '1.0.0')}-blue?style=flat-square&logo=appveyor" alt="Version Badge" class="mt-1">
         </div>
       </div>
       <div class="mt-3 flex items-center gap-2">
