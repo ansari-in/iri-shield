@@ -20,7 +20,6 @@ class SQLiteStorage extends MemoryStorage {
     mkdirSync(dirname(this.file), { recursive: true });
     this.db = new DatabaseSync(this.file);
     this._initSchema();
-    this._cleanupExpiredBlocks();
     this._loadAllPersistentData();
   }
 
@@ -125,28 +124,17 @@ class SQLiteStorage extends MemoryStorage {
     this._loadPersistentRequests();
   }
 
-  _cleanupExpiredBlocks() {
-    try {
-      this.db
-        .prepare('DELETE FROM iri_blocks WHERE expires_at IS NOT NULL AND expires_at <= ?')
-        .run(Date.now());
-    } catch { /* ignore */ }
-  }
-
   _loadPersistentBlocks() {
     try {
       const rows = this.db.prepare('SELECT * FROM iri_blocks').all();
-      const now = Date.now();
       for (const row of rows) {
-        if (!row.expires_at || row.expires_at > now) {
-          this.blocks.set(row.ip, {
-            reason: row.reason || '',
-            score: row.score || 0,
-            manual: Boolean(row.manual),
-            blockedAt: row.blocked_at || null,
-            expiresAt: row.expires_at || null
-          });
-        }
+        this.blocks.set(row.ip, {
+          reason: row.reason || '',
+          score: row.score || 0,
+          manual: Boolean(row.manual),
+          blockedAt: row.blocked_at || null,
+          expiresAt: row.expires_at || null
+        });
       }
     } catch { /* ignore */ }
   }
@@ -267,7 +255,7 @@ class SQLiteStorage extends MemoryStorage {
         });
       }
 
-      // Recent requests list (for memory view)
+      // Recent requests list
       const reqRows = this.db
         .prepare('SELECT * FROM iri_requests ORDER BY id DESC LIMIT ?')
         .all(this.maxRequests);
@@ -454,7 +442,7 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   // ---------------------------------------------------------------------------
-  // Blocks (Persistent)
+  // Blocks (Persistent & History Retained)
   // ---------------------------------------------------------------------------
 
   blockIp(ip, block) {
@@ -486,7 +474,7 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   manualBlockIp(ip, options = {}) {
-    const duration = options.durationMs !== undefined ? options.durationMs : 60 * 60 * 1000;
+    const duration = options.durationMs !== undefined ? options.durationMs : 24 * 60 * 60 * 1000;
     const fullBlock = {
       expiresAt: duration > 0 ? Date.now() + duration : null,
       reason: options.reason || 'manual_block',
@@ -503,37 +491,63 @@ class SQLiteStorage extends MemoryStorage {
       .run(ip, fullBlock.reason, fullBlock.score, fullBlock.blockedAt, fullBlock.expiresAt);
   }
 
-  getBlockedIps({ page = 1, perPage = 20 } = {}) {
-    this._cleanupExpiredBlocks();
-    const now = Date.now();
-    const rows = this.db
-      .prepare(
-        'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC'
-      )
-      .all(now);
-
-    const formatted = rows.map((row) => ({
-      ip: row.ip,
-      reason: row.reason || '',
-      score: row.score || 0,
-      manual: Boolean(row.manual),
-      blockedAt: row.blocked_at || null,
-      expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
-    }));
-
-    // Keep in-memory cache synchronized
-    this.blocks.clear();
-    for (const item of rows) {
-      this.blocks.set(item.ip, {
-        reason: item.reason,
-        score: item.score,
-        manual: Boolean(item.manual),
-        blockedAt: item.blocked_at,
-        expiresAt: item.expires_at
-      });
+  getBlock(ip) {
+    const block = this.blocks.get(ip);
+    if (!block) return null;
+    if (block.expiresAt && block.expiresAt <= Date.now()) {
+      return null; // Expired, do not block incoming traffic
     }
+    return block;
+  }
 
-    return paginate(formatted, page, perPage);
+  getBlockedIps({ page = 1, perPage = 20, status = 'all' } = {}) {
+    try {
+      const now = Date.now();
+      let query;
+      let countQuery;
+      let params = [];
+
+      if (status === 'active') {
+        countQuery = 'SELECT COUNT(*) as total FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ?';
+        query = 'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC LIMIT ? OFFSET ?';
+        params = [now];
+      } else if (status === 'expired') {
+        countQuery = 'SELECT COUNT(*) as total FROM iri_blocks WHERE expires_at IS NOT NULL AND expires_at <= ?';
+        query = 'SELECT * FROM iri_blocks WHERE expires_at IS NOT NULL AND expires_at <= ? ORDER BY blocked_at DESC LIMIT ? OFFSET ?';
+        params = [now];
+      } else {
+        // 'all' — show active/permanent first, then expired
+        countQuery = 'SELECT COUNT(*) as total FROM iri_blocks';
+        query = 'SELECT *, (CASE WHEN expires_at IS NULL OR expires_at > ? THEN 0 ELSE 1 END) as is_exp FROM iri_blocks ORDER BY is_exp ASC, blocked_at DESC LIMIT ? OFFSET ?';
+        params = [now];
+      }
+
+      const total = this.db.prepare(countQuery).get(...(status !== 'all' ? params : []))?.total || 0;
+      const offset = (Math.max(1, page) - 1) * perPage;
+      const queryParams = [...params, perPage, offset];
+      const rows = this.db.prepare(query).all(...queryParams);
+
+      const formatted = rows.map((row) => {
+        const isPermanent = !row.expires_at;
+        const isExpired = row.expires_at ? row.expires_at <= now : false;
+        const itemStatus = isPermanent ? 'permanent' : (isExpired ? 'expired' : 'active');
+        return {
+          ip: row.ip,
+          reason: row.reason || '',
+          score: row.score || 0,
+          manual: Boolean(row.manual),
+          status: itemStatus,
+          isExpired,
+          blockedAt: row.blocked_at || null,
+          expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
+        };
+      });
+
+      const totalPages = Math.ceil(total / perPage) || 1;
+      return { data: formatted, total, page: Math.max(1, page), perPage, totalPages };
+    } catch {
+      return super.getBlockedIps({ page, perPage, status });
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -601,14 +615,13 @@ class SQLiteStorage extends MemoryStorage {
   }
 
   // ---------------------------------------------------------------------------
-  // Real-time Database Stats (accurate after restarts)
+  // Real-time Database Stats (Accurate after restarts)
   // ---------------------------------------------------------------------------
 
   getStats() {
-    this._cleanupExpiredBlocks();
     const now = Date.now();
 
-    // Active blocks
+    // Active blocks list (for stats)
     const activeBlocks = this.db
       .prepare(
         'SELECT * FROM iri_blocks WHERE expires_at IS NULL OR expires_at > ? ORDER BY blocked_at DESC'
@@ -619,6 +632,8 @@ class SQLiteStorage extends MemoryStorage {
         reason: row.reason || '',
         score: row.score || 0,
         manual: Boolean(row.manual),
+        status: row.expires_at ? 'active' : 'permanent',
+        isExpired: false,
         blockedAt: row.blocked_at || null,
         expiresAt: row.expires_at ? new Date(row.expires_at).toISOString() : null
       }));

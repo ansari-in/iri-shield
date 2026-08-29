@@ -21,17 +21,17 @@ const { buildClientContext, detectIdentityChange, getClientIp } = require('./ide
 const SECURITY_MODE_PRESETS = {
   low: {
     rateLimit: { max: 300, windowMs: 60 * 1000 },
-    block: { threshold: 90, durationMs: 5 * 60 * 1000 },
+    block: { threshold: 90, durationMs: 6 * 60 * 60 * 1000 }, // 6 hours
     anomaly: { mediumThreshold: 45, highThreshold: 75, criticalThreshold: 92 }
   },
   medium: {
     rateLimit: { max: 120, windowMs: 60 * 1000 },
-    block: { threshold: 80, durationMs: 10 * 60 * 1000 },
+    block: { threshold: 80, durationMs: 24 * 60 * 60 * 1000 }, // 24 hours
     anomaly: { mediumThreshold: 35, highThreshold: 65, criticalThreshold: 90 }
   },
   high: {
     rateLimit: { max: 30, windowMs: 60 * 1000 },
-    block: { threshold: 60, durationMs: 30 * 60 * 1000 },
+    block: { threshold: 60, durationMs: 7 * 24 * 60 * 60 * 1000 }, // 7 days
     anomaly: { mediumThreshold: 25, highThreshold: 50, criticalThreshold: 80 }
   }
 };
@@ -64,7 +64,7 @@ const defaultConfig = {
   block: {
     enabled: true,
     threshold: 80,
-    durationMs: 10 * 60 * 1000
+    durationMs: 24 * 60 * 60 * 1000
   },
   alert: {
     enabled: true,

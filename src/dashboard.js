@@ -77,22 +77,15 @@ function createDashboardRouter({ storage, config }) {
     }
   });
 
-  // Paginated blocked IPs
+  // Paginated blocked IPs with status filter
   router.get('/api/blocked', (req, res) => {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const perPage = Math.min(100, Math.max(5, parseInt(req.query.perPage) || 20));
+    const status = req.query.status || 'all';
     if (typeof storage.getBlockedIps === 'function') {
-      res.json(storage.getBlockedIps({ page, perPage }));
+      res.json(storage.getBlockedIps({ page, perPage, status }));
     } else {
-      const now = Date.now();
-      const active = Array.from((storage.blocks || new Map()).entries())
-        .filter(([, b]) => !b.expiresAt || b.expiresAt > now)
-        .map(([ip, b]) => ({
-          ip,
-          ...b,
-          expiresAt: b.expiresAt ? new Date(b.expiresAt).toISOString() : null
-        }));
-      res.json(paginateArray(active, page, perPage));
+      res.json(storage.getBlockedIps({ page, perPage, status }));
     }
   });
 
@@ -108,7 +101,7 @@ function createDashboardRouter({ storage, config }) {
     }
   });
 
-  // Unblock IP
+  // Unblock / Delete Block for an IP
   router.post('/api/unblock', (req, res) => {
     const { ip } = req.body || {};
     if (!ip) return res.status(400).json({ error: 'IP is required' });
@@ -116,16 +109,16 @@ function createDashboardRouter({ storage, config }) {
     res.json({ ok: true, ip });
   });
 
-  // Manual block IP
+  // Manual block / Re-block IP
   router.post('/api/block', (req, res) => {
     const { ip, reason, durationMs } = req.body || {};
     if (!ip) return res.status(400).json({ error: 'IP is required' });
-    const duration = Number(durationMs) || 60 * 60 * 1000;
+    const duration = durationMs !== undefined ? Number(durationMs) : 24 * 60 * 60 * 1000;
     if (typeof storage.manualBlockIp === 'function') {
       storage.manualBlockIp(ip, { reason: reason || 'manual_block', durationMs: duration });
     } else {
       storage.blockIp(ip, {
-        expiresAt: Date.now() + duration,
+        expiresAt: duration > 0 ? Date.now() + duration : null,
         reason: reason || 'manual_block',
         score: 100,
         manual: true,
@@ -264,7 +257,7 @@ function renderDashboard(config, baseUrl) {
       <div class="mt-3 flex items-center gap-2">
         <span id="sidebarMode" class="badge badge-blue text-xs" title="Current security protection mode">Mode: ${escapeHtml(config.security || 'medium')}</span>
         <span class="text-xs text-emerald-600 font-medium flex items-center gap-1">
-        <!--  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active -->
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active
         </span>
       </div>
     </div>
@@ -285,7 +278,7 @@ function renderDashboard(config, baseUrl) {
         <span>Auto-refresh</span>
         <span id="refreshLabel" class="font-semibold text-gray-600">${Math.round(refreshMs / 1000)}s</span>
       </div>
-      <div class="text-xs text-gray-400" id="updatedAt">Loading…</div>
+      <div class="text-xs text-gray-500 font-medium" id="updatedAt">Updating…</div>
       <form method="post" action="${escapeHtml(base)}/logout">
         <button class="w-full mt-1 rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors" type="submit">
           Sign out
@@ -305,9 +298,9 @@ function renderDashboard(config, baseUrl) {
           <p class="text-xs text-gray-400 mt-0.5" id="pageSubtitle">Real-time API traffic and threat monitoring</p>
         </div>
         <div class="flex items-center gap-3">
-          <span class="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded" id="appName">${escapeHtml(config.appName || 'iri-shield')}</span>
+          <span class="text-xs font-mono text-gray-600 bg-gray-100 px-2.5 py-1 rounded font-medium" id="appName">${escapeHtml(config.appName || 'iri-shield')}</span>
           <div class="w-px h-4 bg-gray-200"></div>
-          <span class="text-xs text-gray-500 font-medium" id="storageMode">Loading…</span>
+          <span class="text-xs text-gray-600 font-medium" id="storageMode">Storage: ${escapeHtml(config.storage?.mode || 'sqlite')}</span>
         </div>
       </div>
     </div>
@@ -320,7 +313,7 @@ function renderDashboard(config, baseUrl) {
       <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
         ${statCard('totalRequests', 'Total Requests', iconReq(), 'text-gray-900', 'bg-gray-50')}
         ${statCard('detectedThreats', 'Threats Detected', iconThreat(), 'text-amber-700', 'bg-amber-50')}
-        ${statCard('blockedCombined', 'Blocked Traffic', iconBlock(), 'text-red-700', 'bg-red-50')}
+        ${statCard('blockedCombined', 'Active Blocked', iconBlock(), 'text-red-700', 'bg-red-50')}
         ${statCard('activeAlerts', 'Active Alerts', iconAlert(), 'text-blue-700', 'bg-blue-50')}
       </div>
 
@@ -366,7 +359,7 @@ function renderDashboard(config, baseUrl) {
         ${miniStat('avgLatency', 'Avg Latency', 'ms')}
         ${miniStat('anomalyEvents', 'Anomaly Events', '')}
         ${miniStat('totalRedactions', 'PII Redactions', '')}
-        ${miniStat('blockedIpsCount', 'Blocked IPs', '')}
+        ${miniStat('blockedIpsCount', 'Active Blocked IPs', '')}
       </div>
     </section>
 
@@ -481,9 +474,14 @@ function renderDashboard(config, baseUrl) {
       <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div>
           <h3 class="font-semibold text-gray-900 text-base">Blocked IP Management</h3>
-          <p class="text-sm text-gray-500 mt-0.5">Manage temporary and permanent IP restrictions</p>
+          <p class="text-sm text-gray-500 mt-0.5">Manage active and historical IP restrictions</p>
         </div>
         <div class="flex items-center gap-2">
+          <select id="blockedStatusFilter" onchange="loadBlocked(1)" class="border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="all">All Blocks (Active & History)</option>
+            <option value="active">Active Blocks Only</option>
+            <option value="expired">Expired Blocks</option>
+          </select>
           <button onclick="loadBlocked(currentPage.blocked)" class="btn-secondary text-sm flex items-center gap-1.5">
             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             Refresh
@@ -501,12 +499,13 @@ function renderDashboard(config, baseUrl) {
             <th class="px-4 py-3 text-left font-medium">Block Reason</th>
             <th class="px-4 py-3 text-right font-medium">Risk Score</th>
             <th class="px-4 py-3 text-left font-medium">Type</th>
+            <th class="px-4 py-3 text-left font-medium">Status</th>
             <th class="px-4 py-3 text-left font-medium">Blocked At</th>
             <th class="px-4 py-3 text-left font-medium">Expires At</th>
-            <th class="px-4 py-3 text-left font-medium">Action</th>
+            <th class="px-4 py-3 text-left font-medium">Actions</th>
           </tr></thead>
           <tbody id="blockedRows" class="divide-y divide-gray-100">
-            <tr><td class="px-4 py-4 text-gray-400" colspan="7">Loading…</td></tr>
+            <tr><td class="px-4 py-4 text-gray-400" colspan="8">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -607,9 +606,9 @@ function renderDashboard(config, baseUrl) {
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Block Duration</label>
         <select id="blockDurationInput" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="86400000" selected>24 hours</option>
           <option value="3600000">1 hour</option>
           <option value="21600000">6 hours</option>
-          <option value="86400000">24 hours</option>
           <option value="604800000">7 days</option>
           <option value="0">Permanent Block</option>
         </select>
@@ -666,7 +665,6 @@ const THREAT_SHORT_LABELS = {
 function formatThreatLabel(name) {
   if (!name) return 'Unknown';
   if (THREAT_SHORT_LABELS[name]) return THREAT_SHORT_LABELS[name];
-  // Convert underscores to title case or truncate
   const cleaned = name.replace(/^scanner_ua_/, '').replace(/_/g, ' ');
   return cleaned.length > 12 ? cleaned.slice(0, 11) + '..' : cleaned;
 }
@@ -680,7 +678,7 @@ const PAGE_TITLES = {
   alerts: { title: 'Suspicious Alerts', sub: 'Active suspicious clients under observation' },
   events: { title: 'Security Events Log', sub: 'Click on any event row to expand complete details' },
   clients: { title: 'Client Identity Monitoring', sub: 'Client fingerprinting and identity drift history' },
-  blocked: { title: 'Blocked IP Management', sub: 'Manage temporary and permanent IP restrictions' },
+  blocked: { title: 'Blocked IP Management', sub: 'Manage active and historical IP restrictions' },
   settings: { title: 'System Settings', sub: 'Configure security modes, thresholds, and redaction' }
 };
 
@@ -700,7 +698,9 @@ function showPanel(id) {
   document.getElementById('pageTitle').textContent = meta.title;
   document.getElementById('pageSubtitle').textContent = meta.sub;
 
-  if (targetId === 'overview') loadStats();
+  // Always load live stats in background so header, footer and badges are updated
+  loadStats();
+
   if (targetId === 'events') loadEvents(currentPage.events);
   if (targetId === 'clients') loadClients(currentPage.clients);
   if (targetId === 'blocked') loadBlocked(currentPage.blocked);
@@ -729,16 +729,14 @@ function selectMode(mode) {
 }
 
 document.querySelectorAll('.mode-card').forEach(card => {
-  card.addEventListener('click', (e) => {
+  card.addEventListener('click', () => {
     const input = card.querySelector('input[name="security"]');
-    if (input) {
-      selectMode(input.value);
-    }
+    if (input) selectMode(input.value);
   });
 });
 
 // -------------------------------------------------------------------------
-// Stats (Overview)
+// Stats (Header, Footer, Badges & Overview)
 // -------------------------------------------------------------------------
 
 async function loadStats() {
@@ -758,15 +756,15 @@ async function loadStats() {
     // Stat cards
     setText('totalRequests', fmt.format(data.totalRequests || 0));
     setText('detectedThreats', fmt.format(data.detectedThreats || 0));
-    const blockedCount = (data.blockedIps || []).length;
-    setText('blockedCombined', fmt.format(data.blockedRequests || 0) + ' req / ' + fmt.format(blockedCount) + ' IPs');
+    const activeBlockedCount = (data.blockedIps || []).length;
+    setText('blockedCombined', fmt.format(data.blockedRequests || 0) + ' req / ' + fmt.format(activeBlockedCount) + ' active');
     setText('activeAlerts', fmt.format(data.activeAlerts || 0));
 
     // Mini stats
     setText('avgLatency', (data.averageLatencyMs || 0) + ' ms');
     setText('anomalyEvents', fmt.format(data.anomalyEvents || 0));
     setText('totalRedactions', fmt.format(data.redactions || 0));
-    setText('blockedIpsCount', fmt.format(blockedCount));
+    setText('blockedIpsCount', fmt.format(activeBlockedCount));
 
     document.getElementById('redactionsLabel').textContent = fmt.format(data.redactions || 0) + ' redactions';
 
@@ -783,16 +781,19 @@ async function loadStats() {
 
     const blockedBadge = document.getElementById('blockedBadge');
     if (blockedBadge) {
-      if (blockedCount > 0) {
-        blockedBadge.textContent = blockedCount;
+      if (activeBlockedCount > 0) {
+        blockedBadge.textContent = activeBlockedCount;
         blockedBadge.classList.remove('hidden');
       } else {
         blockedBadge.classList.add('hidden');
       }
     }
 
-    renderEndpoints(data.endpoints || []);
-    renderChart(data.threatDistribution || []);
+    const currentActive = localStorage.getItem('iri_active_panel') || 'overview';
+    if (currentActive === 'overview') {
+      renderEndpoints(data.endpoints || []);
+      renderChart(data.threatDistribution || []);
+    }
   } catch(e) { console.error('Stats error', e); }
   schedule();
 }
@@ -843,7 +844,6 @@ async function loadEvents(page) {
       tbody.innerHTML = rawEventsData.map((r, idx) => {
         const fullEndpoint = (r.method || '') + ' ' + (r.endpoint || '');
         const timeStr = r.timestamp ? new Date(r.timestamp).toLocaleString() : '-';
-        const rawJson = clean(JSON.stringify(r));
 
         return \`<tr class="event-row border-t border-gray-100 hover:bg-blue-50/40" onclick="toggleEventDetail('\${clean(r.id || idx)}')" id="row-\${clean(r.id || idx)}">
           <td class="px-3 py-2.5 text-gray-400 text-xs text-center">
@@ -938,7 +938,6 @@ async function loadClients(page) {
     } else {
       tbody.innerHTML = data.data.map(r => {
         const fullIps = (r.ips || []).join(', ');
-        const fullUas = (r.userAgents || []).join('');
         const fullFps = (r.fingerprints || []).join('');
         return \`<tr>
           <td class="px-4 py-2.5 font-mono text-xs text-gray-800 max-w-[130px] truncate" title="\${clean(r.clientId)}">\${clean(r.clientId)}</td>
@@ -958,29 +957,51 @@ async function loadClients(page) {
 }
 
 // -------------------------------------------------------------------------
-// Blocked IPs (Persistent & Live)
+// Blocked IPs (Persistent, History & Filterable)
 // -------------------------------------------------------------------------
 
 async function loadBlocked(page) {
   currentPage.blocked = page || currentPage.blocked;
+  const status = document.getElementById('blockedStatusFilter')?.value || 'all';
   try {
-    const res = await fetch(BASE + '/api/blocked?page=' + currentPage.blocked + '&perPage=20');
+    const res = await fetch(BASE + '/api/blocked?page=' + currentPage.blocked + '&perPage=20&status=' + status);
     const data = await res.json();
     const tbody = document.getElementById('blockedRows');
     if (!data.data?.length) {
-      tbody.innerHTML = '<tr><td class="px-4 py-4 text-gray-400 text-center" colspan="7">No IP addresses currently blocked</td></tr>';
+      tbody.innerHTML = '<tr><td class="px-4 py-4 text-gray-400 text-center" colspan="8">No IP addresses recorded in blocklist</td></tr>';
     } else {
-      tbody.innerHTML = data.data.map(r => \`<tr>
-        <td class="px-4 py-2.5 font-mono text-sm text-gray-900 font-semibold" title="\${clean(r.ip)}">\${clean(r.ip)}</td>
-        <td class="px-4 py-2.5 text-xs text-gray-600 max-w-[200px] truncate" title="\${clean(r.reason || 'None')}">\${clean(r.reason || '-')}</td>
-        <td class="px-4 py-2.5 text-right font-bold \${(r.score||0) >= 80 ? 'text-red-600' : 'text-amber-600'}">\${r.score||0}</td>
-        <td class="px-4 py-2.5"><span class="badge \${r.manual ? 'badge-blue' : 'badge-high'}">\${r.manual ? 'Manual' : 'Automated'}</span></td>
-        <td class="px-4 py-2.5 text-xs text-gray-500" title="\${clean(r.blockedAt)}">\${r.blockedAt ? clean(new Date(r.blockedAt).toLocaleString()) : '-'}</td>
-        <td class="px-4 py-2.5 text-xs text-gray-500" title="\${clean(r.expiresAt)}">\${r.expiresAt ? clean(new Date(r.expiresAt).toLocaleString()) : '<span class=\"font-semibold text-gray-800\">Permanent</span>'}</td>
-        <td class="px-4 py-2.5">
-          <button class="btn-unblock" onclick="doUnblock('\${clean(r.ip)}')">Unblock IP</button>
-        </td>
-      </tr>\`).join('');
+      tbody.innerHTML = data.data.map(r => {
+        let statusBadge = '';
+        if (r.status === 'permanent') {
+          statusBadge = '<span class="badge badge-blue font-semibold">Permanent</span>';
+        } else if (r.status === 'active' || !r.isExpired) {
+          statusBadge = '<span class="badge badge-critical font-semibold">Active</span>';
+        } else {
+          statusBadge = '<span class="badge badge-none font-medium">Expired</span>';
+        }
+
+        let actionButtons = '';
+        if (r.status === 'active' || r.status === 'permanent' || !r.isExpired) {
+          actionButtons = \`<button class="btn-unblock" onclick="doUnblock('\${clean(r.ip)}')">Unblock IP</button>\`;
+        } else {
+          actionButtons = \`
+            <div class="flex items-center gap-1.5">
+              <button class="btn-primary text-xs py-1 px-2.5 rounded" onclick="doReblock('\${clean(r.ip)}', '\${clean(r.reason)}')">Re-block</button>
+              <button class="btn-dismiss text-xs py-1 px-2 rounded" onclick="doDeleteBlock('\${clean(r.ip)}')">Remove</button>
+            </div>\`;
+        }
+
+        return \`<tr>
+          <td class="px-4 py-2.5 font-mono text-sm text-gray-900 font-semibold" title="\${clean(r.ip)}">\${clean(r.ip)}</td>
+          <td class="px-4 py-2.5 text-xs text-gray-600 max-w-[180px] truncate" title="\${clean(r.reason || 'None')}">\${clean(r.reason || '-')}</td>
+          <td class="px-4 py-2.5 text-right font-bold \${(r.score||0) >= 80 ? 'text-red-600' : 'text-amber-600'}">\${r.score||0}</td>
+          <td class="px-4 py-2.5"><span class="badge \${r.manual ? 'badge-blue' : 'badge-high'}">\${r.manual ? 'Manual' : 'Automated'}</span></td>
+          <td class="px-4 py-2.5">\${statusBadge}</td>
+          <td class="px-4 py-2.5 text-xs text-gray-500" title="\${clean(r.blockedAt)}">\${r.blockedAt ? clean(new Date(r.blockedAt).toLocaleString()) : '-'}</td>
+          <td class="px-4 py-2.5 text-xs text-gray-500" title="\${clean(r.expiresAt)}">\${r.expiresAt ? clean(new Date(r.expiresAt).toLocaleString()) : '<span class="font-semibold text-gray-800">Permanent</span>'}</td>
+          <td class="px-4 py-2.5">\${actionButtons}</td>
+        </tr>\`;
+      }).join('');
     }
     renderPagination('blockedPagination', data, loadBlocked);
   } catch(e) { console.error('Blocked error', e); }
@@ -997,6 +1018,31 @@ async function doUnblock(ip) {
     loadBlocked(currentPage.blocked);
     loadStats();
   } catch(e) { console.error('Unblock error', e); }
+}
+
+async function doDeleteBlock(ip) {
+  if (!confirm('Permanently remove IP ' + ip + ' from block history?')) return;
+  try {
+    await fetch(BASE + '/api/unblock', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ip })
+    });
+    loadBlocked(currentPage.blocked);
+    loadStats();
+  } catch(e) { console.error('Delete block error', e); }
+}
+
+async function doReblock(ip, reason) {
+  try {
+    await fetch(BASE + '/api/block', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ip, reason: reason || 'reblocked_from_history', durationMs: 86400000 })
+    });
+    loadBlocked(currentPage.blocked);
+    loadStats();
+  } catch(e) { console.error('Re-block error', e); }
 }
 
 // -------------------------------------------------------------------------
@@ -1042,12 +1088,12 @@ async function doDismiss(clientId) {
 }
 
 async function doBlockFromAlert(ip) {
-  if (!ip || !confirm('Block IP ' + ip + ' for 1 hour?')) return;
+  if (!ip || !confirm('Block IP ' + ip + ' for 24 hours?')) return;
   try {
     await fetch(BASE + '/api/block', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip, reason: 'blocked_from_alert', durationMs: 3600000 })
+      body: JSON.stringify({ ip, reason: 'blocked_from_alert', durationMs: 86400000 })
     });
     loadBlocked(1);
     loadAlerts(currentPage.alerts);
@@ -1065,13 +1111,13 @@ function hideBlockModal() { document.getElementById('blockModal').classList.add(
 async function submitBlock() {
   const ip = document.getElementById('blockIpInput').value.trim();
   const reason = document.getElementById('blockReasonInput').value.trim() || 'manual_block';
-  const durationMs = Number(document.getElementById('blockDurationInput').value) || 3600000;
+  const durationMs = Number(document.getElementById('blockDurationInput').value);
   if (!ip) { alert('Please enter a valid IP address'); return; }
   try {
     await fetch(BASE + '/api/block', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ ip, reason, durationMs })
+      body: JSON.stringify({ ip, reason, durationMs: isNaN(durationMs) ? 86400000 : durationMs })
     });
     document.getElementById('blockIpInput').value = '';
     document.getElementById('blockReasonInput').value = '';
@@ -1134,7 +1180,9 @@ function renderChart(rows) {
   const colors = rows.map((_, i) => ['#2563eb','#f59e0b','#ef4444','#10b981','#8b5cf6','#06b6d4','#f97316'][i % 7]);
 
   if (!chart) {
-    const ctx = document.getElementById('threatChart').getContext('2d');
+    const canvas = document.getElementById('threatChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     chart = new Chart(ctx, {
       type: 'bar',
       data: {
@@ -1402,7 +1450,7 @@ function applyDashboardSettings(config, body) {
     ['rateLimit.max', 1, 100000],
     ['rateLimit.windowMs', 1000, 86400000],
     ['block.threshold', 1, 100],
-    ['block.durationMs', 1000, 86400000 * 7],
+    ['block.durationMs', 1000, 86400000 * 30],
     ['anomaly.mediumThreshold', 1, 100],
     ['anomaly.highThreshold', 1, 100],
     ['anomaly.criticalThreshold', 1, 100],

@@ -148,26 +148,41 @@ class MemoryStorage {
     const block = this.blocks.get(ip);
     if (!block) return null;
     if (block.expiresAt && block.expiresAt <= Date.now()) {
-      this.blocks.delete(ip);
-      return null;
+      return null; // Expired, do not block incoming traffic
     }
     return block;
   }
 
-  getBlockedIps({ page = 1, perPage = 20 } = {}) {
-    const active = Array.from(this.blocks.entries())
-      .filter(([, block]) => !block.expiresAt || block.expiresAt > Date.now())
-      .map(([ip, block]) => ({
+  getBlockedIps({ page = 1, perPage = 20, status = 'all' } = {}) {
+    const now = Date.now();
+    let all = Array.from(this.blocks.entries()).map(([ip, block]) => {
+      const isPermanent = !block.expiresAt;
+      const isExpired = block.expiresAt ? block.expiresAt <= now : false;
+      const itemStatus = isPermanent ? 'permanent' : (isExpired ? 'expired' : 'active');
+      return {
         ip,
         reason: block.reason || '',
         score: block.score || 0,
         manual: Boolean(block.manual),
+        status: itemStatus,
+        isExpired,
         blockedAt: block.blockedAt || null,
         expiresAt: block.expiresAt ? new Date(block.expiresAt).toISOString() : null
-      }))
-      .sort((a, b) => (b.blockedAt > a.blockedAt ? 1 : -1));
+      };
+    });
 
-    return paginate(active, page, perPage);
+    if (status === 'active') {
+      all = all.filter((b) => !b.isExpired);
+    } else if (status === 'expired') {
+      all = all.filter((b) => b.isExpired);
+    }
+
+    all.sort((a, b) => {
+      if (a.isExpired !== b.isExpired) return a.isExpired ? 1 : -1;
+      return (b.blockedAt || '') > (a.blockedAt || '') ? 1 : -1;
+    });
+
+    return paginate(all, page, perPage);
   }
 
   // -------------------------------------------------------------------------
