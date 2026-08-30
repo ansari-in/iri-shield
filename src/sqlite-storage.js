@@ -16,6 +16,7 @@ class SQLiteStorage extends MemoryStorage {
     this.file = options.file || options.filename || './data/iri-shield.sqlite';
     this.maxRequestRows = options.maxRequestRows || DEFAULT_MAX_REQUEST_ROWS;
     this.maxEventRows   = options.maxEventRows   || DEFAULT_MAX_EVENT_ROWS;
+    this.retentionDays  = options.retentionDays  || 0;
 
     mkdirSync(dirname(this.file), { recursive: true });
     this.db = new DatabaseSync(this.file);
@@ -102,6 +103,15 @@ class SQLiteStorage extends MemoryStorage {
       if (eventCols.length && !eventCols.includes('data')) {
         this.db.exec('ALTER TABLE iri_events ADD COLUMN data TEXT;');
       }
+      if (eventCols.length && !eventCols.includes('breakdown')) {
+        this.db.exec('ALTER TABLE iri_events ADD COLUMN breakdown TEXT;');
+      }
+      if (eventCols.length && !eventCols.includes('confidence')) {
+        this.db.exec('ALTER TABLE iri_events ADD COLUMN confidence INTEGER DEFAULT 0;');
+      }
+      if (eventCols.length && !eventCols.includes('correlated_attack')) {
+        this.db.exec('ALTER TABLE iri_events ADD COLUMN correlated_attack TEXT;');
+      }
       const blockCols = this.db.prepare('PRAGMA table_info(iri_blocks)').all().map((c) => c.name);
       if (blockCols.length && !blockCols.includes('blocked_at')) {
         this.db.exec('ALTER TABLE iri_blocks ADD COLUMN blocked_at TEXT;');
@@ -110,6 +120,15 @@ class SQLiteStorage extends MemoryStorage {
         this.db.exec('ALTER TABLE iri_blocks ADD COLUMN manual INTEGER DEFAULT 0;');
       }
     } catch { /* table is fresh */ }
+
+    // Retention purge: remove old rows older than retentionDays
+    if (this.retentionDays && this.retentionDays > 0) {
+      const cutoff = new Date(Date.now() - this.retentionDays * 24 * 60 * 60 * 1000).toISOString();
+      try {
+        this.db.prepare('DELETE FROM iri_requests WHERE timestamp < ?').run(cutoff);
+        this.db.prepare('DELETE FROM iri_events WHERE timestamp < ?').run(cutoff);
+      } catch (_) { /* ignore */ }
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -337,8 +356,8 @@ class SQLiteStorage extends MemoryStorage {
     this.db
       .prepare(
         `INSERT OR REPLACE INTO iri_events
-          (id, timestamp, ip, method, endpoint, user_agent, request_id, threat, risk_level, risk_score, action, reason, data)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          (id, timestamp, ip, method, endpoint, user_agent, request_id, threat, risk_level, risk_score, action, reason, breakdown, confidence, correlated_attack, data)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         event.id,
@@ -353,6 +372,9 @@ class SQLiteStorage extends MemoryStorage {
         event.riskScore || 0,
         event.action || '',
         event.reason || '',
+        event.breakdown ? JSON.stringify(event.breakdown) : '[]',
+        event.confidence || 0,
+        event.correlatedAttack ? JSON.stringify(event.correlatedAttack) : null,
         JSON.stringify(event)
       );
 

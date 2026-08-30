@@ -561,12 +561,53 @@ function renderDashboard(config, baseUrl) {
           </div>
         </div>
 
+        <!-- Security Rule Engine -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold text-gray-900 text-base">Security Rule Engine</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Toggle individual threat detection modules or customize detection capabilities.</p>
+            </div>
+            <span class="badge badge-blue">Rule Engine Active</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-2">
+            ${checkInput('SQL Injection', 'rules.sqlInjection', config.rules?.sqlInjection !== false)}
+            ${checkInput('XSS Attacks', 'rules.xss', config.rules?.xss !== false)}
+            ${checkInput('Path Traversal', 'rules.pathTraversal', config.rules?.pathTraversal !== false)}
+            ${checkInput('Command Injection', 'rules.commandInjection', config.rules?.commandInjection !== false)}
+            ${checkInput('SSTI Template Inj.', 'rules.ssti', config.rules?.ssti !== false)}
+            ${checkInput('NoSQL Injection', 'rules.nosqlInjection', config.rules?.nosqlInjection !== false)}
+            ${checkInput('Secret / Env Probe', 'rules.secretProbe', config.rules?.secretProbe !== false)}
+            ${checkInput('Scanner & Bot Detect', 'rules.scannerDetection', config.rules?.scannerDetection !== false)}
+            ${checkInput('Open Redirects', 'rules.openRedirect', config.rules?.openRedirect !== false)}
+            ${checkInput('XXE / XML Injection', 'rules.xxe', config.rules?.xxe !== false)}
+            ${checkInput('Header Anomaly', 'rules.headerAnomaly', config.rules?.headerAnomaly !== false)}
+            ${checkInput('Base64 Suspicious', 'rules.base64Payload', config.rules?.base64Payload !== false)}
+          </div>
+        </div>
+
+        <!-- Privacy & Failure Policy -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-xs">
+          <h3 class="font-semibold text-gray-900 text-base mb-4">Privacy by Design &amp; Failure Mode</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${checkInput('Hash IP addresses in storage', 'privacy.hashIp', config.privacy?.hashIp || false)}
+            ${numInput('Log retention period (days)', 'privacy.retentionDays', config.privacy?.retentionDays || 30)}
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Failure Mode Policy</label>
+              <select name="failureMode" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="fail-open" ${config.failureMode !== 'fail-closed' ? 'selected' : ''}>Fail-Open (Default — API traffic continues)</option>
+                <option value="fail-closed" ${config.failureMode === 'fail-closed' ? 'selected' : ''}>Fail-Closed (Strict — rejects on failure)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <!-- System & Redaction -->
         <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-xs">
-          <h3 class="font-semibold text-gray-900 text-base mb-4">System, Helmet & Redaction</h3>
+          <h3 class="font-semibold text-gray-900 text-base mb-4">System, Helmet &amp; Redaction</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             ${numInput('Dashboard auto-refresh (ms)', 'dashboard.refreshMs', config.dashboard?.refreshMs || 300000)}
-            ${checkInput('Enable response redaction', 'redaction.enabled', config.redaction.enabled)}
+            ${checkInput('Enable response redaction', 'redaction.enabled', config.redaction?.enabled !== false)}
             ${checkInput('Enable Helmet security headers', 'helmet.enabled', config.helmet?.enabled !== false)}
             ${checkInput('Testing mode enabled', 'testing.enabled', config.testing?.enabled || false)}
             ${checkInput('Allow client test overrides', 'testing.allowClientOverrides', config.testing?.allowClientOverrides || false)}
@@ -923,6 +964,32 @@ async function loadEvents(page) {
       tbody.innerHTML = rawEventsData.map((r, idx) => {
         const fullEndpoint = (r.method || '') + ' ' + (r.endpoint || '');
         const timeStr = r.timestamp ? new Date(r.timestamp).toLocaleString() : '-';
+        const confidenceVal = r.confidence || 0;
+        const confBadgeClass = confidenceVal >= 85 ? 'badge-critical' : confidenceVal >= 70 ? 'badge-high' : 'badge-medium';
+        const breakdown = Array.isArray(r.breakdown) ? r.breakdown : [];
+        const corr = r.correlatedAttack || null;
+
+        // Build breakdown rows
+        const breakdownRows = breakdown.length > 0
+          ? breakdown.map(b => \`<tr class="border-t border-gray-100">
+              <td class="py-1.5 pr-3 text-gray-700 font-medium">\${clean(b.label)}</td>
+              <td class="py-1.5 pr-3 text-gray-500 text-[11px]">\${clean(b.category)}</td>
+              <td class="py-1.5 pr-3 text-right">
+                <span class="font-mono font-bold \${b.points >= 30 ? 'text-red-600' : b.points >= 20 ? 'text-amber-600' : 'text-gray-700'}">+\${b.points}</span>
+              </td>
+              <td class="py-1.5 text-right text-gray-400 text-[11px]">\${b.confidence || 0}% conf</td>
+            </tr>\`).join('')
+          : \`<tr><td colspan="4" class="py-2 text-gray-400 italic">No breakdown available</td></tr>\`;
+
+        // Correlation banner
+        const corrBanner = corr ? \`
+          <div class="mt-3 rounded-lg bg-red-50 border border-red-200 px-4 py-2.5 flex items-start gap-2">
+            <span class="text-red-600 text-base mt-0.5">🔗</span>
+            <div>
+              <div class="font-semibold text-red-700 text-xs">Attack Chain Detected: \${clean(corr.label)}</div>
+              <div class="text-red-500 text-[11px] mt-0.5">Confidence: \${corr.confidence}% · Sequence length: \${corr.sequenceLength} requests · +\${corr.riskBonus} risk pts</div>
+            </div>
+          </div>\` : '';
 
         return \`<tr class="event-row border-t border-gray-100 hover:bg-blue-50/40" onclick="toggleEventDetail('\${clean(r.id || idx)}')" id="row-\${clean(r.id || idx)}">
           <td class="px-3 py-2.5 text-gray-400 text-xs text-center">
@@ -932,7 +999,10 @@ async function loadEvents(page) {
           <td class="px-4 py-2.5 text-gray-800 font-mono text-xs font-medium" title="\${clean(r.ip)}">\${clean(r.ip)}</td>
           <td class="px-4 py-2.5 text-gray-700 font-mono text-xs max-w-[160px] truncate" title="\${clean(fullEndpoint)}">\${clean(fullEndpoint)}</td>
           <td class="px-4 py-2.5 text-amber-800 text-xs font-medium max-w-[160px] truncate" title="\${clean(r.threat)}">\${clean(r.threat)}</td>
-          <td class="px-4 py-2.5"><span class="badge badge-\${r.riskLevel}" title="Risk score: \${r.riskScore}">\${clean(r.riskLevel)}</span></td>
+          <td class="px-4 py-2.5">
+            <span class="badge badge-\${r.riskLevel}" title="Risk score: \${r.riskScore}">\${clean(r.riskLevel)}</span>
+            \${confidenceVal > 0 ? \`<span class="badge \${confBadgeClass} ml-1" title="Detection confidence">\${confidenceVal}%</span>\` : ''}
+          </td>
           <td class="px-4 py-2.5 text-right font-bold text-gray-900">\${r.riskScore}</td>
           <td class="px-4 py-2.5 text-gray-600 text-xs" title="\${clean(r.action)}">\${clean(r.action)}</td>
         </tr>
@@ -942,7 +1012,10 @@ async function loadEvents(page) {
             <div class="rounded-lg bg-white border border-gray-200 p-4 space-y-3 text-xs">
               <div class="flex items-center justify-between border-b border-gray-100 pb-2">
                 <span class="font-semibold text-gray-900 text-sm">Security Event Details</span>
-                <span class="font-mono text-gray-400 text-xs">Request ID: \${clean(r.requestId || r.id || 'N/A')}</span>
+                <div class="flex items-center gap-2">
+                  \${confidenceVal > 0 ? \`<span class="badge \${confBadgeClass}" title="Overall detection confidence">Confidence: \${confidenceVal}%</span>\` : ''}
+                  <span class="font-mono text-gray-400 text-xs">Request ID: \${clean(r.requestId || r.id || 'N/A')}</span>
+                </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div>
@@ -978,9 +1051,28 @@ async function loadEvents(page) {
                 <p class="font-mono text-gray-700 bg-gray-50 p-2 rounded border border-gray-100 break-all select-all">\${clean(r.userAgent || 'None')}</p>
               </div>
               <div>
-                <span class="text-gray-400 block mb-0.5">Detected Threat Rules & Trigger Reasons:</span>
+                <span class="text-gray-400 block mb-0.5">Detected Threat Rules &amp; Trigger Reasons:</span>
                 <p class="text-amber-900 bg-amber-50/70 p-2 rounded border border-amber-200 font-medium">\${clean(r.reason || r.threat || 'None')}</p>
               </div>
+              <!-- Risk Score Breakdown Table -->
+              <div class="border-t border-gray-100 pt-2">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-gray-600 font-semibold">📊 Risk Score Breakdown</span>
+                  <span class="text-gray-400 font-mono text-[11px]">Total: <strong class="text-gray-800">\${r.riskScore}/100</strong></span>
+                </div>
+                <table class="w-full text-xs">
+                  <thead>
+                    <tr class="text-gray-400 text-left">
+                      <th class="pb-1 font-medium">Rule / Signal</th>
+                      <th class="pb-1 font-medium">Category</th>
+                      <th class="pb-1 font-medium text-right">Points</th>
+                      <th class="pb-1 font-medium text-right">Confidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>\${breakdownRows}</tbody>
+                </table>
+              </div>
+              \${corrBanner}
               <div class="flex items-center justify-between text-gray-400 text-[11px] pt-1">
                 <span>Exact Time: \${clean(r.timestamp)}</span>
                 <span>Mitigation Applied: <strong class="text-gray-700">\${clean(r.action)}</strong> (Risk Score: \${r.riskScore})</span>
@@ -1493,6 +1585,7 @@ function applyDashboardSettings(config, body) {
     ['anomaly.singleEndpointMax', 1, 100000],
     ['anomaly.failedAuthMax', 1, 100000],
     ['alert.threshold', 1, 100],
+    ['privacy.retentionDays', 1, 3650],
     ['dashboard.refreshMs', 5000, 3600000]
   ];
   for (const [path, min, max] of numberFields) {
@@ -1503,7 +1596,11 @@ function applyDashboardSettings(config, body) {
   const booleanFields = [
     'rateLimit.enabled', 'block.enabled', 'redaction.enabled',
     'testing.enabled', 'testing.allowClientOverrides',
-    'helmet.enabled', 'helmet.contentSecurityPolicy', 'alert.enabled'
+    'helmet.enabled', 'helmet.contentSecurityPolicy', 'alert.enabled',
+    'privacy.hashIp',
+    'rules.sqlInjection', 'rules.xss', 'rules.pathTraversal', 'rules.commandInjection',
+    'rules.ssti', 'rules.nosqlInjection', 'rules.secretProbe', 'rules.scannerDetection',
+    'rules.openRedirect', 'rules.xxe', 'rules.headerAnomaly', 'rules.base64Payload'
   ];
   for (const path of booleanFields) {
     const value = getPath(body, path);
@@ -1512,6 +1609,10 @@ function applyDashboardSettings(config, body) {
 
   if (body.security && ['low', 'medium', 'high'].includes(body.security)) {
     config.security = body.security;
+  }
+
+  if (body.failureMode && ['fail-open', 'fail-closed'].includes(body.failureMode)) {
+    config.failureMode = body.failureMode;
   }
 
   if (typeof body['redaction.fields'] === 'string') {

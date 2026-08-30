@@ -24,8 +24,10 @@ class MemoryStorage {
     this.ipWindows = new Map();
     this.failedAuth = new Map();
     this.blocks = new Map();
-    this.alerts = new Map();                // clientId -> alert record
+    this.alerts = new Map();
     this.threatDistribution = new Map();
+    this.behaviourStore = new Map();   // IP -> behaviour baseline record
+    this.sequenceStore = new Map();    // IP -> request sequence[]
   }
 
   // -------------------------------------------------------------------------
@@ -190,7 +192,11 @@ class MemoryStorage {
   // -------------------------------------------------------------------------
 
   recordEvent(event) {
-    this.events.unshift(event);
+    const stored = Object.assign({}, event);
+    // Ensure breakdown array is always present (may be undefined in old code paths)
+    if (!Array.isArray(stored.breakdown)) stored.breakdown = [];
+    if (stored.confidence == null) stored.confidence = 0;
+    this.events.unshift(stored);
     if (this.events.length > this.maxEvents) {
       this.events = this.events.slice(0, this.maxEvents);
     }

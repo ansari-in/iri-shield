@@ -1,18 +1,22 @@
-'use strict';
+﻿'use strict';
 
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const crypto = require('crypto');
 const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
 const pino = require('pino');
-const { randomUUID } = require('crypto');
+const { randomUUID } = crypto;
 const { createDashboardRouter } = require('./dashboard');
 const { MemoryStorage } = require('./storage');
 const { SQLiteStorage } = require('./sqlite-storage');
 const { MongoStorage } = require('./mongodb-storage');
 const { analyzeRequest, riskFromScore, actionFromRisk } = require('./threats');
-const { redactPayload } = require('./redactor');
+const { redactPayload, redactRequestBody } = require('./redactor');
 const { buildClientContext, detectIdentityChange, getClientIp } = require('./identity');
+const { applyCustomRules } = require('./rules');
+const { recordBehaviour, getBehaviourDeviation } = require('./behaviour');
+const { recordSequence, detectCorrelation } = require('./correlation');
 
 // ---------------------------------------------------------------------------
 // Security mode presets
@@ -21,17 +25,17 @@ const { buildClientContext, detectIdentityChange, getClientIp } = require('./ide
 const SECURITY_MODE_PRESETS = {
   low: {
     rateLimit: { max: 300, windowMs: 60 * 1000 },
-    block: { threshold: 90, durationMs: 6 * 60 * 60 * 1000 }, // 6 hours
+    block: { threshold: 90, durationMs: 6 * 60 * 60 * 1000 },
     anomaly: { mediumThreshold: 45, highThreshold: 75, criticalThreshold: 92 }
   },
   medium: {
     rateLimit: { max: 120, windowMs: 60 * 1000 },
-    block: { threshold: 80, durationMs: 24 * 60 * 60 * 1000 }, // 24 hours
+    block: { threshold: 80, durationMs: 24 * 60 * 60 * 1000 },
     anomaly: { mediumThreshold: 35, highThreshold: 65, criticalThreshold: 90 }
   },
   high: {
     rateLimit: { max: 30, windowMs: 60 * 1000 },
-    block: { threshold: 60, durationMs: 7 * 24 * 60 * 60 * 1000 }, // 7 days
+    block: { threshold: 60, durationMs: 7 * 24 * 60 * 60 * 1000 },
     anomaly: { mediumThreshold: 25, highThreshold: 50, criticalThreshold: 80 }
   }
 };
@@ -42,8 +46,9 @@ const SECURITY_MODE_PRESETS = {
 
 const defaultConfig = {
   appName: 'iri-shield',
-  security: 'medium',     // 'low' | 'medium' | 'high'
+  security: 'medium',
   trustProxy: false,
+  failureMode: 'fail-open',   // 'fail-open' | 'fail-closed'
   helmet: {
     enabled: true,
     contentSecurityPolicy: false,
@@ -53,8 +58,8 @@ const defaultConfig = {
   logger: true,
   requestIdHeader: 'x-iri-request-id',
   testing: {
-    enabled: false,             // set true to enable body/header overrides
-    allowClientOverrides: false // only active when testing.enabled = true
+    enabled: false,
+    allowClientOverrides: false
   },
   rateLimit: {
     enabled: true,
@@ -68,7 +73,7 @@ const defaultConfig = {
   },
   alert: {
     enabled: true,
-    threshold: 35     // score >= this but < block.threshold => add to alerts
+    threshold: 35
   },
   anomaly: {
     mediumThreshold: 35,
@@ -77,7 +82,24 @@ const defaultConfig = {
     singleEndpointMax: 80,
     failedAuthMax: 5,
     allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    sensitiveEndpoints: ['/admin', '/internal', '/debug', '/.env', '/internal', '/config']
+    sensitiveEndpoints: ['/admin', '/internal', '/debug', '/.env', '/config']
+  },
+  rules: {
+    sqlInjection: true,
+    xss: true,
+    pathTraversal: true,
+    commandInjection: true,
+    ssti: true,
+    nosqlInjection: true,
+    ldapInjection: true,
+    xxe: true,
+    openRedirect: true,
+    base64Payload: true,
+    headerInjection: true,
+    secretProbe: true,
+    scannerDetection: true,
+    headerAnomaly: true,
+    customRules: []
   },
   redaction: {
     enabled: true,
@@ -87,6 +109,11 @@ const defaultConfig = {
       'authorization', 'apiKey', 'secret', 'ssn',
       'aadhaar', 'email', 'phone', 'creditCard', 'cvv'
     ]
+  },
+  privacy: {
+    hashIp: false,
+    retainRawIp: true,
+    retentionDays: 30
   },
   dashboard: {
     enabled: true,
@@ -107,7 +134,7 @@ const defaultConfig = {
 // ---------------------------------------------------------------------------
 
 function mergeConfig(base, override) {
-  const output = { ...base };
+  const output = Object.assign({}, base);
   for (const [key, value] of Object.entries(override || {})) {
     if (
       value &&
@@ -124,23 +151,24 @@ function mergeConfig(base, override) {
   return output;
 }
 
-/**
- * Apply security mode preset — only sets fields the user hasn't explicitly overridden.
- */
 function applySecurityMode(config, userOptions) {
   const mode = config.security || 'medium';
   const preset = SECURITY_MODE_PRESETS[mode] || SECURITY_MODE_PRESETS.medium;
-
-  // Only apply preset values if user didn't explicitly provide them
-  if (!userOptions.rateLimit?.max) config.rateLimit.max = preset.rateLimit.max;
-  if (!userOptions.rateLimit?.windowMs) config.rateLimit.windowMs = preset.rateLimit.windowMs;
-  if (!userOptions.block?.threshold) config.block.threshold = preset.block.threshold;
-  if (!userOptions.block?.durationMs) config.block.durationMs = preset.block.durationMs;
-  if (!userOptions.anomaly?.mediumThreshold) config.anomaly.mediumThreshold = preset.anomaly.mediumThreshold;
-  if (!userOptions.anomaly?.highThreshold) config.anomaly.highThreshold = preset.anomaly.highThreshold;
-  if (!userOptions.anomaly?.criticalThreshold) config.anomaly.criticalThreshold = preset.anomaly.criticalThreshold;
-
+  if (!userOptions.rateLimit || !userOptions.rateLimit.max) config.rateLimit.max = preset.rateLimit.max;
+  if (!userOptions.rateLimit || !userOptions.rateLimit.windowMs) config.rateLimit.windowMs = preset.rateLimit.windowMs;
+  if (!userOptions.block || !userOptions.block.threshold) config.block.threshold = preset.block.threshold;
+  if (!userOptions.block || !userOptions.block.durationMs) config.block.durationMs = preset.block.durationMs;
+  if (!userOptions.anomaly || !userOptions.anomaly.mediumThreshold) config.anomaly.mediumThreshold = preset.anomaly.mediumThreshold;
+  if (!userOptions.anomaly || !userOptions.anomaly.highThreshold) config.anomaly.highThreshold = preset.anomaly.highThreshold;
+  if (!userOptions.anomaly || !userOptions.anomaly.criticalThreshold) config.anomaly.criticalThreshold = preset.anomaly.criticalThreshold;
   return config;
+}
+
+/**
+ * Hash an IP address for privacy mode
+ */
+function hashIp(ip) {
+  return 'sha256:' + crypto.createHash('sha256').update(ip || '').digest('hex').slice(0, 16);
 }
 
 // ---------------------------------------------------------------------------
@@ -154,15 +182,15 @@ function createShield(options = {}) {
   const storage =
     options.storage && typeof options.storage.getBlock === 'function'
       ? options.storage
-      : options._storage || createStorage(config.storage);
+      : (options._storage || createStorage(config.storage));
   const logger = options._logger || (config.logger ? pino({ name: config.appName }) : null);
 
-  // --- Base middlewares (helmet, cors) ---
+  // --- Base middlewares ---
   const baseMiddlewares = [];
   if (config.helmet) {
     const helmetOptions =
       typeof config.helmet === 'object'
-        ? { contentSecurityPolicy: false, crossOriginEmbedderPolicy: false, ...config.helmet }
+        ? Object.assign({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }, config.helmet)
         : { contentSecurityPolicy: false, crossOriginEmbedderPolicy: false };
     if (helmetOptions.enabled !== false) {
       delete helmetOptions.enabled;
@@ -183,8 +211,8 @@ function createShield(options = {}) {
       // Skip dashboard routes
       const reqPath = String(req.originalUrl || req.url);
       if (
-        config.dashboard?.enabled &&
-        config.dashboard?.path &&
+        config.dashboard && config.dashboard.enabled &&
+        config.dashboard.path &&
         reqPath.startsWith(config.dashboard.path)
       ) {
         return next();
@@ -193,18 +221,21 @@ function createShield(options = {}) {
       // Build client context
       const client = buildClientContext(req, res, config);
       req.iriShieldClient = client;
-      const ip = client.ip;
+      const rawIp = client.ip;
+
+      // Privacy: optionally hash IP for storage
+      const storageIp = config.privacy && config.privacy.hashIp ? hashIp(rawIp) : rawIp;
 
       // Find existing client record for identity change detection
-      const knownClient = storage.clients?.get?.(client.clientId) || null;
+      const knownClient = (storage.clients && storage.clients.get) ? storage.clients.get(client.clientId) : null;
       const sameUserClients =
         typeof storage.findClientsByUserId === 'function'
           ? storage.findClientsByUserId(client.userId)
           : [];
       const identityChange = detectIdentityChange(client, knownClient || sameUserClients[0]);
 
-      // --- Check active block ---
-      const activeBlock = storage.getBlock(ip);
+      // --- Check active block (always use rawIp for blocking enforcement) ---
+      const activeBlock = storage.getBlock(rawIp);
       if (activeBlock) {
         const event = buildEvent(req, {
           requestId,
@@ -212,22 +243,23 @@ function createShield(options = {}) {
           riskLevel: 'critical',
           riskScore: activeBlock.score || config.block.threshold,
           action: 'blocked',
-          reason: activeBlock.reason || 'ip_block_active'
+          reason: activeBlock.reason || 'ip_block_active',
+          storageIp
         });
         storage.recordEvent(event);
-        storage.recordRequest({
-          ...client,
+        storage.recordRequest(Object.assign({}, client, {
+          ip: storageIp,
           blocked: true,
           endpoint: event.endpoint,
           method: req.method,
           statusCode: 403,
           durationMs: 0
-        });
+        }));
         return res.status(403).json({ error: 'Request blocked by iri-shield', requestId });
       }
 
       // --- Rate limit ---
-      const rateDecision = storage.hitRateLimit(ip, config.rateLimit);
+      const rateDecision = storage.hitRateLimit(rawIp, config.rateLimit);
       if (rateDecision.blocked) {
         const event = buildEvent(req, {
           requestId,
@@ -235,17 +267,18 @@ function createShield(options = {}) {
           riskLevel: 'medium',
           riskScore: 55,
           action: 'rate_limited',
-          reason: `rate_limit_${config.rateLimit.max}_per_${config.rateLimit.windowMs}ms`
+          reason: 'rate_limit_' + config.rateLimit.max + '_per_' + config.rateLimit.windowMs + 'ms',
+          storageIp
         });
         storage.recordEvent(event);
-        storage.recordRequest({
-          ...client,
+        storage.recordRequest(Object.assign({}, client, {
+          ip: storageIp,
           blocked: true,
           endpoint: event.endpoint,
           method: req.method,
           statusCode: 429,
           durationMs: 0
-        });
+        }));
         return res.status(429).json({
           error: 'Too many requests — rate limit exceeded',
           requestId,
@@ -256,39 +289,109 @@ function createShield(options = {}) {
       // --- Threat analysis ---
       const analysis = analyzeRequest(req, storage, config);
 
+      // --- Custom rule engine ---
+      const customResult = applyCustomRules(req, config);
+      if (customResult.score > 0) {
+        analysis.score = Math.min(100, analysis.score + customResult.score);
+        analysis.threats.push(...customResult.threats);
+        analysis.reasons.push(...customResult.reasons);
+        analysis.breakdown.push(...customResult.breakdown);
+        analysis.riskLevel = riskFromScore(analysis.score, config);
+        analysis.action = actionFromRisk(analysis.riskLevel);
+      }
+
       // --- Identity change penalty ---
       if (identityChange.score > 0) {
         analysis.score = Math.min(100, analysis.score + identityChange.score);
         analysis.threats.push(...identityChange.threats);
         analysis.reasons.push(...identityChange.reasons);
+        if (identityChange.score > 0) {
+          analysis.breakdown.push({
+            rule: 'identity_drift',
+            label: 'Identity / device change detected',
+            points: identityChange.score,
+            category: 'anomaly',
+            confidence: 75
+          });
+        }
         analysis.riskLevel = riskFromScore(analysis.score, config);
         analysis.action = actionFromRisk(analysis.riskLevel);
       }
 
-      client.riskLevel = analysis.riskLevel;
-      storage.recordClient(client);
-      req.iriShield = { requestId, ip, client, analysis };
+      // --- Behaviour baseline tracking ---
+      if (storage.behaviourStore) {
+        recordBehaviour(rawIp, req.originalUrl || req.url, req.method, 0, storage.behaviourStore);
+        const deviation = getBehaviourDeviation(rawIp, storage.behaviourStore);
+        if (deviation.deviationPercent >= 80) {
+          const devPts = Math.round(deviation.deviationPercent * 0.2);
+          analysis.score = Math.min(100, analysis.score + devPts);
+          analysis.threats.push('behaviour_deviation');
+          analysis.reasons.push('behaviour_deviation_' + deviation.deviationPercent + 'pct');
+          analysis.breakdown.push({
+            rule: 'behaviour_deviation',
+            label: 'Behaviour deviation from baseline (' + deviation.deviationPercent + '% spike)',
+            points: devPts,
+            category: 'anomaly',
+            confidence: 78,
+            meta: deviation
+          });
+          analysis.riskLevel = riskFromScore(analysis.score, config);
+          analysis.action = actionFromRisk(analysis.riskLevel);
+        }
+        analysis.behaviourDeviation = deviation;
+      }
 
-      // --- Auto block if score >= block threshold ---
+      // --- Attack sequence correlation ---
+      if (storage.sequenceStore) {
+        recordSequence(rawIp, req.originalUrl || req.url, analysis.threats, storage.sequenceStore);
+        const correlation = detectCorrelation(rawIp, storage.sequenceStore);
+        if (correlation) {
+          analysis.score = Math.min(100, analysis.score + correlation.riskBonus);
+          analysis.threats.push('correlated_attack_' + correlation.pattern);
+          analysis.breakdown.push({
+            rule: 'correlated_attack_' + correlation.pattern,
+            label: correlation.label,
+            points: correlation.riskBonus,
+            category: 'correlation',
+            confidence: correlation.confidence
+          });
+          analysis.correlatedAttack = correlation;
+          analysis.riskLevel = riskFromScore(analysis.score, config);
+          analysis.action = actionFromRisk(analysis.riskLevel);
+        }
+      }
+
+      // Redact request body fields before storing in logs
+      let safeBody = null;
+      if (config.redaction && config.redaction.enabled && req.body) {
+        const redacted = redactPayload(req.body, config.redaction);
+        safeBody = redacted.value;
+      }
+
+      client.riskLevel = analysis.riskLevel;
+      storage.recordClient(Object.assign({}, client, { ip: storageIp }));
+      req.iriShield = { requestId, ip: rawIp, storageIp, client, analysis };
+
+      // --- Auto block ---
       if (analysis.score >= config.block.threshold && config.block.enabled) {
-        storage.blockIp(ip, {
+        storage.blockIp(rawIp, {
           expiresAt: Date.now() + config.block.durationMs,
           reason: analysis.reasons.join(', '),
           score: analysis.score
         });
       }
 
-      // --- Alert system: score in medium zone ---
-      const alertThreshold = config.alert?.threshold ?? config.anomaly.mediumThreshold;
+      // --- Alerts ---
+      const alertThreshold = (config.alert && config.alert.threshold) || config.anomaly.mediumThreshold;
       if (
-        config.alert?.enabled &&
+        config.alert && config.alert.enabled &&
         analysis.score >= alertThreshold &&
         analysis.score < config.block.threshold
       ) {
         storage.recordAlert(client.clientId, {
           score: analysis.score,
           riskLevel: analysis.riskLevel,
-          ip,
+          ip: rawIp,
           threats: analysis.threats
         });
       }
@@ -301,22 +404,26 @@ function createShield(options = {}) {
           riskLevel: analysis.riskLevel,
           riskScore: analysis.score,
           action: analysis.action,
-          reason: analysis.reasons.join('; ')
+          reason: analysis.reasons.join('; '),
+          breakdown: analysis.breakdown,
+          confidence: analysis.confidence || 0,
+          correlatedAttack: analysis.correlatedAttack || null,
+          storageIp
         });
         storage.recordEvent(event);
-        logger?.warn(event, 'iri-shield security event');
+        logger && logger.warn(event, 'iri-shield security event');
       }
 
       // --- Block on critical score ---
       if (analysis.score >= config.anomaly.criticalThreshold) {
-        storage.recordRequest({
-          ...client,
+        storage.recordRequest(Object.assign({}, client, {
+          ip: storageIp,
           blocked: true,
           endpoint: req.originalUrl || req.url,
           method: req.method,
           statusCode: 403,
           durationMs: 0
-        });
+        }));
         return res.status(403).json({
           error: 'Request blocked — critical threat detected by iri-shield',
           requestId
@@ -327,29 +434,36 @@ function createShield(options = {}) {
       patchResponse(res, storage, config);
 
       // --- Record on finish ---
-      res.on('finish', () => {
+      res.on('finish', function() {
         const durationMs = Number(process.hrtime.bigint() - start) / 1e6;
-        storage.recordRequest({
-          ...client,
-          endpoint: req.route?.path || req.originalUrl || req.url,
+        storage.recordRequest(Object.assign({}, client, {
+          ip: storageIp,
+          endpoint: (req.route && req.route.path) || req.originalUrl || req.url,
           method: req.method,
           statusCode: res.statusCode,
           durationMs,
           blocked: res.statusCode === 403 || res.statusCode === 429
-        });
+        }));
+        // Update behaviour store with real status code
+        if (storage.behaviourStore) {
+          recordBehaviour(rawIp, req.originalUrl || req.url, req.method, res.statusCode, storage.behaviourStore);
+        }
       });
 
       return next();
     } catch (error) {
-      logger?.error({ err: error, requestId }, 'iri-shield middleware failure');
-      return next(error); // fail open — do not block legitimate traffic on errors
+      logger && logger.error({ err: error, requestId }, 'iri-shield middleware failure');
+      if (config.failureMode === 'fail-closed') {
+        return res.status(503).json({ error: 'Security layer unavailable — request rejected', requestId });
+      }
+      return next(error); // fail-open: let traffic through on internal errors
     }
   };
 
   // Chain base middlewares then core
   const runBase = function iriShieldBase(req, res, next) {
     let index = 0;
-    const step = (err) => {
+    const step = function(err) {
       if (err || index >= baseMiddlewares.length) return err ? next(err) : middleware(req, res, next);
       return baseMiddlewares[index++](req, res, step);
     };
@@ -361,10 +475,10 @@ function createShield(options = {}) {
     storage,
     middleware: runBase,
     dashboard: createDashboardRouter({ storage, config }),
-    getStats: () => storage.getStats(),
-    getConfig: () => sanitizeConfig(config),
-    updateConfig: (patch) => mergeInto(config, patch),
-    clear: () => storage.clear()
+    getStats: function() { return storage.getStats(); },
+    getConfig: function() { return sanitizeConfig(config); },
+    updateConfig: function(patch) { return mergeInto(config, patch); },
+    clear: function() { return storage.clear(); }
   };
 }
 
@@ -372,13 +486,15 @@ function createShield(options = {}) {
 // Storage factory
 // ---------------------------------------------------------------------------
 
-function createStorage(storageConfig = {}) {
+function createStorage(storageConfig) {
+  storageConfig = storageConfig || {};
   const mode = storageConfig.mode || 'memory';
   if (mode === 'sqlite') {
     return new SQLiteStorage({
       file: storageConfig.sqliteFile || './data/iri-shield.sqlite',
       maxRequestRows: storageConfig.maxRequestRows,
-      maxEventRows: storageConfig.maxEventRows
+      maxEventRows: storageConfig.maxEventRows,
+      retentionDays: storageConfig.retentionDays
     });
   }
   if (mode === 'mongodb') {
@@ -395,19 +511,19 @@ function createStorage(storageConfig = {}) {
 // ---------------------------------------------------------------------------
 
 function patchResponse(res, storage, config) {
-  if (!config.redaction?.enabled || res.locals?.iriShieldRedactionPatched) return;
+  if (!config.redaction || !config.redaction.enabled || res.locals.iriShieldRedactionPatched) return;
   res.locals.iriShieldRedactionPatched = true;
 
   const originalJson = res.json.bind(res);
   const originalSend = res.send.bind(res);
 
-  res.json = (payload) => {
+  res.json = function(payload) {
     const result = redactPayload(payload, config.redaction);
     if (result.redactions > 0) storage.recordRedaction(result.redactions);
     return originalJson(result.value);
   };
 
-  res.send = (payload) => {
+  res.send = function(payload) {
     if (typeof payload !== 'string') return originalSend(payload);
     const result = redactPayload(payload, config.redaction);
     if (result.redactions > 0) storage.recordRedaction(result.redactions);
@@ -419,7 +535,8 @@ function patchResponse(res, storage, config) {
 // Auth helpers
 // ---------------------------------------------------------------------------
 
-function apiKeyAuth(validKeys, options = {}) {
+function apiKeyAuth(validKeys, options) {
+  options = options || {};
   const keys = new Set(Array.isArray(validKeys) ? validKeys : [validKeys].filter(Boolean));
   const headerName = (options.header || 'x-api-key').toLowerCase();
   return function iriShieldApiKeyAuth(req, res, next) {
@@ -431,12 +548,14 @@ function apiKeyAuth(validKeys, options = {}) {
   };
 }
 
-function signToken(payload, secret, options = {}) {
+function signToken(payload, secret, options) {
+  options = options || {};
   if (!secret) throw new Error('JWT secret is required');
-  return jwt.sign(payload, secret, { expiresIn: '1h', ...options });
+  return jwt.sign(payload, secret, Object.assign({ expiresIn: '1h' }, options));
 }
 
-function jwtAuth(secret, options = {}) {
+function jwtAuth(secret, options) {
+  options = options || {};
   if (!secret) throw new Error('JWT secret is required');
   return function iriShieldJwtAuth(req, res, next) {
     const header = req.headers.authorization || '';
@@ -445,13 +564,14 @@ function jwtAuth(secret, options = {}) {
     try {
       req.user = jwt.verify(token, secret, options.verify || {});
       return next();
-    } catch {
+    } catch (_) {
       return res.status(401).json({ error: 'Invalid bearer token' });
     }
   };
 }
 
-async function hashPassword(password, rounds = 10) {
+async function hashPassword(password, rounds) {
+  rounds = rounds || 10;
   return bcrypt.hash(password, rounds);
 }
 
@@ -465,10 +585,10 @@ async function comparePassword(password, hash) {
 
 function buildEvent(req, extra) {
   const client = req.iriShieldClient || {};
-  return {
+  return Object.assign({
     id: randomUUID(),
     timestamp: new Date().toISOString(),
-    ip: client.ip || getClientIp(req),
+    ip: extra.storageIp || client.ip || getClientIp(req),
     clientId: client.clientId || null,
     userId: client.userId || null,
     sessionId: client.sessionId || null,
@@ -479,9 +599,8 @@ function buildEvent(req, extra) {
     endpoint: req.originalUrl || req.url,
     userAgent: client.userAgent || req.headers['user-agent'] || '',
     referer: client.referer || req.headers['referer'] || '',
-    acceptLanguage: client.acceptLanguage || req.headers['accept-language'] || '',
-    ...extra
-  };
+    acceptLanguage: client.acceptLanguage || req.headers['accept-language'] || ''
+  }, extra);
 }
 
 function mergeInto(target, patch) {
@@ -503,7 +622,7 @@ function mergeInto(target, patch) {
 
 function sanitizeConfig(config) {
   const copy = JSON.parse(JSON.stringify(config));
-  if (copy.dashboard?.password) copy.dashboard.password = '';
+  if (copy.dashboard && copy.dashboard.password) copy.dashboard.password = '';
   return copy;
 }
 

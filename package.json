@@ -1,15 +1,18 @@
 {
   "name": "iri-shield",
-  "version": "1.1.0",
-  "description": "Enterprise Express.js security middleware — anomaly detection, threat mitigation, identity fingerprinting, sensitive-data redaction, and dashboard monitoring.",
+  "version": "1.2.0",
+  "description": "Enterprise Express.js security middleware — explainable risk scoring, multi-signal identity profiling, behavioural anomaly detection, attack correlation, sensitive-data redaction, and dashboard monitoring.",
   "keywords": [
     "iri-shield",
     "security",
     "api-security",
     "express-middleware",
-    "anomaly-detection",
+    "explainable-ai",
     "threat-detection",
-    "rate-limiting",
+    "attack-correlation",
+    "behaviour-baseline",
+    "rule-engine",
+    "privacy-by-design",
     "fingerprinting",
     "redaction",
     "dashboard"
@@ -21,6 +24,7 @@
   "files": [
     "index.js",
     "src",
+    "benchmark",
     "README.md"
   ],
   "repository": {
@@ -29,7 +33,8 @@
   },
   "homepage": "https://github.com/ansari-in/iri-shield#readme",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "benchmark": "node benchmark/run.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
