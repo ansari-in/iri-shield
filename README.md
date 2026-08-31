@@ -62,7 +62,7 @@ Incoming HTTP Request
 | **🔗 Attack Sequence Correlation** | Evaluates ordered request chains to detect advanced multi-step campaigns (e.g., *Failed Auth ×3 → User Enumeration → Admin Access*). |
 | **🔒 Privacy by Design** | Built-in SHA-256 IP hashing for persistent storage and automatic FIFO retention purging (`retentionDays: 30`). |
 | **🛡️ Fail-Safe Policies** | Choose between `fail-open` (resilience first) and `fail-closed` (strict containment) on internal subsystem failures. |
-| **📊 Built-in Benchmark Suite** | Automated performance comparison against baseline unshielded servers (`npm run benchmark`) measuring throughput, latency percentiles (p50/p95/p99), and defense efficacy. |
+| ** Built-in Benchmark Suite** | Automated performance comparison against baseline unshielded servers (`npm run benchmark`) measuring throughput, latency percentiles (p50/p95/p99), and defense efficacy. |
 | **🖥️ Light-Theme Dashboard** | Enterprise management interface for real-time monitoring, reactive IP block/unblock, active alerts, security event forensics, and live configuration updates. |
 | **🎭 Deep PII/Secret Redaction** | Deep redaction for passwords, API keys, bearer tokens, emails, phone numbers, SSNs, Aadhaar numbers, and credit cards across responses and log storage. |
 
@@ -120,7 +120,7 @@ app.get('/api/users', apiKeyAuth('my-secret-key'), (req, res) => {
 
 app.listen(3000, () => {
   console.log('🚀 Server running on http://localhost:3000');
-  console.log('📊 Dashboard available at http://localhost:3000/iri-shield');
+  console.log(' Dashboard available at http://localhost:3000/iri-shield');
 });
 ```
 
@@ -255,7 +255,7 @@ const shield = createShield({
 
 ---
 
-## 📊 Automated Benchmarking
+##  Automated Benchmarking
 
 `iri-shield` includes a built-in benchmarking tool to compare performance against a baseline unshielded Express server:
 

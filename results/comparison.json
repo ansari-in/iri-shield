@@ -1,48 +1,48 @@
 {
-  "timestamp": "2026-08-30T20:36:19.258Z",
+  "timestamp": "2026-08-31T10:51:36.887Z",
   "benchmarkConfig": {
     "requests": 1000,
     "concurrency": 20
   },
   "overheadSummary": {
-    "latencyOverheadAvgMs": 5.72,
-    "throughputImpactPercent": 29.3,
+    "latencyOverheadAvgMs": 3.5,
+    "throughputImpactPercent": 33.3,
     "attackDetectionRate": "90%",
     "falsePositiveRate": "0%"
   },
   "baseline": {
     "totalRequests": 1000,
-    "durationSec": 0.65,
-    "throughputReqSec": 1531,
+    "durationSec": 0.34,
+    "throughputReqSec": 2972,
     "latency": {
-      "avgMs": 12.68,
-      "p50Ms": 10.99,
-      "p90Ms": 15.65,
-      "p95Ms": 17.3,
-      "p99Ms": 68.11
+      "avgMs": 6.54,
+      "p50Ms": 5.48,
+      "p90Ms": 8.46,
+      "p95Ms": 9.21,
+      "p99Ms": 38.43
     },
     "memory": {
-      "heapUsedMbBefore": 12.06,
-      "heapUsedMbAfter": 12.3,
-      "diffMb": 0.25
+      "heapUsedMbBefore": 10.65,
+      "heapUsedMbAfter": 14.75,
+      "diffMb": 4.1
     },
     "security": null
   },
   "shield": {
     "totalRequests": 1000,
-    "durationSec": 0.92,
-    "throughputReqSec": 1082,
+    "durationSec": 0.5,
+    "throughputReqSec": 1982,
     "latency": {
-      "avgMs": 18.4,
-      "p50Ms": 17.35,
-      "p90Ms": 22.42,
-      "p95Ms": 24.48,
-      "p99Ms": 60.2
+      "avgMs": 10.04,
+      "p50Ms": 9.09,
+      "p90Ms": 11.44,
+      "p95Ms": 12.73,
+      "p99Ms": 36.83
     },
     "memory": {
-      "heapUsedMbBefore": 12.5,
-      "heapUsedMbAfter": 26.95,
-      "diffMb": 14.45
+      "heapUsedMbBefore": 14.94,
+      "heapUsedMbAfter": 24.55,
+      "diffMb": 9.61
     },
     "security": {
       "totalAttacksSent": 200,

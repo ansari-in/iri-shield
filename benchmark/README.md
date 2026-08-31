@@ -1,4 +1,4 @@
-﻿# 📊 iri-shield Benchmark Suite
+﻿#  iri-shield Benchmark Suite
 
 This automated benchmark evaluates the performance overhead, throughput capacity, memory footprint, and threat detection efficacy of `iri-shield` versus a baseline Express.js server.
 

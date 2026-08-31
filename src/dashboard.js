@@ -1057,7 +1057,7 @@ async function loadEvents(page) {
               <!-- Risk Score Breakdown Table -->
               <div class="border-t border-gray-100 pt-2">
                 <div class="flex items-center justify-between mb-2">
-                  <span class="text-gray-600 font-semibold">📊 Risk Score Breakdown</span>
+                  <span class="text-gray-600 font-semibold"> Risk Score Breakdown</span>
                   <span class="text-gray-400 font-mono text-[11px]">Total: <strong class="text-gray-800">\${r.riskScore}/100</strong></span>
                 </div>
                 <table class="w-full text-xs">
