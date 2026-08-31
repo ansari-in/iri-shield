@@ -1,0 +1,85 @@
+{
+  "timestamp": "2026-08-31T19:53:09.544Z",
+  "totalAttacks": 220,
+  "vanillaExpress": {
+    "totalMitigated": 0,
+    "mitigationRatePct": 0
+  },
+  "iriShield": {
+    "totalMitigated": 215,
+    "mitigationRatePct": 97.7
+  },
+  "netDefenseGainPct": 97.7,
+  "categories": {
+    "SQL_INJECTION": {
+      "total": 45,
+      "baselineMitigated": 0,
+      "shieldMitigated": 45
+    },
+    "XSS": {
+      "total": 39,
+      "baselineMitigated": 0,
+      "shieldMitigated": 39
+    },
+    "PATH_TRAVERSAL": {
+      "total": 30,
+      "baselineMitigated": 0,
+      "shieldMitigated": 30
+    },
+    "COMMAND_INJECTION": {
+      "total": 30,
+      "baselineMitigated": 0,
+      "shieldMitigated": 30
+    },
+    "SSTI": {
+      "total": 16,
+      "baselineMitigated": 0,
+      "shieldMitigated": 16
+    },
+    "NOSQL_INJECTION": {
+      "total": 8,
+      "baselineMitigated": 0,
+      "shieldMitigated": 8
+    },
+    "SCANNER_BOT": {
+      "total": 15,
+      "baselineMitigated": 0,
+      "shieldMitigated": 15
+    },
+    "SECRET_PROBE": {
+      "total": 12,
+      "baselineMitigated": 0,
+      "shieldMitigated": 12
+    },
+    "BRUTE_FORCE": {
+      "total": 8,
+      "baselineMitigated": 0,
+      "shieldMitigated": 4
+    },
+    "XXE": {
+      "total": 4,
+      "baselineMitigated": 0,
+      "shieldMitigated": 4
+    },
+    "LDAP_INJECTION": {
+      "total": 4,
+      "baselineMitigated": 0,
+      "shieldMitigated": 4
+    },
+    "OPEN_REDIRECT": {
+      "total": 4,
+      "baselineMitigated": 0,
+      "shieldMitigated": 4
+    },
+    "HEADER_INJECTION": {
+      "total": 3,
+      "baselineMitigated": 0,
+      "shieldMitigated": 2
+    },
+    "BASE64_PAYLOAD": {
+      "total": 2,
+      "baselineMitigated": 0,
+      "shieldMitigated": 2
+    }
+  }
+}

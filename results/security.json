@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-08-31T19:08:20.407Z",
+  "timestamp": "2026-08-31T19:53:09.196Z",
   "totalAttacks": 220,
-  "totalMitigated": 199,
-  "totalBlocked": 198,
+  "totalMitigated": 214,
+  "totalBlocked": 213,
   "totalRateLimited": 0,
-  "totalMissed": 21,
-  "detectionRatePct": 90.5,
-  "blockingRatePct": 90,
+  "totalMissed": 6,
+  "detectionRatePct": 97.3,
+  "blockingRatePct": 96.8,
   "categories": {
     "SQL_INJECTION": {
       "total": 45,
-      "mitigated": 36,
-      "blocked": 36,
+      "mitigated": 45,
+      "blocked": 45,
       "rateLimited": 0,
-      "missed": 9
+      "missed": 0
     },
     "XSS": {
       "total": 39,
@@ -31,10 +31,10 @@
     },
     "COMMAND_INJECTION": {
       "total": 30,
-      "mitigated": 27,
-      "blocked": 27,
+      "mitigated": 30,
+      "blocked": 30,
       "rateLimited": 0,
-      "missed": 3
+      "missed": 0
     },
     "SSTI": {
       "total": 16,
@@ -87,10 +87,10 @@
     },
     "LDAP_INJECTION": {
       "total": 4,
-      "mitigated": 3,
-      "blocked": 3,
+      "mitigated": 4,
+      "blocked": 4,
       "rateLimited": 0,
-      "missed": 1
+      "missed": 0
     },
     "OPEN_REDIRECT": {
       "total": 4,
@@ -101,10 +101,10 @@
     },
     "BASE64_PAYLOAD": {
       "total": 2,
-      "mitigated": 0,
-      "blocked": 0,
+      "mitigated": 2,
+      "blocked": 2,
       "rateLimited": 0,
-      "missed": 2
+      "missed": 0
     }
   }
 }

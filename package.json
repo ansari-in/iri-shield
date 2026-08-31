@@ -36,9 +36,11 @@
     "test": "node --test",
     "benchmark": "node benchmark/run.js",
     "security:evaluate": "node benchmark/security-evaluate.js",
+    "security:compare": "node benchmark/security-baseline-compare.js",
     "fp:evaluate": "node benchmark/false-positive-evaluate.js",
     "identity:evaluate": "node benchmark/identity-evaluate.js",
     "redaction:evaluate": "node benchmark/redaction-evaluate.js",
+    "research:charts": "node benchmark/generate-charts.js",
     "research:evaluate": "node benchmark/research-evaluate.js"
   },
   "dependencies": {

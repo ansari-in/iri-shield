@@ -202,20 +202,19 @@ console.log(`✅ Generated ${attackDataset.length} structured attack scenarios -
 // =============================================================================
 
 const identityScenarios = [];
-const baseUserList = ['alice_eng', 'bob_finance', 'carol_dev', 'david_support', 'eve_analyst'];
+const NUM_USERS = 100;
 
-// Phase 1: Establish baseline profiles for all 5 users
-for (let b = 0; b < baseUserList.length; b++) {
-  const user = baseUserList[b];
-  const userIdx = b + 1;
-  for (let r = 1; r <= 10; r++) {
+// Step 1: 200 Baseline Normal requests (2 requests per user on known laptop)
+for (let u = 1; u <= NUM_USERS; u++) {
+  const user = `user_${u}`;
+  for (let r = 1; r <= 2; r++) {
     identityScenarios.push({
       id: `ID-BASE-${user}-${r}`,
       type: 'BASELINE_NORMAL',
       userId: user,
       clientId: `client-${user}-laptop`,
-      ip: `192.168.10.${userIdx}`,
-      deviceId: `device-${user}-macbook`,
+      ip: `192.168.10.${(u % 250) + 1}`,
+      deviceId: `device-${user}-laptop`,
       userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0 Safari/537.36`,
       expectedDrift: false,
       expectedPenalty: 0,
@@ -224,76 +223,62 @@ for (let b = 0; b < baseUserList.length; b++) {
   }
 }
 
-// Phase 2: Systematic drift and anomaly evaluation
-for (let i = 51; i <= 500; i++) {
-  const user = baseUserList[i % baseUserList.length];
-  const userIdx = (i % baseUserList.length) + 1;
-  const phase = i % 4;
+// Step 2: 100 IP Drift events (same user/device, new network IP)
+for (let u = 1; u <= NUM_USERS; u++) {
+  const user = `user_${u}`;
+  identityScenarios.push({
+    id: `ID-DRIFT-IP-${user}`,
+    type: 'IP_DRIFT',
+    userId: user,
+    clientId: `client-${user}-laptop`,
+    ip: `185.220.101.${(u % 250) + 1}`,
+    deviceId: `device-${user}-laptop`,
+    userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0 Safari/537.36`,
+    expectedDrift: true,
+    expectedPenalty: 15,
+    url: '/api/profile'
+  });
+}
 
-  if (phase === 0) {
-    // Normal Repeat Request: Same User, Same IP, Same Device
-    identityScenarios.push({
-      id: `ID-NORM-${String(i).padStart(3, '0')}`,
-      type: 'BASELINE_NORMAL',
-      userId: user,
-      clientId: `client-${user}-laptop`,
-      ip: `192.168.10.${userIdx}`,
-      deviceId: `device-${user}-macbook`,
-      userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0 Safari/537.36`,
-      expectedDrift: false,
-      expectedPenalty: 0,
-      url: '/api/profile'
-    });
-  } else if (phase === 1) {
-    // IP Drift (same client/device, new IP address)
-    identityScenarios.push({
-      id: `ID-DRIFT-IP-${String(i).padStart(3, '0')}`,
-      type: 'IP_DRIFT',
-      userId: user,
-      clientId: `client-${user}-laptop`,
-      ip: `185.220.101.${(i % 200) + 1}`,
-      deviceId: `device-${user}-macbook`,
-      userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/120.0.0.0 Safari/537.36`,
-      expectedDrift: true,
-      expectedPenalty: 15,
-      url: '/api/profile'
-    });
-  } else if (phase === 2) {
-    // Device Drift (same user, new device ID & user-agent)
-    identityScenarios.push({
-      id: `ID-DRIFT-DEV-${String(i).padStart(3, '0')}`,
-      type: 'DEVICE_DRIFT',
-      userId: user,
-      clientId: `client-${user}-laptop`, // same client continuity tracking
-      ip: `192.168.10.${userIdx}`,
-      deviceId: `device-${user}-iphone-${i}`,
-      userAgent: `Mozilla/5.0 (iPhone; CPU iPhone OS 17_1) AppleWebKit/605.1.15 Safari/604.1`,
-      expectedDrift: true,
-      expectedPenalty: 25,
-      url: '/api/dashboard'
-    });
-  } else {
-    // Multi-Vector Anomaly (New IP + New Device + Suspicious Automation UA)
-    identityScenarios.push({
-      id: `ID-ANOMALY-${String(i).padStart(3, '0')}`,
-      type: 'MULTI_VECTOR_ANOMALY',
-      userId: user,
-      clientId: `client-${user}-laptop`,
-      ip: `45.33.32.${(i % 100) + 1}`,
-      deviceId: `device-unrecognized-${i}`,
-      userAgent: `python-requests/2.31.0 automation-client`,
-      expectedDrift: true,
-      expectedPenalty: 35,
-      url: '/api/admin/system'
-    });
-  }
+// Step 3: 100 Device Drift events (same user, new mobile device)
+for (let u = 1; u <= NUM_USERS; u++) {
+  const user = `user_${u}`;
+  identityScenarios.push({
+    id: `ID-DRIFT-DEV-${user}`,
+    type: 'DEVICE_DRIFT',
+    userId: user,
+    clientId: `client-${user}-laptop`,
+    ip: `192.168.10.${(u % 250) + 1}`,
+    deviceId: `device-${user}-mobile`,
+    userAgent: `Mozilla/5.0 (iPhone; CPU iPhone OS 17_1) AppleWebKit/605.1.15 Safari/604.1`,
+    expectedDrift: true,
+    expectedPenalty: 25,
+    url: '/api/dashboard'
+  });
+}
+
+// Step 4: 100 Multi-Vector Anomaly events (new IP + new device + suspicious automation UA)
+for (let u = 1; u <= NUM_USERS; u++) {
+  const user = `user_${u}`;
+  identityScenarios.push({
+    id: `ID-ANOMALY-${user}`,
+    type: 'MULTI_VECTOR_ANOMALY',
+    userId: user,
+    clientId: `client-${user}-laptop`,
+    ip: `45.33.32.${(u % 250) + 1}`,
+    deviceId: `device-${user}-unrecognized`,
+    userAgent: `python-requests/2.31.0 automation-client`,
+    expectedDrift: true,
+    expectedPenalty: 35,
+    url: '/api/admin/system'
+  });
 }
 
 fs.writeFileSync(path.join(datasetsDir, 'identity-scenarios.json'), JSON.stringify(identityScenarios, null, 2));
 console.log(`✅ Generated ${identityScenarios.length} identity continuity scenarios -> benchmark/datasets/identity-scenarios.json`);
 
 // =============================================================================
-// 3. SENSITIVE DATA REDACTION DATASET (500 Test Payloads)
+// 3. SENSITIVE DATA REDACTION DATASET (500 High-Diversity Payloads)
 // =============================================================================
 
 const redactionSamples = [];
@@ -305,52 +290,108 @@ const sampleTokens = [
   'pk_mock_test_key_9876543210abcdefghijklmnop',
   'api_key_secret_998877665544332211'
 ];
-const cleanWords = ['Hello world, everything is operational.', 'Product stock status: 45 units available.', 'Total price is $1,250.00 for order #9821.', 'Contact address: 123 Innovation Boulevard, Suite 400.'];
+const cleanWords = [
+  'Hello world, everything is operational.',
+  'Product stock status: 45 units available in warehouse.',
+  'Total price is $1,250.00 for purchase order #9821.',
+  'Office headquarters address: 123 Innovation Boulevard, Suite 400.'
+];
 
 for (let i = 1; i <= 500; i++) {
-  const categoryIdx = i % 5;
+  const categoryIdx = i % 6;
   let payload;
   let expectedRedactions = 0;
   let category;
 
   if (categoryIdx === 0) {
-    // Email redaction
+    // Deeply Nested JSON (3-5 levels deep)
     const email = sampleEmails[i % sampleEmails.length];
-    payload = { user: `user_${i}`, contactEmail: email, note: `Created support ticket for ${email}` };
-    expectedRedactions = 2;
-    category = 'EMAIL';
-  } else if (categoryIdx === 1) {
-    // Phone redaction
-    const phone = samplePhones[i % samplePhones.length];
-    payload = { id: i, customerPhone: phone, message: `OTP sent to ${phone}` };
-    expectedRedactions = 2;
-    category = 'PHONE';
-  } else if (categoryIdx === 2) {
-    // Secret / Token redaction
-    const token = sampleTokens[i % sampleTokens.length];
-    payload = { status: 'success', token, apiKey: 'secret_key_prod_88221199', authHeader: `Bearer ${token}` };
+    payload = {
+      organization: {
+        department: {
+          team: {
+            lead: {
+              name: `Lead_${i}`,
+              contactEmail: email,
+              credentials: {
+                password: 'VaultSecret#9988',
+                apiKey: 'api_key_secret_998877665544332211'
+              }
+            }
+          }
+        }
+      }
+    };
     expectedRedactions = 3;
-    category = 'SECRET_TOKEN';
+    category = 'NESTED_JSON_PII';
+  } else if (categoryIdx === 1) {
+    // Array Collections with Mixed Casing
+    const phone1 = samplePhones[i % samplePhones.length];
+    const phone2 = samplePhones[(i + 1) % samplePhones.length];
+    payload = {
+      batchId: `BATCH-${i}`,
+      members: [
+        { User_Name: 'Alice', Contact_Email: sampleEmails[0], User_Phone_Number: phone1 },
+        { User_Name: 'Bob', Contact_Email: sampleEmails[1], User_Phone_Number: phone2 }
+      ]
+    };
+    expectedRedactions = 4;
+    category = 'ARRAY_COLLECTIONS';
+  } else if (categoryIdx === 2) {
+    // Unstructured Log Strings with Embedded PII / Tokens
+    const email = sampleEmails[i % sampleEmails.length];
+    const token = sampleTokens[i % sampleTokens.length];
+    payload = {
+      logLevel: 'WARN',
+      traceId: `tr-${i}`,
+      rawMessage: `Failed auth event for user ${email} with header ${token} on client IP 10.0.0.1`
+    };
+    expectedRedactions = 2;
+    category = 'UNSTRUCTURED_STRINGS';
   } else if (categoryIdx === 3) {
-    // Multi-field Composite PII
+    // Composite eCommerce Order (Public Catalog + Private Buyer PII)
     const email = sampleEmails[i % sampleEmails.length];
     const phone = samplePhones[i % samplePhones.length];
     payload = {
-      profile: {
+      orderId: `ORD-${10000 + i}`,
+      items: [
+        { sku: 'LAPTOP-X1', qty: 1, price: 1200 },
+        { sku: 'MOUSE-M2', qty: 2, price: 25 }
+      ],
+      buyer: {
+        fullName: 'Jane Doe',
         email,
         phone,
-        password: 'SuperSecretPassword!123',
-        ssn: '123-45-6789',
-        aadhaar: '1234 5678 9012'
+        billing: {
+          creditCard: '4532-8921-4455-9012',
+          cvv: '891'
+        }
       }
     };
-    expectedRedactions = 5;
-    category = 'COMPOSITE_PII';
+    expectedRedactions = 4;
+    category = 'COMPOSITE_ECOMMERCE';
+  } else if (categoryIdx === 4) {
+    // Standard Direct PII (Tokens & Identity Numbers)
+    payload = {
+      userId: `USR-${i}`,
+      ssn: '123-45-6789',
+      aadhaar: '1234 5678 9012',
+      token: sampleTokens[i % sampleTokens.length]
+    };
+    expectedRedactions = 3;
+    category = 'DIRECT_PII';
   } else {
-    // Clean text (Negative control: expectedRedactions = 0)
-    payload = { message: cleanWords[i % cleanWords.length], status: 'ok', count: i };
+    // Decoy Negative Controls (Numbers, dates, order IDs, zipcodes, price numbers)
+    payload = {
+      invoiceNumber: 9876543210,
+      zipCode: "90210",
+      itemCount: 45,
+      unitPrice: 129.99,
+      timestamp: "2026-09-01T01:00:00.000Z",
+      description: cleanWords[i % cleanWords.length]
+    };
     expectedRedactions = 0;
-    category = 'CLEAN_CONTROL';
+    category = 'DECOY_CLEAN_CONTROLS';
   }
 
   redactionSamples.push({
@@ -362,4 +403,4 @@ for (let i = 1; i <= 500; i++) {
 }
 
 fs.writeFileSync(path.join(datasetsDir, 'redaction-samples.json'), JSON.stringify(redactionSamples, null, 2));
-console.log(`✅ Generated ${redactionSamples.length} sensitive redaction test payloads -> benchmark/datasets/redaction-samples.json`);
+console.log(`✅ Generated ${redactionSamples.length} diverse sensitive redaction test payloads -> benchmark/datasets/redaction-samples.json`);

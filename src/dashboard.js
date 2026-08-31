@@ -424,7 +424,7 @@ function renderDashboard(config, baseUrl) {
             <th class="px-4 py-3 text-left font-medium">IP Address</th>
             <th class="px-4 py-3 text-left font-medium">Endpoint</th>
             <th class="px-4 py-3 text-left font-medium">Threat Category</th>
-            <th class="px-4 py-3 text-left font-medium">Risk</th>
+            <th class="px-4 py-3 text-left font-medium">Risk-Confidence</th>
             <th class="px-4 py-3 text-right font-medium">Score</th>
             <th class="px-4 py-3 text-left font-medium">Mitigation</th>
           </tr></thead>

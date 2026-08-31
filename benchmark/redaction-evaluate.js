@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 const fs = require('fs');
 const path = require('path');
@@ -59,13 +59,14 @@ async function runRedactionEvaluation() {
     totalActualRedactions += result.redactions;
 
     // Check if clean control was over-masked
-    if (sample.category === 'CLEAN_CONTROL' && result.redactions > 0) {
+    const isCleanControl = sample.category === 'CLEAN_CONTROL' || sample.category === 'DECOY_CLEAN_CONTROLS';
+    if (isCleanControl && result.redactions > 0) {
       falseRedactionCount += 1;
       categoryStats[sample.category].overMasked += 1;
     }
 
     // Accurate if all expected sensitive items were masked and clean controls unmasked
-    const isAccurate = sample.category === 'CLEAN_CONTROL'
+    const isAccurate = isCleanControl
       ? result.redactions === 0
       : result.redactions >= sample.expectedRedactions;
 
@@ -102,7 +103,8 @@ async function runRedactionEvaluation() {
   }
 
   const overallAccuracyPct = Number(((totalCorrect / totalEvaluated) * 100).toFixed(1));
-  const cleanTotal = categoryStats['CLEAN_CONTROL'] ? categoryStats['CLEAN_CONTROL'].total : 1;
+  const cleanTotal = (categoryStats['DECOY_CLEAN_CONTROLS'] ? categoryStats['DECOY_CLEAN_CONTROLS'].total : 0) +
+                     (categoryStats['CLEAN_CONTROL'] ? categoryStats['CLEAN_CONTROL'].total : 0) || 1;
   const falseRedactionRatePct = Number(((falseRedactionCount / cleanTotal) * 100).toFixed(2));
 
   console.log("================================================================================");

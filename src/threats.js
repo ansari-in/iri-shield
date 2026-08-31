@@ -8,7 +8,7 @@ const { isRuleEnabled } = require('./rules');
 
 const ATTACK_RULES = [
   { name: 'sql_injection', configKey: 'sqlInjection', score: 65, label: 'SQL Injection pattern', category: 'injection',
-    regex: /('|%27)\s*(or|and)\s*('|%27)?\d+=\d+|union\s+select|drop\s+table|insert\s+into|delete\s+from|update\s+\w+\s+set|exec\s*\(|execute\s*\(|xp_cmdshell|--\s*$/i },
+    regex: /('|%27)\s*(or|and)\s*('|%27)?\s*['"\w]+\s*=\s*['"\w]+|union\s+(all\s+)?select|drop\s+table|insert\s+into|delete\s+from|update\s+\w+\s+set|exec\s*\(|execute\s*\(|xp_cmdshell|--|;\s*waitfor\s+delay|sleep\(\d+\)|benchmark\(\d+/i },
   { name: 'xss_pattern', configKey: 'xss', score: 60, label: 'Cross-Site Scripting (XSS) attempt', category: 'injection',
     regex: /<script[\s>]|javascript\s*:|onerror\s*=|onload\s*=|onfocus\s*=|onclick\s*=|eval\s*\(|document\.cookie|document\.write|innerHTML\s*=|src\s*=\s*["']?javascript|<svg|<body|<iframe/i },
   { name: 'path_traversal', configKey: 'pathTraversal', score: 65, label: 'Path traversal attack', category: 'traversal',
@@ -16,19 +16,19 @@ const ATTACK_RULES = [
   { name: 'secret_probe', configKey: 'secretProbe', score: 60, label: 'Secret / config file probe', category: 'recon',
     regex: /\.env|config\.json|wp-config|private[-_]?key|id_rsa|\.git\/|\.htaccess|passwd|shadow|docker-compose|\/debug|\/secrets|\/internal/i },
   { name: 'command_injection', configKey: 'commandInjection', score: 75, label: 'Command injection attempt', category: 'injection',
-    regex: /;\s*(ls|cat|wget|curl|bash|sh|nc|netcat|python|perl|ruby|id|whoami|uname)\b|&&\s*(ls|cat|id|whoami)|\|\s*(cat|bash|sh|nc)\b|`[^`]+`|\$\([^)]+\)/ },
+    regex: /;\s*(ls|cat|wget|curl|bash|sh|nc|netcat|python|perl|ruby|id|whoami|uname|dir)\b|&&\s*(ls|cat|id|whoami|dir)|\|\s*(ls|cat|bash|sh|nc|dir|id|whoami)\b|`[^`]+`|\$\([^)]+\)/i },
   { name: 'ssti_pattern', configKey: 'ssti', score: 65, label: 'Server-Side Template Injection (SSTI)', category: 'injection',
     regex: /\{\{[\s\S]*?\}\}|\$\{[\s\S]*?\}|#\{[\s\S]*?\}|<%[\s\S]*?%>|\{%[\s\S]*?%\}|{{7\*7}|\${7\*7}/i },
   { name: 'nosql_injection', configKey: 'nosqlInjection', score: 60, label: 'NoSQL Injection attempt', category: 'injection',
     regex: /\$where|\$gt\b|"\$gt"|\[\$gt\]|\$ne\b|"\$ne"|\[\$ne\]|\$regex\b|"\$regex"|\[\$regex\]|\$exists\b|"\$exists"|\[\$exists\]|\$in\b|"\$in"|\[\$in\]|\$or\b|"\$or"|\[\$or\]/i },
   { name: 'ldap_injection', configKey: 'ldapInjection', score: 60, label: 'LDAP Injection attempt', category: 'injection',
-    regex: /[)(|*\\]{3,}|\(\|[\w=*]+\)|\(&[\w=*]+\)/ },
+    regex: /[)(|*\\]{3,}|\(\|[\w=*]+\)|\(&[\w=*]+\)|\)\s*\(&|\)\s*\(\|/ },
   { name: 'xxe_pattern', configKey: 'xxe', score: 70, label: 'XXE / XML Injection', category: 'injection',
     regex: /<!ENTITY|<!DOCTYPE[\s\S]*?SYSTEM|SYSTEM\s+["']https?:|file:\/\/\/|<!ELEMENT|<!ATTLIST/i },
   { name: 'open_redirect', configKey: 'openRedirect', score: 60, label: 'Open redirect attempt', category: 'redirect',
     regex: /[?&](redirect|return|url|next|to|dest|destination|ref|redir|return_url)\s*=\s*https?:\/\//i },
   { name: 'base64_payload', configKey: 'base64Payload', score: 60, label: 'Suspicious base64-encoded payload', category: 'evasion',
-    regex: /[?&][a-zA-Z0-9_.-]+=(?:[A-Za-z0-9+/]{32,}={0,2})(?:&|$)/ },
+    regex: /[?&][a-zA-Z0-9_.-]+=(?:[A-Za-z0-9+/]{24,}={0,2})(?:&|$)/ },
   { name: 'header_injection', configKey: 'headerInjection', score: 60, label: 'HTTP header injection', category: 'injection',
     regex: /(%0d%0a|%0a%0d|\r\n|\n\r).*?:|%0a%0d|%0d%0a|\r\n|\n\r/i }
 ];
@@ -221,6 +221,16 @@ function collectText(req) {
   try { decodedUrl = decodeURIComponent(rawUrl); } catch (_) { decodedUrl = rawUrl; }
   
   const chunks = [rawUrl, decodedUrl, req.headers['user-agent'] || ''];
+  
+  // Auto-decode base64 parameter payloads for deep inspection
+  const b64Matches = (decodedUrl + ' ' + (typeof req.body === 'string' ? req.body : '')).match(/[A-Za-z0-9+/]{20,}={0,2}/g) || [];
+  for (const b64 of b64Matches) {
+    try {
+      const decodedB64 = Buffer.from(b64, 'base64').toString('utf8');
+      if (decodedB64 && /[a-zA-Z0-9<>'";=]/.test(decodedB64)) chunks.push(decodedB64);
+    } catch (_) {}
+  }
+
   if (req.query) {
     chunks.push(JSON.stringify(req.query));
     try { chunks.push(decodeURIComponent(JSON.stringify(req.query))); } catch (_) {}

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+  <defs>
+    <linearGradient id="gridGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Title & Subtitle -->
+  <text x="400" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Figure 5.6: Multi-Signal Identity Continuity Profiling Accuracy</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#64748b">Accuracy across network handovers, device switching, and automated spoofing.</text>
+
+  <!-- Y-Axis Gridlines & Ticks -->
+  <line x1="90" y1="380" x2="760" y2="380" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="0"/>
+  <text x="78" y="384" text-anchor="end" font-size="11" fill="#64748b">0</text>
+  <line x1="90" y1="318" x2="760" y2="318" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="322" text-anchor="end" font-size="11" fill="#64748b">23</text>
+  <line x1="90" y1="256" x2="760" y2="256" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="260" text-anchor="end" font-size="11" fill="#64748b">46</text>
+  <line x1="90" y1="194" x2="760" y2="194" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="198" text-anchor="end" font-size="11" fill="#64748b">69</text>
+  <line x1="90" y1="132" x2="760" y2="132" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="136" text-anchor="end" font-size="11" fill="#64748b">92</text>
+  <line x1="90" y1="70" x2="760" y2="70" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="74" text-anchor="end" font-size="11" fill="#64748b">115</text>
+  <text x="-225" y="24" transform="rotate(-90)" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Classification Accuracy (%)</text>
+  <text x="173.75" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Baseline Normal</text>
+  <rect x="155.75" y="110.43478260869568" width="34" height="269.5652173913043" rx="3" fill="#8b5cf6" opacity="0.9"/>
+  <text x="172.75" y="105.43478260869568" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">100</text>
+  <text x="341.25" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">IP Drift</text>
+  <rect x="323.25" y="110.43478260869568" width="34" height="269.5652173913043" rx="3" fill="#8b5cf6" opacity="0.9"/>
+  <text x="340.25" y="105.43478260869568" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">100</text>
+  <text x="508.75" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Device Drift</text>
+  <rect x="490.75" y="110.43478260869568" width="34" height="269.5652173913043" rx="3" fill="#8b5cf6" opacity="0.9"/>
+  <text x="507.75" y="105.43478260869568" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">100</text>
+  <text x="676.25" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">Multi-Vector Ano...</text>
+  <rect x="658.25" y="110.43478260869568" width="34" height="269.5652173913043" rx="3" fill="#8b5cf6" opacity="0.9"/>
+  <text x="675.25" y="105.43478260869568" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">100</text>
+  <rect x="340" y="422" width="12" height="12" rx="2" fill="#8b5cf6"/>
+  <text x="358" y="432" font-size="11" font-weight="600" fill="#334155">Classification Accuracy</text>
+</svg>

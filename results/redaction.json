@@ -1,43 +1,50 @@
 {
-  "timestamp": "2026-08-31T19:08:35.172Z",
+  "timestamp": "2026-08-31T19:53:13.224Z",
   "totalEvaluated": 500,
   "totalCorrect": 500,
   "overallAccuracyPct": 100,
   "falseRedactionRatePct": 0,
   "categoryStats": {
-    "PHONE": {
-      "total": 100,
-      "correct": 100,
-      "expectedRedactions": 200,
-      "actualRedactions": 200,
+    "ARRAY_COLLECTIONS": {
+      "total": 84,
+      "correct": 84,
+      "expectedRedactions": 336,
+      "actualRedactions": 336,
       "overMasked": 0
     },
-    "SECRET_TOKEN": {
-      "total": 100,
-      "correct": 100,
-      "expectedRedactions": 300,
-      "actualRedactions": 300,
+    "UNSTRUCTURED_STRINGS": {
+      "total": 84,
+      "correct": 84,
+      "expectedRedactions": 168,
+      "actualRedactions": 252,
       "overMasked": 0
     },
-    "COMPOSITE_PII": {
-      "total": 100,
-      "correct": 100,
-      "expectedRedactions": 500,
-      "actualRedactions": 500,
+    "COMPOSITE_ECOMMERCE": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 332,
+      "actualRedactions": 332,
       "overMasked": 0
     },
-    "CLEAN_CONTROL": {
-      "total": 100,
-      "correct": 100,
+    "DIRECT_PII": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 249,
+      "actualRedactions": 249,
+      "overMasked": 0
+    },
+    "DECOY_CLEAN_CONTROLS": {
+      "total": 83,
+      "correct": 83,
       "expectedRedactions": 0,
       "actualRedactions": 0,
       "overMasked": 0
     },
-    "EMAIL": {
-      "total": 100,
-      "correct": 100,
-      "expectedRedactions": 200,
-      "actualRedactions": 200,
+    "NESTED_JSON_PII": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 249,
+      "actualRedactions": 249,
       "overMasked": 0
     }
   }

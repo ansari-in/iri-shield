@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 const http = require('http');
 const express = require('express');
@@ -122,7 +122,12 @@ async function executeLoadTrial(port, numRequests, concurrency) {
   const endHeap = process.memoryUsage().heapUsed;
   const cpuDiff = process.cpuUsage(startCpu);
   const totalCpuMicroseconds = cpuDiff.user + cpuDiff.system;
-  const cpuPercent = Number(((totalCpuMicroseconds / (durationSec * 1000000)) * 100).toFixed(1));
+  
+  const os = require('os');
+  const numCores = os.cpus().length || 1;
+  const coresUtilized = Number((totalCpuMicroseconds / (durationSec * 1000000)).toFixed(2));
+  const normalizedCpuPercent = Number(((coresUtilized / numCores) * 100).toFixed(1));
+  const processLoadPercent = Number((coresUtilized * 100).toFixed(1));
 
   latencies.sort((a, b) => a - b);
   const sum = latencies.reduce((a, b) => a + b, 0);
@@ -141,7 +146,10 @@ async function executeLoadTrial(port, numRequests, concurrency) {
     concurrency,
     durationSec: Number(durationSec.toFixed(3)),
     throughput: Math.round(numRequests / durationSec),
-    cpuPercent,
+    coresUtilized,
+    normalizedCpuPercent,
+    cpuPercent: normalizedCpuPercent, // Standard system-normalized CPU
+    processLoadPercent,               // Multi-core process load (where 100% = 1 core)
     heapDeltaMb: Number(((endHeap - startHeap) / 1024 / 1024).toFixed(2)),
     latency: {
       avg: Number(avg.toFixed(2)),
@@ -162,12 +170,17 @@ function aggregateTrials(trials) {
   const avgStdDev = Number((trials.reduce((sum, t) => sum + t.latency.stdDev, 0) / n).toFixed(2));
   const avgP95 = Number((trials.reduce((sum, t) => sum + t.latency.p95, 0) / n).toFixed(2));
   const avgP99 = Number((trials.reduce((sum, t) => sum + t.latency.p99, 0) / n).toFixed(2));
-  const avgCpu = Number((trials.reduce((sum, t) => sum + t.cpuPercent, 0) / n).toFixed(1));
+  const avgCores = Number((trials.reduce((sum, t) => sum + t.coresUtilized, 0) / n).toFixed(2));
+  const avgCpu = Number((trials.reduce((sum, t) => sum + t.normalizedCpuPercent, 0) / n).toFixed(1));
+  const avgProcessLoad = Number((trials.reduce((sum, t) => sum + t.processLoadPercent, 0) / n).toFixed(1));
   const avgHeapDelta = Number((trials.reduce((sum, t) => sum + t.heapDeltaMb, 0) / n).toFixed(2));
 
   return {
     throughput: avgThroughput,
+    coresUtilized: avgCores,
+    normalizedCpuPercent: avgCpu,
     cpuPercent: avgCpu,
+    processLoadPercent: avgProcessLoad,
     heapDeltaMb: avgHeapDelta,
     latency: {
       avg: avgLatency,
@@ -212,7 +225,8 @@ async function runPerformanceBenchmark() {
       'Baseline_StdDev_ms', 'Shield_StdDev_ms',
       'Baseline_p95_ms', 'Shield_p95_ms',
       'Baseline_p99_ms', 'Shield_p99_ms',
-      'Baseline_CPU_Pct', 'Shield_CPU_Pct',
+      'Baseline_Cores_Utilized', 'Shield_Cores_Utilized',
+      'Baseline_Normalized_CPU_Pct', 'Shield_Normalized_CPU_Pct',
       'Baseline_Heap_MB', 'Shield_Heap_MB'
     ]
   ];
@@ -248,7 +262,7 @@ async function runPerformanceBenchmark() {
           latencyOverheadAvgMs: latencyOverhead,
           p95DeltaMs: Number((shieldAgg.latency.p95 - baselineAgg.latency.p95).toFixed(2)),
           p99DeltaMs: Number((shieldAgg.latency.p99 - baselineAgg.latency.p99).toFixed(2)),
-          cpuOverheadPercent: Number((shieldAgg.cpuPercent - baselineAgg.cpuPercent).toFixed(1))
+          cpuOverheadPercent: Number((shieldAgg.normalizedCpuPercent - baselineAgg.normalizedCpuPercent).toFixed(1))
         }
       };
 
@@ -262,7 +276,8 @@ async function runPerformanceBenchmark() {
         baselineAgg.latency.stdDev, shieldAgg.latency.stdDev,
         baselineAgg.latency.p95, shieldAgg.latency.p95,
         baselineAgg.latency.p99, shieldAgg.latency.p99,
-        `${baselineAgg.cpuPercent}%`, `${shieldAgg.cpuPercent}%`,
+        baselineAgg.coresUtilized, shieldAgg.coresUtilized,
+        `${baselineAgg.normalizedCpuPercent}%`, `${shieldAgg.normalizedCpuPercent}%`,
         baselineAgg.heapDeltaMb, shieldAgg.heapDeltaMb
       ]);
 
@@ -276,9 +291,9 @@ async function runPerformanceBenchmark() {
   console.log("\n================================================================================");
   console.log("               SCIENTIFIC PERFORMANCE EVALUATION SUMMARY MATRIX                 ");
   console.log("================================================================================");
-  console.log("Workload       | Throughput (Req/s)    | Avg Latency (ms)      | p95 Latency (ms)     | CPU Usage (%)");
-  console.log("Reqs @ Concurr | Baseline   | Shield   | Baseline  | Shield    | Baseline  | Shield   | Base | Shield");
-  console.log("---------------|------------|----------|-----------|-----------|-----------|----------|------|-------");
+  console.log("Workload       | Throughput (Req/s)    | Avg Latency (ms)      | p95 Latency (ms)     | Host CPU (%)  | Cores Utilized");
+  console.log("Reqs @ Concurr | Baseline   | Shield   | Baseline  | Shield    | Baseline  | Shield   | Base | Shield | Base  | Shield");
+  console.log("---------------|------------|----------|-----------|-----------|-----------|----------|------|--------|-------|-------");
 
   for (const m of matrixResults) {
     const wl = `${m.requests} @ c=${m.concurrency}`.padEnd(14);
@@ -288,12 +303,16 @@ async function runPerformanceBenchmark() {
     const sl = String(m.shield.latency.avg + ' ms').padEnd(9);
     const bp95 = String(m.baseline.latency.p95 + ' ms').padEnd(9);
     const sp95 = String(m.shield.latency.p95 + ' ms').padEnd(8);
-    const bcpu = String(m.baseline.cpuPercent + '%').padEnd(4);
-    const scpu = String(m.shield.cpuPercent + '%').padEnd(6);
-    console.log(`${wl} | ${bt} | ${st} | ${bl} | ${sl} | ${bp95} | ${sp95} | ${bcpu} | ${scpu}`);
+    const bcpu = String(m.baseline.normalizedCpuPercent + '%').padEnd(4);
+    const scpu = String(m.shield.normalizedCpuPercent + '%').padEnd(6);
+    const bcores = String(m.baseline.coresUtilized).padEnd(5);
+    const scores = String(m.shield.coresUtilized).padEnd(6);
+    console.log(`${wl} | ${bt} | ${st} | ${bl} | ${sl} | ${bp95} | ${sp95} | ${bcpu} | ${scpu} | ${bcores} | ${scores}`);
   }
 
   console.log("================================================================================");
+  console.log("Note: Host CPU % is normalized against host logical cores (" + (require('os').cpus().length || 1) + " cores).");
+  console.log("      Cores Utilized represents total multi-threaded v8/libuv process core saturation.");
 
   // Write CSV
   const csvContent = csvRows.map(r => r.join(',')).join('\n');

@@ -57,13 +57,23 @@ function redactRequestBody(body, options) {
 // ---------------------------------------------------------------------------
 
 function normalizeFields(fields) {
-  return new Set(fields.map(function(f) { return String(f).toLowerCase(); }));
+  return new Set(fields.map(function(f) { return String(f).toLowerCase().replace(/[^a-z0-9]/g, ''); }));
+}
+
+function isSensitiveKey(key, fieldsSet) {
+  if (!key) return false;
+  const clean = String(key).toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (fieldsSet.has(clean)) return true;
+  for (const f of fieldsSet) {
+    if (f.length >= 4 && clean.includes(f)) return true;
+  }
+  return false;
 }
 
 function redactValue(value, state, key) {
   key = key || '';
   if (value == null) return value;
-  if (state.fields.has(String(key).toLowerCase())) {
+  if (isSensitiveKey(key, state.fields)) {
     state.redactions += 1;
     return state.mask;
   }
