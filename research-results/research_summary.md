@@ -21,15 +21,15 @@ Table 5.1 summarizes the throughput and latency metrics comparing a baseline Exp
 
 | Workload Configuration | Baseline Req/s | Shield Req/s | Throughput Impact | Baseline Latency (Avg) | Shield Latency (Avg) | Overhead (Delta) | Shield Latency (p95) | Shield Latency (p99) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 500 reqs @ c=5 | 2677 req/s | 1172 req/s | -56.2% | 1.95 ms | 4.56 ms | +2.61 ms | 7.42 ms | 14 ms |
-| 500 reqs @ c=15 | 2939 req/s | 783 req/s | -73.4% | 5.19 ms | 19.18 ms | +13.99 ms | 28.97 ms | 31.25 ms |
-| 500 reqs @ c=30 | 3079 req/s | 664 req/s | -78.4% | 9.64 ms | 44.65 ms | +35.01 ms | 98.75 ms | 103.44 ms |
-| 1000 reqs @ c=5 | 3709 req/s | 890 req/s | -76% | 1.39 ms | 5.63 ms | +4.24 ms | 9.37 ms | 12.63 ms |
-| 1000 reqs @ c=15 | 4235 req/s | 786 req/s | -81.4% | 3.53 ms | 19.27 ms | +15.74 ms | 27.88 ms | 34.89 ms |
-| 1000 reqs @ c=30 | 3787 req/s | 827 req/s | -78.2% | 8.06 ms | 36.19 ms | +28.13 ms | 52.11 ms | 56.94 ms |
-| 2000 reqs @ c=5 | 3625 req/s | 819 req/s | -77.4% | 1.38 ms | 6.09 ms | +4.71 ms | 9.69 ms | 12.18 ms |
-| 2000 reqs @ c=15 | 3947 req/s | 769 req/s | -80.5% | 3.78 ms | 19.62 ms | +15.84 ms | 30.45 ms | 35.07 ms |
-| 2000 reqs @ c=30 | 4195 req/s | 910 req/s | -78.3% | 7.12 ms | 32.85 ms | +25.73 ms | 53.3 ms | 60.48 ms |
+| 500 reqs @ c=5 | 2459 req/s | 1219 req/s | -50.4% | 2.2 ms | 4.28 ms | +2.08 ms | 7.04 ms | 9.38 ms |
+| 500 reqs @ c=15 | 2671 req/s | 854 req/s | -68% | 6 ms | 17.45 ms | +11.45 ms | 27.14 ms | 28.9 ms |
+| 500 reqs @ c=30 | 3655 req/s | 743 req/s | -79.7% | 8.11 ms | 41.11 ms | +33 ms | 79.29 ms | 83.46 ms |
+| 1000 reqs @ c=5 | 2013 req/s | 405 req/s | -79.9% | 2.51 ms | 12.86 ms | +10.35 ms | 21.9 ms | 39.56 ms |
+| 1000 reqs @ c=15 | 2677 req/s | 531 req/s | -80.2% | 5.96 ms | 28.13 ms | +22.17 ms | 48.98 ms | 78.69 ms |
+| 1000 reqs @ c=30 | 3443 req/s | 679 req/s | -80.3% | 9.08 ms | 44.45 ms | +35.37 ms | 63.82 ms | 73.53 ms |
+| 2000 reqs @ c=5 | 3733 req/s | 743 req/s | -80.1% | 1.35 ms | 6.89 ms | +5.54 ms | 11.81 ms | 15.59 ms |
+| 2000 reqs @ c=15 | 3175 req/s | 680 req/s | -78.6% | 4.7 ms | 22.6 ms | +17.9 ms | 36.84 ms | 48.48 ms |
+| 2000 reqs @ c=30 | 3042 req/s | 598 req/s | -80.3% | 9.82 ms | 51.5 ms | +41.68 ms | 85.75 ms | 123.26 ms |
 
 **Key Observation**: `iri-shield` introduces an average latency overhead of under 6 ms in standard concurrency profiles, confirming that real-time multi-signal analysis is practical for production microservices.
 
@@ -75,7 +75,7 @@ To ensure normal business operations are not disrupted, 10,000 legitimate produc
 | **True Negatives (Allowed)** | 10,000 | 100.00% legitimate traffic passed |
 | **False Positives (Blocked)** | 0 | 0 false alarms |
 | **False Positive Rate (FPR)** | **0%** | Zero impedance on legitimate operations |
-| **Processing Throughput** | 713 req/s | Sustained evaluation throughput |
+| **Processing Throughput** | 689 req/s | Sustained evaluation throughput |
 
 ---
 
