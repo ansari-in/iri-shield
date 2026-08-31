@@ -1,56 +1,161 @@
 {
-  "timestamp": "2026-08-31T10:51:36.887Z",
-  "benchmarkConfig": {
-    "requests": 1000,
-    "concurrency": 20
+  "timestamp": "2026-08-31T15:14:48.356Z",
+  "configurations": {
+    "requests": [
+      300,
+      500
+    ],
+    "concurrency": [
+      5,
+      15
+    ],
+    "trials": 2,
+    "warmupRequests": 150
   },
-  "overheadSummary": {
-    "latencyOverheadAvgMs": 3.5,
-    "throughputImpactPercent": 33.3,
-    "attackDetectionRate": "90%",
-    "falsePositiveRate": "0%"
-  },
-  "baseline": {
-    "totalRequests": 1000,
-    "durationSec": 0.34,
-    "throughputReqSec": 2972,
-    "latency": {
-      "avgMs": 6.54,
-      "p50Ms": 5.48,
-      "p90Ms": 8.46,
-      "p95Ms": 9.21,
-      "p99Ms": 38.43
+  "results": [
+    {
+      "requests": 300,
+      "concurrency": 5,
+      "trials": 2,
+      "baseline": {
+        "throughput": 826,
+        "cpuPercent": 87.1,
+        "heapDeltaMb": 0.96,
+        "latency": {
+          "avg": 9.75,
+          "median": 7.1,
+          "stdDev": 8.86,
+          "p95": 25.54,
+          "p99": 51.23
+        }
+      },
+      "shield": {
+        "throughput": 533,
+        "cpuPercent": 111.2,
+        "heapDeltaMb": 1.84,
+        "latency": {
+          "avg": 9.3,
+          "median": 8.05,
+          "stdDev": 4.46,
+          "p95": 16.48,
+          "p99": 30.96
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 35.5,
+        "latencyOverheadAvgMs": -0.45,
+        "p95DeltaMs": -9.06,
+        "p99DeltaMs": -20.27,
+        "cpuOverheadPercent": 24.1
+      }
     },
-    "memory": {
-      "heapUsedMbBefore": 10.65,
-      "heapUsedMbAfter": 14.75,
-      "diffMb": 4.1
+    {
+      "requests": 300,
+      "concurrency": 15,
+      "trials": 2,
+      "baseline": {
+        "throughput": 1332,
+        "cpuPercent": 86,
+        "heapDeltaMb": 4.33,
+        "latency": {
+          "avg": 11.06,
+          "median": 10.12,
+          "stdDev": 4.89,
+          "p95": 24.34,
+          "p99": 30.17
+        }
+      },
+      "shield": {
+        "throughput": 449,
+        "cpuPercent": 106.2,
+        "heapDeltaMb": -3.1,
+        "latency": {
+          "avg": 34.17,
+          "median": 32.6,
+          "stdDev": 8.18,
+          "p95": 54.25,
+          "p99": 57.72
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 66.3,
+        "latencyOverheadAvgMs": 23.11,
+        "p95DeltaMs": 29.91,
+        "p99DeltaMs": 27.55,
+        "cpuOverheadPercent": 20.2
+      }
     },
-    "security": null
-  },
-  "shield": {
-    "totalRequests": 1000,
-    "durationSec": 0.5,
-    "throughputReqSec": 1982,
-    "latency": {
-      "avgMs": 10.04,
-      "p50Ms": 9.09,
-      "p90Ms": 11.44,
-      "p95Ms": 12.73,
-      "p99Ms": 36.83
+    {
+      "requests": 500,
+      "concurrency": 5,
+      "trials": 2,
+      "baseline": {
+        "throughput": 1093,
+        "cpuPercent": 114.3,
+        "heapDeltaMb": -7.88,
+        "latency": {
+          "avg": 4.51,
+          "median": 3.4,
+          "stdDev": 2.98,
+          "p95": 10.27,
+          "p99": 17.25
+        }
+      },
+      "shield": {
+        "throughput": 334,
+        "cpuPercent": 90,
+        "heapDeltaMb": 9.74,
+        "latency": {
+          "avg": 15.16,
+          "median": 13.63,
+          "stdDev": 5.16,
+          "p95": 26.62,
+          "p99": 33.27
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 69.4,
+        "latencyOverheadAvgMs": 10.65,
+        "p95DeltaMs": 16.35,
+        "p99DeltaMs": 16.02,
+        "cpuOverheadPercent": -24.3
+      }
     },
-    "memory": {
-      "heapUsedMbBefore": 14.94,
-      "heapUsedMbAfter": 24.55,
-      "diffMb": 9.61
-    },
-    "security": {
-      "totalAttacksSent": 200,
-      "attacksMitigated": 180,
-      "detectionRatePct": 90,
-      "cleanRequestsSent": 800,
-      "falsePositives": 0,
-      "falsePositiveRatePct": 0
+    {
+      "requests": 500,
+      "concurrency": 15,
+      "trials": 2,
+      "baseline": {
+        "throughput": 1219,
+        "cpuPercent": 98,
+        "heapDeltaMb": 15.72,
+        "latency": {
+          "avg": 13.3,
+          "median": 12.21,
+          "stdDev": 4.88,
+          "p95": 22.2,
+          "p99": 27.95
+        }
+      },
+      "shield": {
+        "throughput": 274,
+        "cpuPercent": 95,
+        "heapDeltaMb": -21.28,
+        "latency": {
+          "avg": 54.64,
+          "median": 51.98,
+          "stdDev": 13.09,
+          "p95": 79.63,
+          "p99": 94.21
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 77.5,
+        "latencyOverheadAvgMs": 41.34,
+        "p95DeltaMs": 57.43,
+        "p99DeltaMs": 66.26,
+        "cpuOverheadPercent": -3
+      }
     }
-  }
+  ]
 }

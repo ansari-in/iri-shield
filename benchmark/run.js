@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 const http = require('http');
 const express = require('express');
@@ -7,23 +7,27 @@ const path = require('path');
 const { performance } = require('perf_hooks');
 const { createShield } = require('../src/index.js');
 
-const NUM_REQUESTS = parseInt(process.env.BENCHMARK_REQUESTS || '1000', 10);
-const CONCURRENCY = parseInt(process.env.BENCHMARK_CONCURRENCY || '20', 10);
+const RESULTS_DIR = path.join(__dirname, '..', 'results');
+if (!fs.existsSync(RESULTS_DIR)) fs.mkdirSync(RESULTS_DIR, { recursive: true });
 
-const ATTACK_VECTORS = [
-  { path: "/api/search?q=' OR 1=1--", expectedBlocked: true, name: "SQL Injection" },
-  { path: "/api/comment?text=<script>alert(1)</script>", expectedBlocked: true, name: "XSS Pattern" },
-  { path: "/api/files?file=../../../../etc/passwd", expectedBlocked: true, name: "Path Traversal" },
-  { path: "/api/view?t={{7*7}}", expectedBlocked: true, name: "SSTI Template" },
-  { path: "/api/users?user=admin", headers: { "user-agent": "sqlmap/1.7#stable" }, expectedBlocked: true, name: "Scanner Bot (sqlmap)" },
-  { path: "/.env", expectedBlocked: true, name: "Secret Probe (.env)" }
-];
+// Configurable workload configurations or matrix
+const MATRIX_REQUESTS = process.env.BENCHMARK_REQUESTS_LIST
+  ? process.env.BENCHMARK_REQUESTS_LIST.split(',').map(n => parseInt(n.trim(), 10))
+  : [500, 1000, 2000];
 
-const CLEAN_VECTORS = [
-  { path: "/api/health", name: "Health Check" },
-  { path: "/api/users/profile", name: "User Profile" },
-  { path: "/api/items?category=electronics&page=1", name: "Catalog Search" },
-  { path: "/api/articles/123", name: "Article Fetch" }
+const MATRIX_CONCURRENCY = process.env.BENCHMARK_CONCURRENCY_LIST
+  ? process.env.BENCHMARK_CONCURRENCY_LIST.split(',').map(n => parseInt(n.trim(), 10))
+  : [5, 15, 30];
+
+const REPEATED_TRIALS = parseInt(process.env.BENCHMARK_TRIALS || '3', 10);
+const WARMUP_REQUESTS = 150;
+
+const ENDPOINTS = [
+  { path: "/api/health", method: "GET" },
+  { path: "/api/users/profile", method: "GET" },
+  { path: "/api/items?category=electronics&page=1", method: "GET" },
+  { path: "/api/articles/123", method: "GET" },
+  { path: "/api/search?q=wireless%20headphones", method: "GET" }
 ];
 
 function createBaselineApp() {
@@ -34,10 +38,6 @@ function createBaselineApp() {
   app.get('/api/items', (req, res) => res.json({ items: [{ id: 1, name: 'Item A' }] }));
   app.get('/api/articles/:id', (req, res) => res.json({ id: req.params.id, title: 'Sample' }));
   app.get('/api/search', (req, res) => res.json({ results: [] }));
-  app.get('/api/comment', (req, res) => res.json({ status: 'saved' }));
-  app.get('/api/files', (req, res) => res.json({ file: 'none' }));
-  app.get('/api/view', (req, res) => res.json({ view: 'rendered' }));
-  app.get('/.env', (req, res) => res.status(404).send('Not Found'));
   return app;
 }
 
@@ -49,7 +49,7 @@ function createShieldApp() {
     security: 'medium',
     logger: false,
     dashboard: { enabled: false },
-    rateLimit: { max: 500, windowMs: 60000 },
+    rateLimit: { max: 100000, windowMs: 60000 },
     storage: { mode: 'memory' }
   });
   app.use(shield.middleware);
@@ -58,190 +58,270 @@ function createShieldApp() {
   app.get('/api/items', (req, res) => res.json({ items: [{ id: 1, name: 'Item A' }] }));
   app.get('/api/articles/:id', (req, res) => res.json({ id: req.params.id, title: 'Sample' }));
   app.get('/api/search', (req, res) => res.json({ results: [] }));
-  app.get('/api/comment', (req, res) => res.json({ status: 'saved' }));
-  app.get('/api/files', (req, res) => res.json({ file: 'none' }));
-  app.get('/api/view', (req, res) => res.json({ view: 'rendered' }));
-  app.get('/.env', (req, res) => res.status(404).send('Not Found'));
   return { app, shield };
 }
 
-function makeRequest(port, target) {
+function makeRequest(port, idx) {
   return new Promise((resolve) => {
     const start = performance.now();
+    const target = ENDPOINTS[idx % ENDPOINTS.length];
     const options = {
       hostname: '127.0.0.1',
       port,
       path: encodeURI(target.path),
-      method: 'GET',
-      headers: target.headers || { 'user-agent': 'BenchmarkClient/1.0' }
+      method: target.method,
+      headers: {
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 BenchmarkClient/1.0',
+        'x-forwarded-for': `10.0.${(idx % 100) + 1}.${(Math.floor(idx / 100) % 250) + 1}`,
+        'accept': 'application/json'
+      }
     };
     const req = http.request(options, (res) => {
       let data = '';
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
         const duration = performance.now() - start;
-        resolve({
-          statusCode: res.statusCode,
-          duration,
-          blocked: res.statusCode === 403 || res.statusCode === 429
-        });
+        resolve({ statusCode: res.statusCode, duration });
       });
     });
     req.on('error', () => {
-      const duration = performance.now() - start;
-      resolve({ statusCode: 500, duration, blocked: false });
+      resolve({ statusCode: 500, duration: performance.now() - start });
     });
     req.end();
   });
 }
 
-async function runLoadTest(port, isShielded) {
-  const latencies = [];
-  let blockedCount = 0;
-  let totalClean = 0;
-  let falsePositives = 0;
-  let totalAttacks = 0;
-  let attacksBlocked = 0;
+async function sendWarmup(port, count) {
+  const promises = [];
+  for (let i = 0; i < count; i++) {
+    promises.push(makeRequest(port, i));
+  }
+  await Promise.all(promises);
+}
 
+async function executeLoadTrial(port, numRequests, concurrency) {
+  const latencies = [];
+  const startCpu = process.cpuUsage();
   const startHeap = process.memoryUsage().heapUsed;
   const overallStart = performance.now();
 
   let reqIndex = 0;
   async function worker() {
-    while (reqIndex < NUM_REQUESTS) {
+    while (reqIndex < numRequests) {
       const idx = reqIndex++;
-      const isAttack = idx % 5 === 0;
-      let target;
-      if (isAttack) {
-        target = ATTACK_VECTORS[idx % ATTACK_VECTORS.length];
-        totalAttacks++;
-      } else {
-        target = CLEAN_VECTORS[idx % CLEAN_VECTORS.length];
-        totalClean++;
-      }
-      const clientIp = `192.168.1.${(idx % 40) + 1}`;
-      const headers = Object.assign({
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'accept-language': 'en-US,en;q=0.9',
-        'x-forwarded-for': clientIp
-      }, target.headers || {});
-
-      const res = await makeRequest(port, { ...target, headers });
+      const res = await makeRequest(port, idx);
       latencies.push(res.duration);
-      if (res.blocked) blockedCount++;
-      if (isAttack && res.blocked) attacksBlocked++;
-      if (!isAttack && res.blocked) falsePositives++;
     }
   }
 
   const workers = [];
-  for (let i = 0; i < CONCURRENCY; i++) workers.push(worker());
+  for (let i = 0; i < concurrency; i++) workers.push(worker());
   await Promise.all(workers);
 
-  const overallDuration = (performance.now() - overallStart) / 1000;
+  const durationSec = (performance.now() - overallStart) / 1000;
   const endHeap = process.memoryUsage().heapUsed;
+  const cpuDiff = process.cpuUsage(startCpu);
+  const totalCpuMicroseconds = cpuDiff.user + cpuDiff.system;
+  const cpuPercent = Number(((totalCpuMicroseconds / (durationSec * 1000000)) * 100).toFixed(1));
 
   latencies.sort((a, b) => a - b);
-  const avgLatency = latencies.reduce((a, b) => a + b, 0) / latencies.length;
-  const p50 = latencies[Math.floor(latencies.length * 0.50)] || 0;
+  const sum = latencies.reduce((a, b) => a + b, 0);
+  const avg = sum / latencies.length;
+  const median = latencies[Math.floor(latencies.length * 0.50)] || 0;
   const p90 = latencies[Math.floor(latencies.length * 0.90)] || 0;
   const p95 = latencies[Math.floor(latencies.length * 0.95)] || 0;
   const p99 = latencies[Math.floor(latencies.length * 0.99)] || 0;
-  const throughput = Math.round(NUM_REQUESTS / overallDuration);
+
+  // Compute Standard Deviation (sigma)
+  const variance = latencies.reduce((acc, val) => acc + Math.pow(val - avg, 2), 0) / latencies.length;
+  const stdDev = Math.sqrt(variance);
 
   return {
-    totalRequests: NUM_REQUESTS,
-    durationSec: Number(overallDuration.toFixed(2)),
-    throughputReqSec: throughput,
+    requests: numRequests,
+    concurrency,
+    durationSec: Number(durationSec.toFixed(3)),
+    throughput: Math.round(numRequests / durationSec),
+    cpuPercent,
+    heapDeltaMb: Number(((endHeap - startHeap) / 1024 / 1024).toFixed(2)),
     latency: {
-      avgMs: Number(avgLatency.toFixed(2)),
-      p50Ms: Number(p50.toFixed(2)),
-      p90Ms: Number(p90.toFixed(2)),
-      p95Ms: Number(p95.toFixed(2)),
-      p99Ms: Number(p99.toFixed(2))
-    },
-    memory: {
-      heapUsedMbBefore: Number((startHeap / 1024 / 1024).toFixed(2)),
-      heapUsedMbAfter: Number((endHeap / 1024 / 1024).toFixed(2)),
-      diffMb: Number(((endHeap - startHeap) / 1024 / 1024).toFixed(2))
-    },
-    security: isShielded ? {
-      totalAttacksSent: totalAttacks,
-      attacksMitigated: attacksBlocked,
-      detectionRatePct: totalAttacks > 0 ? Number(((attacksBlocked / totalAttacks) * 100).toFixed(1)) : 0,
-      cleanRequestsSent: totalClean,
-      falsePositives: falsePositives,
-      falsePositiveRatePct: totalClean > 0 ? Number(((falsePositives / totalClean) * 100).toFixed(2)) : 0
-    } : null
+      avg: Number(avg.toFixed(2)),
+      median: Number(median.toFixed(2)),
+      stdDev: Number(stdDev.toFixed(2)),
+      p90: Number(p90.toFixed(2)),
+      p95: Number(p95.toFixed(2)),
+      p99: Number(p99.toFixed(2))
+    }
   };
 }
 
-async function main() {
-  console.log("================================================================================");
-  console.log("             iri-shield Built-in Automated Benchmark Suite                      ");
-  console.log("================================================================================");
-  console.log(`Requests: ${NUM_REQUESTS} | Concurrency: ${CONCURRENCY} workers\n`);
+function aggregateTrials(trials) {
+  const n = trials.length;
+  const avgThroughput = Math.round(trials.reduce((sum, t) => sum + t.throughput, 0) / n);
+  const avgLatency = Number((trials.reduce((sum, t) => sum + t.latency.avg, 0) / n).toFixed(2));
+  const avgMedian = Number((trials.reduce((sum, t) => sum + t.latency.median, 0) / n).toFixed(2));
+  const avgStdDev = Number((trials.reduce((sum, t) => sum + t.latency.stdDev, 0) / n).toFixed(2));
+  const avgP95 = Number((trials.reduce((sum, t) => sum + t.latency.p95, 0) / n).toFixed(2));
+  const avgP99 = Number((trials.reduce((sum, t) => sum + t.latency.p99, 0) / n).toFixed(2));
+  const avgCpu = Number((trials.reduce((sum, t) => sum + t.cpuPercent, 0) / n).toFixed(1));
+  const avgHeapDelta = Number((trials.reduce((sum, t) => sum + t.heapDeltaMb, 0) / n).toFixed(2));
 
+  return {
+    throughput: avgThroughput,
+    cpuPercent: avgCpu,
+    heapDeltaMb: avgHeapDelta,
+    latency: {
+      avg: avgLatency,
+      median: avgMedian,
+      stdDev: avgStdDev,
+      p95: avgP95,
+      p99: avgP99
+    }
+  };
+}
+
+async function runPerformanceBenchmark() {
+  console.log("================================================================================");
+  console.log("       iri-shield Multi-Workload Scientific Performance Benchmark Matrix        ");
+  console.log("================================================================================");
+  console.log(`Workloads Matrix : Requests ${JSON.stringify(MATRIX_REQUESTS)} × Concurrency ${JSON.stringify(MATRIX_CONCURRENCY)}`);
+  console.log(`Repeated Trials  : ${REPEATED_TRIALS} runs per configuration (computing Mean, Median, StdDev, p95, p99)`);
+  console.log(`Warm-up Phase    : ${WARMUP_REQUESTS} initial requests per server to stabilize V8 JIT\n`);
+
+  // Start Baseline App
   const baselineApp = createBaselineApp();
   const baselineServer = baselineApp.listen(0);
   const baselinePort = baselineServer.address().port;
 
+  // Start Shield App
   const { app: shieldApp } = createShieldApp();
   const shieldServer = shieldApp.listen(0);
   const shieldPort = shieldServer.address().port;
 
-  console.log(`[1/2] Benchmarking Baseline Express App on port ${baselinePort}...`);
-  const baselineResults = await runLoadTest(baselinePort, false);
-  console.log(`  -> Completed in ${baselineResults.durationSec}s (${baselineResults.throughputReqSec} req/s, avg ${baselineResults.latency.avgMs}ms)`);
+  console.log(`[Warm-up] Warming up V8 JIT compiler on baseline (port ${baselinePort}) and shield (port ${shieldPort})...`);
+  await sendWarmup(baselinePort, WARMUP_REQUESTS);
+  await sendWarmup(shieldPort, WARMUP_REQUESTS);
+  console.log(`[Warm-up] Warmup completed. Beginning measured matrix execution.\n`);
 
-  console.log(`[2/2] Benchmarking iri-shield Middleware on port ${shieldPort}...`);
-  const shieldResults = await runLoadTest(shieldPort, true);
-  console.log(`  -> Completed in ${shieldResults.durationSec}s (${shieldResults.throughputReqSec} req/s, avg ${shieldResults.latency.avgMs}ms)`);
+  const matrixResults = [];
+  const csvRows = [
+    [
+      'Requests', 'Concurrency', 'Trials',
+      'Baseline_Throughput_ReqSec', 'Shield_Throughput_ReqSec', 'Throughput_Delta_Pct',
+      'Baseline_Avg_Latency_ms', 'Shield_Avg_Latency_ms', 'Latency_Overhead_ms',
+      'Baseline_Median_ms', 'Shield_Median_ms',
+      'Baseline_StdDev_ms', 'Shield_StdDev_ms',
+      'Baseline_p95_ms', 'Shield_p95_ms',
+      'Baseline_p99_ms', 'Shield_p99_ms',
+      'Baseline_CPU_Pct', 'Shield_CPU_Pct',
+      'Baseline_Heap_MB', 'Shield_Heap_MB'
+    ]
+  ];
+
+  for (const reqCount of MATRIX_REQUESTS) {
+    for (const concurrency of MATRIX_CONCURRENCY) {
+      process.stdout.write(`Benchmarking Workload: ${reqCount} reqs @ ${concurrency} workers (${REPEATED_TRIALS} trials)... `);
+
+      const baselineTrials = [];
+      const shieldTrials = [];
+
+      for (let t = 0; t < REPEATED_TRIALS; t++) {
+        const bRes = await executeLoadTrial(baselinePort, reqCount, concurrency);
+        baselineTrials.push(bRes);
+        const sRes = await executeLoadTrial(shieldPort, reqCount, concurrency);
+        shieldTrials.push(sRes);
+      }
+
+      const baselineAgg = aggregateTrials(baselineTrials);
+      const shieldAgg = aggregateTrials(shieldTrials);
+
+      const latencyOverhead = Number((shieldAgg.latency.avg - baselineAgg.latency.avg).toFixed(2));
+      const throughputImpact = Number((((baselineAgg.throughput - shieldAgg.throughput) / baselineAgg.throughput) * 100).toFixed(1));
+
+      const entry = {
+        requests: reqCount,
+        concurrency,
+        trials: REPEATED_TRIALS,
+        baseline: baselineAgg,
+        shield: shieldAgg,
+        comparison: {
+          throughputImpactPercent: throughputImpact,
+          latencyOverheadAvgMs: latencyOverhead,
+          p95DeltaMs: Number((shieldAgg.latency.p95 - baselineAgg.latency.p95).toFixed(2)),
+          p99DeltaMs: Number((shieldAgg.latency.p99 - baselineAgg.latency.p99).toFixed(2)),
+          cpuOverheadPercent: Number((shieldAgg.cpuPercent - baselineAgg.cpuPercent).toFixed(1))
+        }
+      };
+
+      matrixResults.push(entry);
+
+      csvRows.push([
+        reqCount, concurrency, REPEATED_TRIALS,
+        baselineAgg.throughput, shieldAgg.throughput, `${throughputImpact}%`,
+        baselineAgg.latency.avg, shieldAgg.latency.avg, latencyOverhead,
+        baselineAgg.latency.median, shieldAgg.latency.median,
+        baselineAgg.latency.stdDev, shieldAgg.latency.stdDev,
+        baselineAgg.latency.p95, shieldAgg.latency.p95,
+        baselineAgg.latency.p99, shieldAgg.latency.p99,
+        `${baselineAgg.cpuPercent}%`, `${shieldAgg.cpuPercent}%`,
+        baselineAgg.heapDeltaMb, shieldAgg.heapDeltaMb
+      ]);
+
+      console.log(`Done! [Overhead: +${latencyOverhead}ms, Throughput: ${baselineAgg.throughput} vs ${shieldAgg.throughput} req/s]`);
+    }
+  }
 
   baselineServer.close();
   shieldServer.close();
 
-  const overheadMs = Number((shieldResults.latency.avgMs - baselineResults.latency.avgMs).toFixed(2));
-  const throughputImpactPct = Number((((baselineResults.throughputReqSec - shieldResults.throughputReqSec) / baselineResults.throughputReqSec) * 100).toFixed(1));
+  console.log("\n================================================================================");
+  console.log("               SCIENTIFIC PERFORMANCE EVALUATION SUMMARY MATRIX                 ");
+  console.log("================================================================================");
+  console.log("Workload       | Throughput (Req/s)    | Avg Latency (ms)      | p95 Latency (ms)     | CPU Usage (%)");
+  console.log("Reqs @ Concurr | Baseline   | Shield   | Baseline  | Shield    | Baseline  | Shield   | Base | Shield");
+  console.log("---------------|------------|----------|-----------|-----------|-----------|----------|------|-------");
 
-  const comparison = {
+  for (const m of matrixResults) {
+    const wl = `${m.requests} @ c=${m.concurrency}`.padEnd(14);
+    const bt = String(m.baseline.throughput).padEnd(10);
+    const st = String(m.shield.throughput).padEnd(8);
+    const bl = String(m.baseline.latency.avg + ' ms').padEnd(9);
+    const sl = String(m.shield.latency.avg + ' ms').padEnd(9);
+    const bp95 = String(m.baseline.latency.p95 + ' ms').padEnd(9);
+    const sp95 = String(m.shield.latency.p95 + ' ms').padEnd(8);
+    const bcpu = String(m.baseline.cpuPercent + '%').padEnd(4);
+    const scpu = String(m.shield.cpuPercent + '%').padEnd(6);
+    console.log(`${wl} | ${bt} | ${st} | ${bl} | ${sl} | ${bp95} | ${sp95} | ${bcpu} | ${scpu}`);
+  }
+
+  console.log("================================================================================");
+
+  // Write CSV
+  const csvContent = csvRows.map(r => r.join(',')).join('\n');
+  fs.writeFileSync(path.join(RESULTS_DIR, 'performance.csv'), csvContent);
+
+  // Write JSON
+  const summaryJson = {
     timestamp: new Date().toISOString(),
-    benchmarkConfig: { requests: NUM_REQUESTS, concurrency: CONCURRENCY },
-    overheadSummary: {
-      latencyOverheadAvgMs: overheadMs,
-      throughputImpactPercent: throughputImpactPct,
-      attackDetectionRate: `${shieldResults.security.detectionRatePct}%`,
-      falsePositiveRate: `${shieldResults.security.falsePositiveRatePct}%`
+    configurations: {
+      requests: MATRIX_REQUESTS,
+      concurrency: MATRIX_CONCURRENCY,
+      trials: REPEATED_TRIALS,
+      warmupRequests: WARMUP_REQUESTS
     },
-    baseline: baselineResults,
-    shield: shieldResults
+    results: matrixResults
   };
 
-  const resultsDir = path.join(__dirname, '../results');
-  if (!fs.existsSync(resultsDir)) fs.mkdirSync(resultsDir, { recursive: true });
+  fs.writeFileSync(path.join(RESULTS_DIR, 'comparison.json'), JSON.stringify(summaryJson, null, 2));
 
-  fs.writeFileSync(path.join(resultsDir, 'baseline.json'), JSON.stringify(baselineResults, null, 2));
-  fs.writeFileSync(path.join(resultsDir, 'shield.json'), JSON.stringify(shieldResults, null, 2));
-  fs.writeFileSync(path.join(resultsDir, 'comparison.json'), JSON.stringify(comparison, null, 2));
-
-  console.log("\n================================================================================");
-  console.log("                           BENCHMARK COMPARISON RESULTS                         ");
-  console.log("================================================================================");
-  console.log(`Metric                   | Baseline       | iri-shield     | Delta / Overhead   `);
-  console.log(`-------------------------|----------------|----------------|--------------------`);
-  console.log(`Throughput               | ${String(baselineResults.throughputReqSec).padEnd(14)} | ${String(shieldResults.throughputReqSec).padEnd(14)} | -${throughputImpactPct}% throughput`);
-  console.log(`Avg Latency              | ${String(baselineResults.latency.avgMs + ' ms').padEnd(14)} | ${String(shieldResults.latency.avgMs + ' ms').padEnd(14)} | +${overheadMs} ms overhead`);
-  console.log(`p50 Latency              | ${String(baselineResults.latency.p50Ms + ' ms').padEnd(14)} | ${String(shieldResults.latency.p50Ms + ' ms').padEnd(14)} | +${Number((shieldResults.latency.p50Ms - baselineResults.latency.p50Ms).toFixed(2))} ms`);
-  console.log(`p95 Latency              | ${String(baselineResults.latency.p95Ms + ' ms').padEnd(14)} | ${String(shieldResults.latency.p95Ms + ' ms').padEnd(14)} | +${Number((shieldResults.latency.p95Ms - baselineResults.latency.p95Ms).toFixed(2))} ms`);
-  console.log(`p99 Latency              | ${String(baselineResults.latency.p99Ms + ' ms').padEnd(14)} | ${String(shieldResults.latency.p99Ms + ' ms').padEnd(14)} | +${Number((shieldResults.latency.p99Ms - baselineResults.latency.p99Ms).toFixed(2))} ms`);
-  console.log(`Memory Delta             | ${String(baselineResults.memory.diffMb + ' MB').padEnd(14)} | ${String(shieldResults.memory.diffMb + ' MB').padEnd(14)} | +${Number((shieldResults.memory.diffMb - baselineResults.memory.diffMb).toFixed(2))} MB`);
-  console.log(`Detection Rate           | N/A            | ${String(shieldResults.security.detectionRatePct + '%').padEnd(14)} | Mitigated ${shieldResults.security.attacksMitigated}/${shieldResults.security.totalAttacksSent} attacks`);
-  console.log(`False Positive Rate      | N/A            | ${String(shieldResults.security.falsePositiveRatePct + '%').padEnd(14)} | ${shieldResults.security.falsePositives} false alarms`);
-  console.log("================================================================================");
-  console.log(`Results saved to:`);
-  console.log(`  - results/baseline.json`);
-  console.log(`  - results/shield.json`);
+  console.log(`Reports saved to:`);
+  console.log(`  - results/performance.csv`);
   console.log(`  - results/comparison.json\n`);
+
+  return summaryJson;
 }
 
-main().catch(console.error);
+if (require.main === module) {
+  runPerformanceBenchmark().catch(console.error);
+}
+
+module.exports = { runPerformanceBenchmark };

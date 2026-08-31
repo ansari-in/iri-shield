@@ -1,52 +1,35 @@
-﻿#  iri-shield Benchmark Suite
+﻿# 🔬 iri-shield Scientific Research Evaluation Suite
 
-This automated benchmark evaluates the performance overhead, throughput capacity, memory footprint, and threat detection efficacy of `iri-shield` versus a baseline Express.js server.
-
----
-
-## 🚀 Running the Benchmark
-
-Run the automated suite using npm:
-
-```bash
-npm run benchmark
-```
-
-### Custom Benchmark Parameters
-
-You can customize the number of requests and concurrent workers via environment variables:
-
-```bash
-# 2,000 requests across 30 concurrent workers
-BENCHMARK_REQUESTS=2000 BENCHMARK_CONCURRENCY=30 npm run benchmark
-```
+This comprehensive evaluation suite is designed for academic research, empirical evaluation, and **Thesis Chapter 5 (Results & Discussion)** analysis of `iri-shield`.
 
 ---
 
-## 📈 Evaluation Metrics
+## 🚀 Research Commands Matrix
 
-The suite automatically measures and generates comparative metrics across five dimensions:
-
-1. **Throughput (req/s)**: Total request handling rate under concurrent load.
-2. **Latency Distribution**:
-   - Average latency (`avg`)
-   - Median latency (`p50`)
-   - 90th percentile (`p90`)
-   - 95th percentile (`p95`)
-   - 99th percentile (`p99`)
-3. **Memory Consumption**: Node.js V8 heap allocation before vs after the run.
-4. **Attack Detection & Mitigation**: Percentage of malicious vectors (SQLi, XSS, Path Traversal, SSTI, scanner bots) intercepted.
-5. **False Positive Rate**: Verification that 100% of legitimate API traffic passes through without impedance.
+| Command | Purpose | Primary Metric Evaluated | Output Artifacts |
+| :--- | :--- | :--- | :--- |
+| `npm run research:evaluate` | **Master Suite** (Executes all 5 experiments) | End-to-End Chapter 5 Report | `research-results/research_summary.md`, `experiments.csv` |
+| `npm run benchmark` | Multi-Workload Matrix Performance Benchmark | Latency (Mean, p95, p99), Throughput, CPU & Memory | `results/performance.csv`, `comparison.json` |
+| `npm run security:evaluate` | 220+ Structured Attack Scenarios | Category-wise Detection & Direct Blocking Rate | `results/security.csv`, `security.json` |
+| `npm run fp:evaluate` | 10,000 Legitimate Requests | False Positive Rate (FPR = 0%) | `results/false_positives.csv`, `false_positives.json` |
+| `npm run identity:evaluate` | 500 Identity Continuity & Drift Scenarios | Identity Profiling Accuracy & False Drift Rate | `results/identity.csv`, `identity.json` |
+| `npm run redaction:evaluate` | 500 PII, Token & Secret Payloads | Redaction Accuracy (100%) & Over-masking (0%) | `results/redaction.csv`, `redaction.json` |
 
 ---
 
-## 📁 Output Artifacts
-
-All runs generate machine-readable JSON reports in the `results/` directory:
+## 📁 Output Artifacts Directory Structure
 
 ```text
+research-results/
+├── research_summary.md    # Formatted Thesis Chapter 5 Tables & Analysis
+├── experiments.csv        # Master CSV of all 5 experimental dimensions
+└── summary_report.json    # Consolidated JSON telemetry
+
 results/
-├── baseline.json       # Raw metrics from unshielded Express server
-├── shield.json         # Raw metrics from iri-shield protected server
-└── comparison.json     # Delta metrics, overhead summary, and defense efficacy
+├── performance.csv        # Workload matrix throughput, latency percentiles, CPU, memory
+├── security.csv           # Category-wise detection rates (SQLi, XSS, SSTI, etc.)
+├── false_positives.csv    # False positive validation results
+├── identity.csv           # Identity continuity profiling results
+├── redaction.csv          # Sensitive data redaction metrics
+└── comparison.json        # Performance delta JSON
 ```

@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
@@ -372,12 +372,38 @@ function createShield(options = {}) {
       storage.recordClient(Object.assign({}, client, { ip: storageIp }));
       req.iriShield = { requestId, ip: rawIp, storageIp, client, analysis };
 
-      // --- Auto block ---
+      // --- Auto block if score >= block threshold ---
       if (analysis.score >= config.block.threshold && config.block.enabled) {
         storage.blockIp(rawIp, {
           expiresAt: Date.now() + config.block.durationMs,
           reason: analysis.reasons.join(', '),
           score: analysis.score
+        });
+        const event = buildEvent(req, {
+          requestId,
+          threat: analysis.threats.join(', ') || 'blocked_threat',
+          riskLevel: analysis.riskLevel,
+          riskScore: analysis.score,
+          action: 'blocked',
+          reason: analysis.reasons.join('; '),
+          breakdown: analysis.breakdown,
+          confidence: analysis.confidence || 0,
+          correlatedAttack: analysis.correlatedAttack || null,
+          storageIp
+        });
+        storage.recordEvent(event);
+        storage.recordRequest(Object.assign({}, client, {
+          ip: storageIp,
+          blocked: true,
+          endpoint: req.originalUrl || req.url,
+          method: req.method,
+          statusCode: 403,
+          durationMs: 0
+        }));
+        return res.status(403).json({
+          error: 'Request blocked — threat detected by iri-shield',
+          requestId,
+          threat: analysis.threats.join(', ')
         });
       }
 

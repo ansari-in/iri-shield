@@ -34,7 +34,12 @@
   "homepage": "https://github.com/ansari-in/iri-shield#readme",
   "scripts": {
     "test": "node --test",
-    "benchmark": "node benchmark/run.js"
+    "benchmark": "node benchmark/run.js",
+    "security:evaluate": "node benchmark/security-evaluate.js",
+    "fp:evaluate": "node benchmark/false-positive-evaluate.js",
+    "identity:evaluate": "node benchmark/identity-evaluate.js",
+    "redaction:evaluate": "node benchmark/redaction-evaluate.js",
+    "research:evaluate": "node benchmark/research-evaluate.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

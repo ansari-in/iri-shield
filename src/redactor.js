@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 // ---------------------------------------------------------------------------
 // Redactor — PII and secrets redaction for responses AND request logs
@@ -7,8 +7,9 @@
 const valuePatterns = [
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
   /\b(?:\+?91[-\s]?)?[6-9]\d{9}\b/g,
+  /\b(?:\+?1[-\s]?)?\(?\d{3}\)?[-\s]?\d{3}[-\s]?\d{4}\b/g,
   /\b(?:Bearer\s+)?[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\b/g,
-  /\b(?:sk|pk|api|key|secret)_[A-Za-z0-9]{12,}\b/gi
+  /\b(?:sk|pk|api|key|secret)(?:_mock|_live|_test|_key|_secret)?_[A-Za-z0-9_-]{10,}\b/gi
 ];
 
 /**

@@ -1,0 +1,5502 @@
+[
+  {
+    "id": "RED-SMP-001",
+    "category": "PHONE",
+    "payload": {
+      "id": 1,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-002",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-003",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-004",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 4
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-005",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_5",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-006",
+    "category": "PHONE",
+    "payload": {
+      "id": 6,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-007",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-008",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-009",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 9
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-010",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_10",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-011",
+    "category": "PHONE",
+    "payload": {
+      "id": 11,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-012",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-013",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-014",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 14
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-015",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_15",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-016",
+    "category": "PHONE",
+    "payload": {
+      "id": 16,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-017",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-018",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-019",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 19
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-020",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_20",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-021",
+    "category": "PHONE",
+    "payload": {
+      "id": 21,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-022",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-023",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-024",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 24
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-025",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_25",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-026",
+    "category": "PHONE",
+    "payload": {
+      "id": 26,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-027",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-028",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-029",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 29
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-030",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_30",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-031",
+    "category": "PHONE",
+    "payload": {
+      "id": 31,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-032",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-033",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-034",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 34
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-035",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_35",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-036",
+    "category": "PHONE",
+    "payload": {
+      "id": 36,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-037",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-038",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-039",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 39
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-040",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_40",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-041",
+    "category": "PHONE",
+    "payload": {
+      "id": 41,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-042",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-043",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-044",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 44
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-045",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_45",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-046",
+    "category": "PHONE",
+    "payload": {
+      "id": 46,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-047",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-048",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-049",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 49
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-050",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_50",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-051",
+    "category": "PHONE",
+    "payload": {
+      "id": 51,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-052",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-053",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-054",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 54
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-055",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_55",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-056",
+    "category": "PHONE",
+    "payload": {
+      "id": 56,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-057",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-058",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-059",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 59
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-060",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_60",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-061",
+    "category": "PHONE",
+    "payload": {
+      "id": 61,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-062",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-063",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-064",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 64
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-065",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_65",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-066",
+    "category": "PHONE",
+    "payload": {
+      "id": 66,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-067",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-068",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-069",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 69
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-070",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_70",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-071",
+    "category": "PHONE",
+    "payload": {
+      "id": 71,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-072",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-073",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-074",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 74
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-075",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_75",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-076",
+    "category": "PHONE",
+    "payload": {
+      "id": 76,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-077",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-078",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-079",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 79
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-080",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_80",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-081",
+    "category": "PHONE",
+    "payload": {
+      "id": 81,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-082",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-083",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-084",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 84
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-085",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_85",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-086",
+    "category": "PHONE",
+    "payload": {
+      "id": 86,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-087",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-088",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-089",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 89
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-090",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_90",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-091",
+    "category": "PHONE",
+    "payload": {
+      "id": 91,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-092",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-093",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-094",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 94
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-095",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_95",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-096",
+    "category": "PHONE",
+    "payload": {
+      "id": 96,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-097",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-098",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-099",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 99
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-100",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_100",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-101",
+    "category": "PHONE",
+    "payload": {
+      "id": 101,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-102",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-103",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-104",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 104
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-105",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_105",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-106",
+    "category": "PHONE",
+    "payload": {
+      "id": 106,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-107",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-108",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-109",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 109
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-110",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_110",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-111",
+    "category": "PHONE",
+    "payload": {
+      "id": 111,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-112",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-113",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-114",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 114
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-115",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_115",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-116",
+    "category": "PHONE",
+    "payload": {
+      "id": 116,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-117",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-118",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-119",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 119
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-120",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_120",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-121",
+    "category": "PHONE",
+    "payload": {
+      "id": 121,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-122",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-123",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-124",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 124
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-125",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_125",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-126",
+    "category": "PHONE",
+    "payload": {
+      "id": 126,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-127",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-128",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-129",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 129
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-130",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_130",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-131",
+    "category": "PHONE",
+    "payload": {
+      "id": 131,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-132",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-133",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-134",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 134
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-135",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_135",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-136",
+    "category": "PHONE",
+    "payload": {
+      "id": 136,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-137",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-138",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-139",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 139
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-140",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_140",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-141",
+    "category": "PHONE",
+    "payload": {
+      "id": 141,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-142",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-143",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-144",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 144
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-145",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_145",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-146",
+    "category": "PHONE",
+    "payload": {
+      "id": 146,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-147",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-148",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-149",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 149
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-150",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_150",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-151",
+    "category": "PHONE",
+    "payload": {
+      "id": 151,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-152",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-153",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-154",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 154
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-155",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_155",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-156",
+    "category": "PHONE",
+    "payload": {
+      "id": 156,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-157",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-158",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-159",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 159
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-160",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_160",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-161",
+    "category": "PHONE",
+    "payload": {
+      "id": 161,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-162",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-163",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-164",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 164
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-165",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_165",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-166",
+    "category": "PHONE",
+    "payload": {
+      "id": 166,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-167",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-168",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-169",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 169
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-170",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_170",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-171",
+    "category": "PHONE",
+    "payload": {
+      "id": 171,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-172",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-173",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-174",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 174
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-175",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_175",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-176",
+    "category": "PHONE",
+    "payload": {
+      "id": 176,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-177",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-178",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-179",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 179
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-180",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_180",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-181",
+    "category": "PHONE",
+    "payload": {
+      "id": 181,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-182",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-183",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-184",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 184
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-185",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_185",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-186",
+    "category": "PHONE",
+    "payload": {
+      "id": 186,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-187",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-188",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-189",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 189
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-190",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_190",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-191",
+    "category": "PHONE",
+    "payload": {
+      "id": 191,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-192",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-193",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-194",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 194
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-195",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_195",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-196",
+    "category": "PHONE",
+    "payload": {
+      "id": 196,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-197",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-198",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-199",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 199
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-200",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_200",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-201",
+    "category": "PHONE",
+    "payload": {
+      "id": 201,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-202",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-203",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-204",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 204
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-205",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_205",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-206",
+    "category": "PHONE",
+    "payload": {
+      "id": 206,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-207",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-208",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-209",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 209
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-210",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_210",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-211",
+    "category": "PHONE",
+    "payload": {
+      "id": 211,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-212",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-213",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-214",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 214
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-215",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_215",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-216",
+    "category": "PHONE",
+    "payload": {
+      "id": 216,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-217",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-218",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-219",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 219
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-220",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_220",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-221",
+    "category": "PHONE",
+    "payload": {
+      "id": 221,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-222",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-223",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-224",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 224
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-225",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_225",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-226",
+    "category": "PHONE",
+    "payload": {
+      "id": 226,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-227",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-228",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-229",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 229
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-230",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_230",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-231",
+    "category": "PHONE",
+    "payload": {
+      "id": 231,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-232",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-233",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-234",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 234
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-235",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_235",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-236",
+    "category": "PHONE",
+    "payload": {
+      "id": 236,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-237",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-238",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-239",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 239
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-240",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_240",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-241",
+    "category": "PHONE",
+    "payload": {
+      "id": 241,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-242",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-243",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-244",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 244
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-245",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_245",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-246",
+    "category": "PHONE",
+    "payload": {
+      "id": 246,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-247",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-248",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-249",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 249
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-250",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_250",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-251",
+    "category": "PHONE",
+    "payload": {
+      "id": 251,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-252",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-253",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-254",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 254
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-255",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_255",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-256",
+    "category": "PHONE",
+    "payload": {
+      "id": 256,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-257",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-258",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-259",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 259
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-260",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_260",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-261",
+    "category": "PHONE",
+    "payload": {
+      "id": 261,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-262",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-263",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-264",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 264
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-265",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_265",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-266",
+    "category": "PHONE",
+    "payload": {
+      "id": 266,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-267",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-268",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-269",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 269
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-270",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_270",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-271",
+    "category": "PHONE",
+    "payload": {
+      "id": 271,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-272",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-273",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-274",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 274
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-275",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_275",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-276",
+    "category": "PHONE",
+    "payload": {
+      "id": 276,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-277",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-278",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-279",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 279
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-280",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_280",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-281",
+    "category": "PHONE",
+    "payload": {
+      "id": 281,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-282",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-283",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-284",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 284
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-285",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_285",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-286",
+    "category": "PHONE",
+    "payload": {
+      "id": 286,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-287",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-288",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-289",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 289
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-290",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_290",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-291",
+    "category": "PHONE",
+    "payload": {
+      "id": 291,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-292",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-293",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-294",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 294
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-295",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_295",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-296",
+    "category": "PHONE",
+    "payload": {
+      "id": 296,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-297",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-298",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-299",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 299
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-300",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_300",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-301",
+    "category": "PHONE",
+    "payload": {
+      "id": 301,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-302",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-303",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-304",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 304
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-305",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_305",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-306",
+    "category": "PHONE",
+    "payload": {
+      "id": 306,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-307",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-308",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-309",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 309
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-310",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_310",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-311",
+    "category": "PHONE",
+    "payload": {
+      "id": 311,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-312",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-313",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-314",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 314
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-315",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_315",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-316",
+    "category": "PHONE",
+    "payload": {
+      "id": 316,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-317",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-318",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-319",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 319
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-320",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_320",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-321",
+    "category": "PHONE",
+    "payload": {
+      "id": 321,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-322",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-323",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-324",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 324
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-325",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_325",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-326",
+    "category": "PHONE",
+    "payload": {
+      "id": 326,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-327",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-328",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-329",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 329
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-330",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_330",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-331",
+    "category": "PHONE",
+    "payload": {
+      "id": 331,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-332",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-333",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-334",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 334
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-335",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_335",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-336",
+    "category": "PHONE",
+    "payload": {
+      "id": 336,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-337",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-338",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-339",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 339
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-340",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_340",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-341",
+    "category": "PHONE",
+    "payload": {
+      "id": 341,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-342",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-343",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-344",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 344
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-345",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_345",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-346",
+    "category": "PHONE",
+    "payload": {
+      "id": 346,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-347",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-348",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-349",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 349
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-350",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_350",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-351",
+    "category": "PHONE",
+    "payload": {
+      "id": 351,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-352",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-353",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-354",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 354
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-355",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_355",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-356",
+    "category": "PHONE",
+    "payload": {
+      "id": 356,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-357",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-358",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-359",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 359
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-360",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_360",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-361",
+    "category": "PHONE",
+    "payload": {
+      "id": 361,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-362",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-363",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-364",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 364
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-365",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_365",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-366",
+    "category": "PHONE",
+    "payload": {
+      "id": 366,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-367",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-368",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-369",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 369
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-370",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_370",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-371",
+    "category": "PHONE",
+    "payload": {
+      "id": 371,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-372",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-373",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-374",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 374
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-375",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_375",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-376",
+    "category": "PHONE",
+    "payload": {
+      "id": 376,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-377",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-378",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-379",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 379
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-380",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_380",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-381",
+    "category": "PHONE",
+    "payload": {
+      "id": 381,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-382",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-383",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-384",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 384
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-385",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_385",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-386",
+    "category": "PHONE",
+    "payload": {
+      "id": 386,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-387",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-388",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-389",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 389
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-390",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_390",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-391",
+    "category": "PHONE",
+    "payload": {
+      "id": 391,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-392",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-393",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-394",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 394
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-395",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_395",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-396",
+    "category": "PHONE",
+    "payload": {
+      "id": 396,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-397",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-398",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-399",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 399
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-400",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_400",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-401",
+    "category": "PHONE",
+    "payload": {
+      "id": 401,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-402",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-403",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-404",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 404
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-405",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_405",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-406",
+    "category": "PHONE",
+    "payload": {
+      "id": 406,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-407",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-408",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-409",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 409
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-410",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_410",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-411",
+    "category": "PHONE",
+    "payload": {
+      "id": 411,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-412",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-413",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-414",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 414
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-415",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_415",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-416",
+    "category": "PHONE",
+    "payload": {
+      "id": 416,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-417",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-418",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-419",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 419
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-420",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_420",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-421",
+    "category": "PHONE",
+    "payload": {
+      "id": 421,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-422",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-423",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-424",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 424
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-425",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_425",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-426",
+    "category": "PHONE",
+    "payload": {
+      "id": 426,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-427",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-428",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-429",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 429
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-430",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_430",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-431",
+    "category": "PHONE",
+    "payload": {
+      "id": 431,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-432",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-433",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-434",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 434
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-435",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_435",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-436",
+    "category": "PHONE",
+    "payload": {
+      "id": 436,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-437",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-438",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-439",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 439
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-440",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_440",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-441",
+    "category": "PHONE",
+    "payload": {
+      "id": 441,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-442",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-443",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-444",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 444
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-445",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_445",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-446",
+    "category": "PHONE",
+    "payload": {
+      "id": 446,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-447",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-448",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-449",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 449
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-450",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_450",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-451",
+    "category": "PHONE",
+    "payload": {
+      "id": 451,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-452",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-453",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-454",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 454
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-455",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_455",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-456",
+    "category": "PHONE",
+    "payload": {
+      "id": 456,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-457",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-458",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-459",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 459
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-460",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_460",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-461",
+    "category": "PHONE",
+    "payload": {
+      "id": 461,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-462",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-463",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-464",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 464
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-465",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_465",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-466",
+    "category": "PHONE",
+    "payload": {
+      "id": 466,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-467",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-468",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-469",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 469
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-470",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_470",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-471",
+    "category": "PHONE",
+    "payload": {
+      "id": 471,
+      "customerPhone": "9876543210",
+      "message": "OTP sent to 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-472",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-473",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "+1-800-555-0199",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-474",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 474
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-475",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_475",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-476",
+    "category": "PHONE",
+    "payload": {
+      "id": 476,
+      "customerPhone": "+91-9123456789",
+      "message": "OTP sent to +91-9123456789"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-477",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-478",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "8765432109",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-479",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 479
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-480",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_480",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-481",
+    "category": "PHONE",
+    "payload": {
+      "id": 481,
+      "customerPhone": "919876543210",
+      "message": "OTP sent to 919876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-482",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "pk_mock_test_key_9876543210abcdefghijklmnop",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer pk_mock_test_key_9876543210abcdefghijklmnop"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-483",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "test.user+tag@gmail.com",
+        "phone": "9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-484",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Hello world, everything is operational.",
+      "status": "ok",
+      "count": 484
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-485",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_485",
+      "contactEmail": "support@techcorp.io",
+      "note": "Created support ticket for support@techcorp.io"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-486",
+    "category": "PHONE",
+    "payload": {
+      "id": 486,
+      "customerPhone": "+91 9876543210",
+      "message": "OTP sent to +91 9876543210"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-487",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "api_key_secret_998877665544332211",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer api_key_secret_998877665544332211"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-488",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "john.doe@company.org",
+        "phone": "+91-9123456789",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-489",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Product stock status: 45 units available.",
+      "status": "ok",
+      "count": 489
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-490",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_490",
+      "contactEmail": "billing-lead_99@sub.domain.co.uk",
+      "note": "Created support ticket for billing-lead_99@sub.domain.co.uk"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-491",
+    "category": "PHONE",
+    "payload": {
+      "id": 491,
+      "customerPhone": "+1-800-555-0199",
+      "message": "OTP sent to +1-800-555-0199"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-492",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozS6w7yJJnL0_sample_signature_jwt"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-493",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "support@techcorp.io",
+        "phone": "919876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-494",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Total price is $1,250.00 for order #9821.",
+      "status": "ok",
+      "count": 494
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-495",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_495",
+      "contactEmail": "test.user+tag@gmail.com",
+      "note": "Created support ticket for test.user+tag@gmail.com"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-496",
+    "category": "PHONE",
+    "payload": {
+      "id": 496,
+      "customerPhone": "8765432109",
+      "message": "OTP sent to 8765432109"
+    },
+    "expectedRedactions": 2
+  },
+  {
+    "id": "RED-SMP-497",
+    "category": "SECRET_TOKEN",
+    "payload": {
+      "status": "success",
+      "token": "sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz",
+      "apiKey": "secret_key_prod_88221199",
+      "authHeader": "Bearer sk_mock_test_key_1234567890abcdefghijklmnopqrstuvwxyz"
+    },
+    "expectedRedactions": 3
+  },
+  {
+    "id": "RED-SMP-498",
+    "category": "COMPOSITE_PII",
+    "payload": {
+      "profile": {
+        "email": "billing-lead_99@sub.domain.co.uk",
+        "phone": "+91 9876543210",
+        "password": "SuperSecretPassword!123",
+        "ssn": "123-45-6789",
+        "aadhaar": "1234 5678 9012"
+      }
+    },
+    "expectedRedactions": 5
+  },
+  {
+    "id": "RED-SMP-499",
+    "category": "CLEAN_CONTROL",
+    "payload": {
+      "message": "Contact address: 123 Innovation Boulevard, Suite 400.",
+      "status": "ok",
+      "count": 499
+    },
+    "expectedRedactions": 0
+  },
+  {
+    "id": "RED-SMP-500",
+    "category": "EMAIL",
+    "payload": {
+      "user": "user_500",
+      "contactEmail": "john.doe@company.org",
+      "note": "Created support ticket for john.doe@company.org"
+    },
+    "expectedRedactions": 2
+  }
+]

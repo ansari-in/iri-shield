@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-08-31T15:49:42.456Z",
+  "totalEvaluated": 500,
+  "totalCorrect": 500,
+  "overallAccuracyPct": 100,
+  "falseRedactionRatePct": 0,
+  "categoryStats": {
+    "PHONE": {
+      "total": 100,
+      "correct": 100,
+      "expectedRedactions": 200,
+      "actualRedactions": 200,
+      "overMasked": 0
+    },
+    "SECRET_TOKEN": {
+      "total": 100,
+      "correct": 100,
+      "expectedRedactions": 300,
+      "actualRedactions": 300,
+      "overMasked": 0
+    },
+    "COMPOSITE_PII": {
+      "total": 100,
+      "correct": 100,
+      "expectedRedactions": 500,
+      "actualRedactions": 500,
+      "overMasked": 0
+    },
+    "CLEAN_CONTROL": {
+      "total": 100,
+      "correct": 100,
+      "expectedRedactions": 0,
+      "actualRedactions": 0,
+      "overMasked": 0
+    },
+    "EMAIL": {
+      "total": 100,
+      "correct": 100,
+      "expectedRedactions": 200,
+      "actualRedactions": 200,
+      "overMasked": 0
+    }
+  }
+}

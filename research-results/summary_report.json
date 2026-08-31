@@ -1,0 +1,815 @@
+{
+  "evaluatedAt": "2026-08-31T15:14:56.270Z",
+  "totalSuiteDurationSec": 23.78,
+  "experiments": {
+    "performance": {
+      "timestamp": "2026-08-31T15:14:48.356Z",
+      "configurations": {
+        "requests": [
+          300,
+          500
+        ],
+        "concurrency": [
+          5,
+          15
+        ],
+        "trials": 2,
+        "warmupRequests": 150
+      },
+      "results": [
+        {
+          "requests": 300,
+          "concurrency": 5,
+          "trials": 2,
+          "baseline": {
+            "throughput": 826,
+            "cpuPercent": 87.1,
+            "heapDeltaMb": 0.96,
+            "latency": {
+              "avg": 9.75,
+              "median": 7.1,
+              "stdDev": 8.86,
+              "p95": 25.54,
+              "p99": 51.23
+            }
+          },
+          "shield": {
+            "throughput": 533,
+            "cpuPercent": 111.2,
+            "heapDeltaMb": 1.84,
+            "latency": {
+              "avg": 9.3,
+              "median": 8.05,
+              "stdDev": 4.46,
+              "p95": 16.48,
+              "p99": 30.96
+            }
+          },
+          "comparison": {
+            "throughputImpactPercent": 35.5,
+            "latencyOverheadAvgMs": -0.45,
+            "p95DeltaMs": -9.06,
+            "p99DeltaMs": -20.27,
+            "cpuOverheadPercent": 24.1
+          }
+        },
+        {
+          "requests": 300,
+          "concurrency": 15,
+          "trials": 2,
+          "baseline": {
+            "throughput": 1332,
+            "cpuPercent": 86,
+            "heapDeltaMb": 4.33,
+            "latency": {
+              "avg": 11.06,
+              "median": 10.12,
+              "stdDev": 4.89,
+              "p95": 24.34,
+              "p99": 30.17
+            }
+          },
+          "shield": {
+            "throughput": 449,
+            "cpuPercent": 106.2,
+            "heapDeltaMb": -3.1,
+            "latency": {
+              "avg": 34.17,
+              "median": 32.6,
+              "stdDev": 8.18,
+              "p95": 54.25,
+              "p99": 57.72
+            }
+          },
+          "comparison": {
+            "throughputImpactPercent": 66.3,
+            "latencyOverheadAvgMs": 23.11,
+            "p95DeltaMs": 29.91,
+            "p99DeltaMs": 27.55,
+            "cpuOverheadPercent": 20.2
+          }
+        },
+        {
+          "requests": 500,
+          "concurrency": 5,
+          "trials": 2,
+          "baseline": {
+            "throughput": 1093,
+            "cpuPercent": 114.3,
+            "heapDeltaMb": -7.88,
+            "latency": {
+              "avg": 4.51,
+              "median": 3.4,
+              "stdDev": 2.98,
+              "p95": 10.27,
+              "p99": 17.25
+            }
+          },
+          "shield": {
+            "throughput": 334,
+            "cpuPercent": 90,
+            "heapDeltaMb": 9.74,
+            "latency": {
+              "avg": 15.16,
+              "median": 13.63,
+              "stdDev": 5.16,
+              "p95": 26.62,
+              "p99": 33.27
+            }
+          },
+          "comparison": {
+            "throughputImpactPercent": 69.4,
+            "latencyOverheadAvgMs": 10.65,
+            "p95DeltaMs": 16.35,
+            "p99DeltaMs": 16.02,
+            "cpuOverheadPercent": -24.3
+          }
+        },
+        {
+          "requests": 500,
+          "concurrency": 15,
+          "trials": 2,
+          "baseline": {
+            "throughput": 1219,
+            "cpuPercent": 98,
+            "heapDeltaMb": 15.72,
+            "latency": {
+              "avg": 13.3,
+              "median": 12.21,
+              "stdDev": 4.88,
+              "p95": 22.2,
+              "p99": 27.95
+            }
+          },
+          "shield": {
+            "throughput": 274,
+            "cpuPercent": 95,
+            "heapDeltaMb": -21.28,
+            "latency": {
+              "avg": 54.64,
+              "median": 51.98,
+              "stdDev": 13.09,
+              "p95": 79.63,
+              "p99": 94.21
+            }
+          },
+          "comparison": {
+            "throughputImpactPercent": 77.5,
+            "latencyOverheadAvgMs": 41.34,
+            "p95DeltaMs": 57.43,
+            "p99DeltaMs": 66.26,
+            "cpuOverheadPercent": -3
+          }
+        }
+      ]
+    },
+    "threatDetection": {
+      "timestamp": "2026-08-31T15:14:48.944Z",
+      "totalAttacks": 220,
+      "totalMitigated": 199,
+      "totalBlocked": 198,
+      "totalRateLimited": 0,
+      "totalMissed": 21,
+      "detectionRatePct": 90.5,
+      "blockingRatePct": 90,
+      "categories": {
+        "SQL_INJECTION": {
+          "total": 45,
+          "mitigated": 36,
+          "blocked": 36,
+          "rateLimited": 0,
+          "missed": 9
+        },
+        "XSS": {
+          "total": 39,
+          "mitigated": 39,
+          "blocked": 39,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "PATH_TRAVERSAL": {
+          "total": 30,
+          "mitigated": 30,
+          "blocked": 30,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "COMMAND_INJECTION": {
+          "total": 30,
+          "mitigated": 27,
+          "blocked": 27,
+          "rateLimited": 0,
+          "missed": 3
+        },
+        "SSTI": {
+          "total": 16,
+          "mitigated": 16,
+          "blocked": 16,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "NOSQL_INJECTION": {
+          "total": 8,
+          "mitigated": 8,
+          "blocked": 8,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "SCANNER_BOT": {
+          "total": 15,
+          "mitigated": 13,
+          "blocked": 13,
+          "rateLimited": 0,
+          "missed": 2
+        },
+        "SECRET_PROBE": {
+          "total": 12,
+          "mitigated": 12,
+          "blocked": 12,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "BRUTE_FORCE": {
+          "total": 8,
+          "mitigated": 4,
+          "blocked": 4,
+          "rateLimited": 0,
+          "missed": 4
+        },
+        "HEADER_INJECTION": {
+          "total": 3,
+          "mitigated": 3,
+          "blocked": 2,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "XXE": {
+          "total": 4,
+          "mitigated": 4,
+          "blocked": 4,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "LDAP_INJECTION": {
+          "total": 4,
+          "mitigated": 3,
+          "blocked": 3,
+          "rateLimited": 0,
+          "missed": 1
+        },
+        "OPEN_REDIRECT": {
+          "total": 4,
+          "mitigated": 4,
+          "blocked": 4,
+          "rateLimited": 0,
+          "missed": 0
+        },
+        "BASE64_PAYLOAD": {
+          "total": 2,
+          "mitigated": 0,
+          "blocked": 0,
+          "rateLimited": 0,
+          "missed": 2
+        }
+      }
+    },
+    "falsePositives": {
+      "timestamp": "2026-08-31T15:14:56.184Z",
+      "totalRequests": 2000,
+      "passedCount": 2000,
+      "falsePositiveCount": 0,
+      "falsePositiveRatePct": 0,
+      "durationSec": 7.04,
+      "throughputReqSec": 284
+    },
+    "identityContinuity": {
+      "timestamp": "2026-08-31T15:14:56.240Z",
+      "totalEvaluated": 500,
+      "correctlyEvaluated": 480,
+      "overallAccuracyPct": 96,
+      "falseDriftPct": 12.27,
+      "typeStats": {
+        "BASELINE_NORMAL": {
+          "total": 163,
+          "correctlyIdentified": 143,
+          "avgPenalty": 0,
+          "totalPenalty": 620
+        },
+        "MULTI_VECTOR_ANOMALY": {
+          "total": 113,
+          "correctlyIdentified": 113,
+          "avgPenalty": 0,
+          "totalPenalty": 4620
+        },
+        "IP_DRIFT": {
+          "total": 112,
+          "correctlyIdentified": 112,
+          "avgPenalty": 0,
+          "totalPenalty": 2305
+        },
+        "DEVICE_DRIFT": {
+          "total": 112,
+          "correctlyIdentified": 112,
+          "avgPenalty": 0,
+          "totalPenalty": 3080
+        }
+      },
+      "resultsSample": [
+        {
+          "id": "ID-BASE-alice_eng-1",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-2",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-3",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-4",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-5",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-6",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-7",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-8",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-9",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-alice_eng-10",
+          "type": "BASELINE_NORMAL",
+          "userId": "alice_eng",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-1",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-2",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-3",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-4",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-5",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-6",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-7",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-8",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-9",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-bob_finance-10",
+          "type": "BASELINE_NORMAL",
+          "userId": "bob_finance",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-1",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-2",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-3",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-4",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-5",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-6",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-7",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-8",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-9",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-carol_dev-10",
+          "type": "BASELINE_NORMAL",
+          "userId": "carol_dev",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-1",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-2",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-3",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-4",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-5",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-6",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-7",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-8",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-9",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-david_support-10",
+          "type": "BASELINE_NORMAL",
+          "userId": "david_support",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-1",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-2",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-3",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-4",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-5",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-6",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-7",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-8",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-9",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        },
+        {
+          "id": "ID-BASE-eve_analyst-10",
+          "type": "BASELINE_NORMAL",
+          "userId": "eve_analyst",
+          "expectedDrift": false,
+          "detectedDrift": false,
+          "penaltyAssigned": 0,
+          "threats": ""
+        }
+      ]
+    },
+    "sensitiveRedaction": {
+      "timestamp": "2026-08-31T15:14:56.261Z",
+      "totalEvaluated": 500,
+      "totalCorrect": 500,
+      "overallAccuracyPct": 100,
+      "falseRedactionRatePct": 0,
+      "categoryStats": {
+        "PHONE": {
+          "total": 100,
+          "correct": 100,
+          "expectedRedactions": 200,
+          "actualRedactions": 200,
+          "overMasked": 0
+        },
+        "SECRET_TOKEN": {
+          "total": 100,
+          "correct": 100,
+          "expectedRedactions": 300,
+          "actualRedactions": 300,
+          "overMasked": 0
+        },
+        "COMPOSITE_PII": {
+          "total": 100,
+          "correct": 100,
+          "expectedRedactions": 500,
+          "actualRedactions": 500,
+          "overMasked": 0
+        },
+        "CLEAN_CONTROL": {
+          "total": 100,
+          "correct": 100,
+          "expectedRedactions": 0,
+          "actualRedactions": 0,
+          "overMasked": 0
+        },
+        "EMAIL": {
+          "total": 100,
+          "correct": 100,
+          "expectedRedactions": 200,
+          "actualRedactions": 200,
+          "overMasked": 0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+Experiment,Evaluated_Units,Success_Metric_Name,Success_Rate_Pct,Overhead_or_Error_Rate,Status
+Performance_Benchmark,4_Workload_Configs,Avg_Overhead,826_vs_533_ReqSec,+-0.45ms_Latency,COMPLETED
+Threat_Detection,220_Attack_Vectors,Overall_Detection_Rate,90.5%,21_Missed,COMPLETED
+False_Positive_Validation,2000_Legit_Requests,Legitimate_Allowed_Rate,100.00%,0%_FPR,COMPLETED
+Identity_Continuity,500_State_Transitions,Identity_Profiling_Accuracy,96%,12.27%_False_Drift,COMPLETED
+Sensitive_Data_Redaction,500_PII_Payloads,Redaction_Accuracy,100%,0%_Overmask,COMPLETED

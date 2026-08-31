@@ -1,0 +1,7 @@
+Metric,Value
+Total_Legitimate_Requests,2000
+True_Negatives_Passed,2000
+False_Positives_Blocked,0
+False_Positive_Rate_Pct,0
+Throughput_Req_Sec,284
+Duration_Sec,7.04

@@ -1,0 +1,485 @@
+{
+  "timestamp": "2026-08-31T15:14:56.240Z",
+  "totalEvaluated": 500,
+  "correctlyEvaluated": 480,
+  "overallAccuracyPct": 96,
+  "falseDriftPct": 12.27,
+  "typeStats": {
+    "BASELINE_NORMAL": {
+      "total": 163,
+      "correctlyIdentified": 143,
+      "avgPenalty": 0,
+      "totalPenalty": 620
+    },
+    "MULTI_VECTOR_ANOMALY": {
+      "total": 113,
+      "correctlyIdentified": 113,
+      "avgPenalty": 0,
+      "totalPenalty": 4620
+    },
+    "IP_DRIFT": {
+      "total": 112,
+      "correctlyIdentified": 112,
+      "avgPenalty": 0,
+      "totalPenalty": 2305
+    },
+    "DEVICE_DRIFT": {
+      "total": 112,
+      "correctlyIdentified": 112,
+      "avgPenalty": 0,
+      "totalPenalty": 3080
+    }
+  },
+  "resultsSample": [
+    {
+      "id": "ID-BASE-alice_eng-1",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-2",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-3",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-4",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-5",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-6",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-7",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-8",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-9",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-alice_eng-10",
+      "type": "BASELINE_NORMAL",
+      "userId": "alice_eng",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-1",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-2",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-3",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-4",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-5",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-6",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-7",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-8",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-9",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-bob_finance-10",
+      "type": "BASELINE_NORMAL",
+      "userId": "bob_finance",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-1",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-2",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-3",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-4",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-5",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-6",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-7",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-8",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-9",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-carol_dev-10",
+      "type": "BASELINE_NORMAL",
+      "userId": "carol_dev",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-1",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-2",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-3",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-4",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-5",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-6",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-7",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-8",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-9",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-david_support-10",
+      "type": "BASELINE_NORMAL",
+      "userId": "david_support",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-1",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-2",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-3",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-4",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-5",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-6",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-7",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-8",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-9",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    },
+    {
+      "id": "ID-BASE-eve_analyst-10",
+      "type": "BASELINE_NORMAL",
+      "userId": "eve_analyst",
+      "expectedDrift": false,
+      "detectedDrift": false,
+      "penaltyAssigned": 0,
+      "threats": ""
+    }
+  ]
+}

@@ -7,30 +7,30 @@ const { isRuleEnabled } = require('./rules');
 // ---------------------------------------------------------------------------
 
 const ATTACK_RULES = [
-  { name: 'sql_injection', configKey: 'sqlInjection', score: 40, label: 'SQL Injection pattern', category: 'injection',
+  { name: 'sql_injection', configKey: 'sqlInjection', score: 65, label: 'SQL Injection pattern', category: 'injection',
     regex: /('|%27)\s*(or|and)\s*('|%27)?\d+=\d+|union\s+select|drop\s+table|insert\s+into|delete\s+from|update\s+\w+\s+set|exec\s*\(|execute\s*\(|xp_cmdshell|--\s*$/i },
-  { name: 'xss_pattern', configKey: 'xss', score: 35, label: 'Cross-Site Scripting (XSS) attempt', category: 'injection',
-    regex: /<script[\s>]|javascript\s*:|onerror\s*=|onload\s*=|onfocus\s*=|onclick\s*=|eval\s*\(|document\.cookie|document\.write|innerHTML\s*=|src\s*=\s*["']?javascript/i },
-  { name: 'path_traversal', configKey: 'pathTraversal', score: 35, label: 'Path traversal attack', category: 'traversal',
-    regex: /\.\.\//i },
-  { name: 'secret_probe', configKey: 'secretProbe', score: 30, label: 'Secret / config file probe', category: 'recon',
-    regex: /\.env|config\.json|wp-config|private[-_]?key|id_rsa|\.git\/config|\.htaccess|passwd|shadow|docker-compose\.yml/i },
-  { name: 'command_injection', configKey: 'commandInjection', score: 45, label: 'Command injection attempt', category: 'injection',
+  { name: 'xss_pattern', configKey: 'xss', score: 60, label: 'Cross-Site Scripting (XSS) attempt', category: 'injection',
+    regex: /<script[\s>]|javascript\s*:|onerror\s*=|onload\s*=|onfocus\s*=|onclick\s*=|eval\s*\(|document\.cookie|document\.write|innerHTML\s*=|src\s*=\s*["']?javascript|<svg|<body|<iframe/i },
+  { name: 'path_traversal', configKey: 'pathTraversal', score: 65, label: 'Path traversal attack', category: 'traversal',
+    regex: /\.\.\/|\.\.\\/i },
+  { name: 'secret_probe', configKey: 'secretProbe', score: 60, label: 'Secret / config file probe', category: 'recon',
+    regex: /\.env|config\.json|wp-config|private[-_]?key|id_rsa|\.git\/|\.htaccess|passwd|shadow|docker-compose|\/debug|\/secrets|\/internal/i },
+  { name: 'command_injection', configKey: 'commandInjection', score: 75, label: 'Command injection attempt', category: 'injection',
     regex: /;\s*(ls|cat|wget|curl|bash|sh|nc|netcat|python|perl|ruby|id|whoami|uname)\b|&&\s*(ls|cat|id|whoami)|\|\s*(cat|bash|sh|nc)\b|`[^`]+`|\$\([^)]+\)/ },
-  { name: 'ssti_pattern', configKey: 'ssti', score: 40, label: 'Server-Side Template Injection (SSTI)', category: 'injection',
+  { name: 'ssti_pattern', configKey: 'ssti', score: 65, label: 'Server-Side Template Injection (SSTI)', category: 'injection',
     regex: /\{\{[\s\S]*?\}\}|\$\{[\s\S]*?\}|#\{[\s\S]*?\}|<%[\s\S]*?%>|\{%[\s\S]*?%\}|{{7\*7}|\${7\*7}/i },
-  { name: 'nosql_injection', configKey: 'nosqlInjection', score: 40, label: 'NoSQL Injection attempt', category: 'injection',
-    regex: /\$where|\$gt\s*:|"\s*\$ne\s*"|\$regex|\$exists|\$in\s*:\s*\[|\$or\s*:\s*\[|"\s*\$gt\s*"\s*:/i },
-  { name: 'ldap_injection', configKey: 'ldapInjection', score: 35, label: 'LDAP Injection attempt', category: 'injection',
+  { name: 'nosql_injection', configKey: 'nosqlInjection', score: 60, label: 'NoSQL Injection attempt', category: 'injection',
+    regex: /\$where|\$gt\b|"\$gt"|\[\$gt\]|\$ne\b|"\$ne"|\[\$ne\]|\$regex\b|"\$regex"|\[\$regex\]|\$exists\b|"\$exists"|\[\$exists\]|\$in\b|"\$in"|\[\$in\]|\$or\b|"\$or"|\[\$or\]/i },
+  { name: 'ldap_injection', configKey: 'ldapInjection', score: 60, label: 'LDAP Injection attempt', category: 'injection',
     regex: /[)(|*\\]{3,}|\(\|[\w=*]+\)|\(&[\w=*]+\)/ },
-  { name: 'xxe_pattern', configKey: 'xxe', score: 40, label: 'XXE / XML Injection', category: 'injection',
+  { name: 'xxe_pattern', configKey: 'xxe', score: 70, label: 'XXE / XML Injection', category: 'injection',
     regex: /<!ENTITY|<!DOCTYPE[\s\S]*?SYSTEM|SYSTEM\s+["']https?:|file:\/\/\/|<!ELEMENT|<!ATTLIST/i },
-  { name: 'open_redirect', configKey: 'openRedirect', score: 25, label: 'Open redirect attempt', category: 'redirect',
+  { name: 'open_redirect', configKey: 'openRedirect', score: 60, label: 'Open redirect attempt', category: 'redirect',
     regex: /[?&](redirect|return|url|next|to|dest|destination|ref|redir|return_url)\s*=\s*https?:\/\//i },
-  { name: 'base64_payload', configKey: 'base64Payload', score: 20, label: 'Suspicious base64-encoded payload', category: 'evasion',
-    regex: /[?&][^=]+=(?:[A-Za-z0-9+/]{40,}={0,2})(?:&|$)/ },
-  { name: 'header_injection', configKey: 'headerInjection', score: 35, label: 'HTTP header injection', category: 'injection',
-    regex: /(%0d%0a|%0a%0d|\r\n|\n\r).*?:/i }
+  { name: 'base64_payload', configKey: 'base64Payload', score: 60, label: 'Suspicious base64-encoded payload', category: 'evasion',
+    regex: /[?&][a-zA-Z0-9_.-]+=(?:[A-Za-z0-9+/]{32,}={0,2})(?:&|$)/ },
+  { name: 'header_injection', configKey: 'headerInjection', score: 60, label: 'HTTP header injection', category: 'injection',
+    regex: /(%0d%0a|%0a%0d|\r\n|\n\r).*?:|%0a%0d|%0d%0a|\r\n|\n\r/i }
 ];
 
 // ---------------------------------------------------------------------------
@@ -38,26 +38,26 @@ const ATTACK_RULES = [
 // ---------------------------------------------------------------------------
 
 const SCANNER_UA_PATTERNS = [
-  { name: 'sqlmap', score: 50, regex: /sqlmap/i },
-  { name: 'nikto', score: 50, regex: /nikto/i },
-  { name: 'masscan', score: 45, regex: /masscan/i },
-  { name: 'nmap', score: 45, regex: /nmap/i },
-  { name: 'zgrab', score: 45, regex: /zgrab/i },
-  { name: 'dirbuster', score: 50, regex: /dirbuster/i },
-  { name: 'gobuster', score: 50, regex: /gobuster/i },
-  { name: 'wfuzz', score: 50, regex: /wfuzz/i },
-  { name: 'hydra', score: 50, regex: /hydra/i },
-  { name: 'burpsuite', score: 40, regex: /burpsuite|burp\s*suite/i },
-  { name: 'metasploit', score: 55, regex: /metasploit/i },
-  { name: 'headless_chrome', score: 30, regex: /HeadlessChrome/i },
-  { name: 'phantomjs', score: 35, regex: /PhantomJS/i },
-  { name: 'puppeteer', score: 25, regex: /puppeteer/i },
-  { name: 'python_requests', score: 15, regex: /python-requests\//i },
-  { name: 'go_http', score: 15, regex: /^Go-http-client\//i },
-  { name: 'curl_automated', score: 10, regex: /^curl\//i },
-  { name: 'wget', score: 20, regex: /^Wget\//i },
-  { name: 'java_ua', score: 15, regex: /^Java\//i },
-  { name: 'libwww', score: 20, regex: /libwww-perl|LWP::/i }
+  { name: 'sqlmap', score: 65, regex: /sqlmap/i },
+  { name: 'nikto', score: 65, regex: /nikto/i },
+  { name: 'masscan', score: 65, regex: /masscan/i },
+  { name: 'nmap', score: 60, regex: /nmap/i },
+  { name: 'zgrab', score: 60, regex: /zgrab/i },
+  { name: 'dirbuster', score: 65, regex: /dirbuster/i },
+  { name: 'gobuster', score: 65, regex: /gobuster/i },
+  { name: 'wfuzz', score: 65, regex: /wfuzz/i },
+  { name: 'hydra', score: 65, regex: /hydra/i },
+  { name: 'burpsuite', score: 60, regex: /burpsuite|burp\s*suite/i },
+  { name: 'metasploit', score: 70, regex: /metasploit/i },
+  { name: 'headless_chrome', score: 60, regex: /HeadlessChrome/i },
+  { name: 'phantomjs', score: 60, regex: /PhantomJS/i },
+  { name: 'puppeteer', score: 50, regex: /puppeteer/i },
+  { name: 'python_requests', score: 35, regex: /python-requests\//i },
+  { name: 'go_http', score: 35, regex: /^Go-http-client\//i },
+  { name: 'curl_automated', score: 25, regex: /^curl\//i },
+  { name: 'wget', score: 35, regex: /^Wget\//i },
+  { name: 'java_ua', score: 35, regex: /^Java\//i },
+  { name: 'libwww', score: 40, regex: /libwww-perl|LWP::/i }
 ];
 
 // ---------------------------------------------------------------------------
@@ -159,11 +159,12 @@ function analyzeRequest(req, storage, config) {
   // --- Failed auth tracking ---
   if (isFailedAuthRequest(req)) {
     const failedCount = storage.recordFailedAuth(ip);
-    if (failedCount >= ((config.anomaly && config.anomaly.failedAuthMax) || 5)) {
-      scoreParts.push(35);
+    if (failedCount >= ((config.anomaly && config.anomaly.failedAuthMax) || 3)) {
+      const authScore = 65;
+      scoreParts.push(authScore);
       threats.push('repeated_failed_auth');
       reasons.push('failed_auth_count_' + failedCount);
-      breakdown.push({ rule: 'repeated_failed_auth', label: 'Repeated failed authentication (' + failedCount + ' attempts)', points: 35, category: 'anomaly', confidence: 88 });
+      breakdown.push({ rule: 'repeated_failed_auth', label: 'Brute force authentication (' + failedCount + ' attempts)', points: authScore, category: 'anomaly', confidence: 90 });
       anomalies.push('repeated_failed_auth');
     }
   }
@@ -215,8 +216,15 @@ function analyzeRequest(req, storage, config) {
 // ---------------------------------------------------------------------------
 
 function collectText(req) {
-  const chunks = [req.originalUrl || req.url || '', req.headers['user-agent'] || ''];
-  if (req.query) chunks.push(JSON.stringify(req.query));
+  const rawUrl = req.originalUrl || req.url || '';
+  let decodedUrl = '';
+  try { decodedUrl = decodeURIComponent(rawUrl); } catch (_) { decodedUrl = rawUrl; }
+  
+  const chunks = [rawUrl, decodedUrl, req.headers['user-agent'] || ''];
+  if (req.query) {
+    chunks.push(JSON.stringify(req.query));
+    try { chunks.push(decodeURIComponent(JSON.stringify(req.query))); } catch (_) {}
+  }
   if (req.body && typeof req.body === 'object') {
     const bodyClone = Object.assign({}, req.body);
     delete bodyClone.__iri;
