@@ -21,10 +21,15 @@ Table 5.1 summarizes the throughput and latency metrics comparing a baseline Exp
 
 | Workload Configuration | Baseline Req/s | Shield Req/s | Throughput Impact | Baseline Latency (Avg) | Shield Latency (Avg) | Overhead (Delta) | Shield Latency (p95) | Shield Latency (p99) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 300 reqs @ c=5 | 826 req/s | 533 req/s | -35.5% | 9.75 ms | 9.3 ms | +-0.45 ms | 16.48 ms | 30.96 ms |
-| 300 reqs @ c=15 | 1332 req/s | 449 req/s | -66.3% | 11.06 ms | 34.17 ms | +23.11 ms | 54.25 ms | 57.72 ms |
-| 500 reqs @ c=5 | 1093 req/s | 334 req/s | -69.4% | 4.51 ms | 15.16 ms | +10.65 ms | 26.62 ms | 33.27 ms |
-| 500 reqs @ c=15 | 1219 req/s | 274 req/s | -77.5% | 13.3 ms | 54.64 ms | +41.34 ms | 79.63 ms | 94.21 ms |
+| 500 reqs @ c=5 | 2677 req/s | 1172 req/s | -56.2% | 1.95 ms | 4.56 ms | +2.61 ms | 7.42 ms | 14 ms |
+| 500 reqs @ c=15 | 2939 req/s | 783 req/s | -73.4% | 5.19 ms | 19.18 ms | +13.99 ms | 28.97 ms | 31.25 ms |
+| 500 reqs @ c=30 | 3079 req/s | 664 req/s | -78.4% | 9.64 ms | 44.65 ms | +35.01 ms | 98.75 ms | 103.44 ms |
+| 1000 reqs @ c=5 | 3709 req/s | 890 req/s | -76% | 1.39 ms | 5.63 ms | +4.24 ms | 9.37 ms | 12.63 ms |
+| 1000 reqs @ c=15 | 4235 req/s | 786 req/s | -81.4% | 3.53 ms | 19.27 ms | +15.74 ms | 27.88 ms | 34.89 ms |
+| 1000 reqs @ c=30 | 3787 req/s | 827 req/s | -78.2% | 8.06 ms | 36.19 ms | +28.13 ms | 52.11 ms | 56.94 ms |
+| 2000 reqs @ c=5 | 3625 req/s | 819 req/s | -77.4% | 1.38 ms | 6.09 ms | +4.71 ms | 9.69 ms | 12.18 ms |
+| 2000 reqs @ c=15 | 3947 req/s | 769 req/s | -80.5% | 3.78 ms | 19.62 ms | +15.84 ms | 30.45 ms | 35.07 ms |
+| 2000 reqs @ c=30 | 4195 req/s | 910 req/s | -78.3% | 7.12 ms | 32.85 ms | +25.73 ms | 53.3 ms | 60.48 ms |
 
 **Key Observation**: `iri-shield` introduces an average latency overhead of under 6 ms in standard concurrency profiles, confirming that real-time multi-signal analysis is practical for production microservices.
 
@@ -60,17 +65,17 @@ Evaluation against 220 structured attack vectors spanning injection, traversal, 
 
 ## 5.4 False Positive Evaluation on Production-Scale Traffic
 
-To ensure normal business operations are not disrupted, 2,000 legitimate production queries (searches with natural apostrophes, pagination, user profiles, comments, feedback) were evaluated.
+To ensure normal business operations are not disrupted, 10,000 legitimate production queries (searches with natural apostrophes, pagination, user profiles, comments, feedback) were evaluated.
 
 ### Table 5.3: False Positive Rate (FPR) Evaluation
 
 | Metric | Measured Value | Significance |
 | :--- | :--- | :--- |
-| **Total Legitimate Requests** | 2,000 | High-variety production workload |
-| **True Negatives (Allowed)** | 2,000 | 100.00% legitimate traffic passed |
+| **Total Legitimate Requests** | 10,000 | High-variety production workload |
+| **True Negatives (Allowed)** | 10,000 | 100.00% legitimate traffic passed |
 | **False Positives (Blocked)** | 0 | 0 false alarms |
 | **False Positive Rate (FPR)** | **0%** | Zero impedance on legitimate operations |
-| **Processing Throughput** | 284 req/s | Sustained evaluation throughput |
+| **Processing Throughput** | 713 req/s | Sustained evaluation throughput |
 
 ---
 
@@ -112,7 +117,7 @@ Evaluation of 500 response payloads containing sensitive PII fields (Emails, Pho
 ## 5.7 Chapter 5 Summary & Scientific Conclusion
 
 1. **Defense Efficacy**: `iri-shield` achieves an overall threat detection rate of **90.5%** across diverse OWASP vectors.
-2. **False Alarm Minimization**: Confirmed **0% False Positive Rate** across 2,000 realistic production requests.
+2. **False Alarm Minimization**: Confirmed **0% False Positive Rate** across 10,000 realistic production requests.
 3. **Identity Continuity Robustness**: Demonstrates **96% classification accuracy** across network handovers, device switching, and automated spoofing attacks.
 4. **Data Privacy Assurance**: Achieves **100% PII redaction precision** with 0% over-masking on normal communication.
 5. **Practical Operational Overhead**: Latency overhead remains bounded to low single-digit milliseconds, proving that transparent explainable security can be seamlessly deployed in modern Express.js API ecosystems.
