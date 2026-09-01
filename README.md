@@ -6,27 +6,39 @@
 [![Security](https://img.shields.io/badge/security-explainable--ai-orange.svg)](#-explainable-risk-scoring)
 [![Privacy](https://img.shields.io/badge/privacy-by--design-teal.svg)](#-privacy-by-design)
 
+<p align="center">
+  <img src="./img/iri-shield-home.jpg" alt="Iri Shield Logo" width="500">
+</p>
+
+
 > **Enterprise-grade API security middleware for Express.js** featuring **Explainable Risk Scoring**, **Multi-Signal Identity Continuity Analysis**, **Behavioural Anomaly Detection**, **Attack Sequence Correlation**, **Configurable Rule Engine**, **Automated PII/Secret Redaction**, and an **Interactive Real-Time Admin Dashboard**.
 
 ---
 
 ## 📑 Table of Contents
 
-- [Architectural Philosophy](#-architectural-philosophy)
-- [Key Features](#-key-features)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [Explainable Risk Scoring](#-explainable-risk-scoring)
-- [Multi-Signal Identity Continuity](#-multi-signal-identity-continuity)
-- [Security Rule Engine](#-security-rule-engine)
-- [Behavioural Anomaly & Correlation](#-behavioural-anomaly--correlation)
-- [Privacy Controls & Fail-Safe Modes](#-privacy-controls--fail-safe-modes)
-- [Interactive Admin Dashboard](#-interactive-admin-dashboard)
-- [Automated Benchmarking](#-automated-benchmarking)
-- [Full Configuration Reference](#-full-configuration-reference)
-- [Security & Auth Utilities](#-security--auth-utilities)
-- [Academic & Research Defense](#-academic--research-defense)
-- [License](#-license)
+- [🛡️ iri-shield](#️-iri-shield)
+  - [📑 Table of Contents](#-table-of-contents)
+  - [🏛️ Architectural Philosophy](#️-architectural-philosophy)
+  - [✨ Key Features](#-key-features)
+  - [📦 Installation](#-installation)
+  - [⚡ Quick Start](#-quick-start)
+  - [🔍 Explainable Risk Scoring](#-explainable-risk-scoring)
+  - [🧬 Multi-Signal Identity Continuity](#-multi-signal-identity-continuity)
+  - [⚙️ Security Rule Engine](#️-security-rule-engine)
+  - [📈 Behavioural Anomaly \& Correlation](#-behavioural-anomaly--correlation)
+    - [1. Rolling Behaviour Baseline](#1-rolling-behaviour-baseline)
+    - [2. Attack Sequence Correlation](#2-attack-sequence-correlation)
+  - [🔒 Privacy Controls \& Fail-Safe Modes](#-privacy-controls--fail-safe-modes)
+  - [📊 Automated Benchmarking \& Research Evaluation](#-automated-benchmarking--research-evaluation)
+    - [Comprehensive Research Evaluation Summary (v1.2.0-research)](#comprehensive-research-evaluation-summary-v120-research)
+    - [Multi-Workload Performance \& Latency Matrix](#multi-workload-performance--latency-matrix)
+  - [🖥️ Interactive Admin Dashboard](#️-interactive-admin-dashboard)
+  - [⚙️ Full Configuration Reference](#️-full-configuration-reference)
+  - [🛡️ Security \& Auth Utilities](#️-security--auth-utilities)
+  - [🎓 Academic \& Research Defense](#-academic--research-defense)
+    - [Theoretical Foundation](#theoretical-foundation)
+  - [📄 License](#-license)
 
 ---
 
@@ -456,4 +468,4 @@ When presenting or publishing research using `iri-shield`:
 
 ## 📄 License
 
-ISC © [ansari-in](https://github.com/ansari-in)
+MIT License © [ansari-in](https://github.com/ansari-in/iri-shield/blob/main/LICENSE)
