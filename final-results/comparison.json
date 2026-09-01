@@ -1,0 +1,185 @@
+{
+  "timestamp": "2026-08-31T19:53:08.840Z",
+  "configurations": {
+    "requests": [
+      300,
+      500
+    ],
+    "concurrency": [
+      5,
+      15
+    ],
+    "trials": 2,
+    "warmupRequests": 150
+  },
+  "results": [
+    {
+      "requests": 300,
+      "concurrency": 5,
+      "trials": 2,
+      "baseline": {
+        "throughput": 1904,
+        "coresUtilized": 1.41,
+        "normalizedCpuPercent": 17.6,
+        "cpuPercent": 17.6,
+        "processLoadPercent": 140.5,
+        "heapDeltaMb": 3.61,
+        "latency": {
+          "avg": 2.97,
+          "median": 2.84,
+          "stdDev": 0.84,
+          "p95": 4.54,
+          "p99": 6.18
+        }
+      },
+      "shield": {
+        "throughput": 997,
+        "coresUtilized": 1.09,
+        "normalizedCpuPercent": 13.6,
+        "cpuPercent": 13.6,
+        "processLoadPercent": 109,
+        "heapDeltaMb": 2.19,
+        "latency": {
+          "avg": 4.96,
+          "median": 4.54,
+          "stdDev": 1.46,
+          "p95": 7.8,
+          "p99": 9.77
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 47.6,
+        "latencyOverheadAvgMs": 1.99,
+        "p95DeltaMs": 3.26,
+        "p99DeltaMs": 3.59,
+        "cpuOverheadPercent": -4
+      }
+    },
+    {
+      "requests": 300,
+      "concurrency": 15,
+      "trials": 2,
+      "baseline": {
+        "throughput": 2404,
+        "coresUtilized": 1.02,
+        "normalizedCpuPercent": 12.8,
+        "cpuPercent": 12.8,
+        "processLoadPercent": 102.5,
+        "heapDeltaMb": 3.96,
+        "latency": {
+          "avg": 6.28,
+          "median": 5.98,
+          "stdDev": 1.47,
+          "p95": 9.39,
+          "p99": 10.18
+        }
+      },
+      "shield": {
+        "throughput": 706,
+        "coresUtilized": 1.17,
+        "normalizedCpuPercent": 14.7,
+        "cpuPercent": 14.7,
+        "processLoadPercent": 117,
+        "heapDeltaMb": -3.45,
+        "latency": {
+          "avg": 21.49,
+          "median": 20.24,
+          "stdDev": 5.45,
+          "p95": 34.24,
+          "p99": 35.73
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 70.6,
+        "latencyOverheadAvgMs": 15.21,
+        "p95DeltaMs": 24.85,
+        "p99DeltaMs": 25.55,
+        "cpuOverheadPercent": 1.9
+      }
+    },
+    {
+      "requests": 500,
+      "concurrency": 5,
+      "trials": 2,
+      "baseline": {
+        "throughput": 2669,
+        "coresUtilized": 1.19,
+        "normalizedCpuPercent": 14.9,
+        "cpuPercent": 14.9,
+        "processLoadPercent": 119,
+        "heapDeltaMb": -8.36,
+        "latency": {
+          "avg": 1.86,
+          "median": 1.7,
+          "stdDev": 0.61,
+          "p95": 3,
+          "p99": 4.73
+        }
+      },
+      "shield": {
+        "throughput": 630,
+        "coresUtilized": 1.05,
+        "normalizedCpuPercent": 13.1,
+        "cpuPercent": 13.1,
+        "processLoadPercent": 105.5,
+        "heapDeltaMb": 10.84,
+        "latency": {
+          "avg": 7.92,
+          "median": 7.4,
+          "stdDev": 2.21,
+          "p95": 12.16,
+          "p99": 16.58
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 76.4,
+        "latencyOverheadAvgMs": 6.06,
+        "p95DeltaMs": 9.16,
+        "p99DeltaMs": 11.85,
+        "cpuOverheadPercent": -1.8
+      }
+    },
+    {
+      "requests": 500,
+      "concurrency": 15,
+      "trials": 2,
+      "baseline": {
+        "throughput": 3097,
+        "coresUtilized": 1.21,
+        "normalizedCpuPercent": 15.2,
+        "cpuPercent": 15.2,
+        "processLoadPercent": 121,
+        "heapDeltaMb": 15.7,
+        "latency": {
+          "avg": 4.79,
+          "median": 4.62,
+          "stdDev": 1.13,
+          "p95": 6.92,
+          "p99": 9.18
+        }
+      },
+      "shield": {
+        "throughput": 730,
+        "coresUtilized": 1.19,
+        "normalizedCpuPercent": 14.9,
+        "cpuPercent": 14.9,
+        "processLoadPercent": 118.5,
+        "heapDeltaMb": -19.98,
+        "latency": {
+          "avg": 20.44,
+          "median": 19.16,
+          "stdDev": 4.08,
+          "p95": 29.8,
+          "p99": 33.06
+        }
+      },
+      "comparison": {
+        "throughputImpactPercent": 76.4,
+        "latencyOverheadAvgMs": 15.65,
+        "p95DeltaMs": 22.88,
+        "p99DeltaMs": 23.88,
+        "cpuOverheadPercent": -0.3
+      }
+    }
+  ]
+}

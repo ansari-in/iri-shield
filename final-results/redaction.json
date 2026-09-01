@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-08-31T19:53:13.224Z",
+  "totalEvaluated": 500,
+  "totalCorrect": 500,
+  "overallAccuracyPct": 100,
+  "falseRedactionRatePct": 0,
+  "categoryStats": {
+    "ARRAY_COLLECTIONS": {
+      "total": 84,
+      "correct": 84,
+      "expectedRedactions": 336,
+      "actualRedactions": 336,
+      "overMasked": 0
+    },
+    "UNSTRUCTURED_STRINGS": {
+      "total": 84,
+      "correct": 84,
+      "expectedRedactions": 168,
+      "actualRedactions": 252,
+      "overMasked": 0
+    },
+    "COMPOSITE_ECOMMERCE": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 332,
+      "actualRedactions": 332,
+      "overMasked": 0
+    },
+    "DIRECT_PII": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 249,
+      "actualRedactions": 249,
+      "overMasked": 0
+    },
+    "DECOY_CLEAN_CONTROLS": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 0,
+      "actualRedactions": 0,
+      "overMasked": 0
+    },
+    "NESTED_JSON_PII": {
+      "total": 83,
+      "correct": 83,
+      "expectedRedactions": 249,
+      "actualRedactions": 249,
+      "overMasked": 0
+    }
+  }
+}

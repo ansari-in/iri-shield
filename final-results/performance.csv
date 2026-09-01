@@ -1,0 +1,5 @@
+Requests,Concurrency,Trials,Baseline_Throughput_ReqSec,Shield_Throughput_ReqSec,Throughput_Delta_Pct,Baseline_Avg_Latency_ms,Shield_Avg_Latency_ms,Latency_Overhead_ms,Baseline_Median_ms,Shield_Median_ms,Baseline_StdDev_ms,Shield_StdDev_ms,Baseline_p95_ms,Shield_p95_ms,Baseline_p99_ms,Shield_p99_ms,Baseline_Cores_Utilized,Shield_Cores_Utilized,Baseline_Normalized_CPU_Pct,Shield_Normalized_CPU_Pct,Baseline_Heap_MB,Shield_Heap_MB
+300,5,2,1904,997,47.6%,2.97,4.96,1.99,2.84,4.54,0.84,1.46,4.54,7.8,6.18,9.77,1.41,1.09,17.6%,13.6%,3.61,2.19
+300,15,2,2404,706,70.6%,6.28,21.49,15.21,5.98,20.24,1.47,5.45,9.39,34.24,10.18,35.73,1.02,1.17,12.8%,14.7%,3.96,-3.45
+500,5,2,2669,630,76.4%,1.86,7.92,6.06,1.7,7.4,0.61,2.21,3,12.16,4.73,16.58,1.19,1.05,14.9%,13.1%,-8.36,10.84
+500,15,2,3097,730,76.4%,4.79,20.44,15.65,4.62,19.16,1.13,4.08,6.92,29.8,9.18,33.06,1.21,1.19,15.2%,14.9%,15.7,-19.98

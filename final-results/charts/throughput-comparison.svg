@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+  <defs>
+    <linearGradient id="gridGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Title & Subtitle -->
+  <text x="400" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Figure 5.1: Throughput Comparison (Baseline vs. iri-shield)</text>
+  <text x="400" y="52" text-anchor="middle" font-size="12" fill="#64748b">Higher is better. Evaluated across varying requests and concurrency workloads.</text>
+
+  <!-- Y-Axis Gridlines & Ticks -->
+  <line x1="90" y1="380" x2="760" y2="380" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="0"/>
+  <text x="78" y="384" text-anchor="end" font-size="11" fill="#64748b">0</text>
+  <line x1="90" y1="318" x2="760" y2="318" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="322" text-anchor="end" font-size="11" fill="#64748b">712</text>
+  <line x1="90" y1="256" x2="760" y2="256" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="260" text-anchor="end" font-size="11" fill="#64748b">1425</text>
+  <line x1="90" y1="194" x2="760" y2="194" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="198" text-anchor="end" font-size="11" fill="#64748b">2137</text>
+  <line x1="90" y1="132" x2="760" y2="132" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="136" text-anchor="end" font-size="11" fill="#64748b">2850</text>
+  <line x1="90" y1="70" x2="760" y2="70" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="78" y="74" text-anchor="end" font-size="11" fill="#64748b">3562</text>
+  <text x="-225" y="24" transform="rotate(-90)" text-anchor="middle" font-size="12" font-weight="600" fill="#475569">Throughput (Requests / Second)</text>
+  <text x="173.75" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">300r@5c</text>
+  <rect x="137.75" y="214.29533969679954" width="34" height="165.70466030320046" rx="3" fill="#64748b" opacity="0.9"/>
+  <text x="154.75" y="209.29533969679954" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">1904</text>
+  <rect x="173.75" y="293.23133071308257" width="34" height="86.76866928691746" rx="3" fill="#2563eb" opacity="0.9"/>
+  <text x="190.75" y="288.23133071308257" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">997</text>
+  <text x="341.25" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">300r@15c</text>
+  <rect x="305.25" y="170.78046041549692" width="34" height="209.21953958450308" rx="3" fill="#64748b" opacity="0.9"/>
+  <text x="322.25" y="165.78046041549692" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">2404</text>
+  <rect x="341.25" y="318.55699045480065" width="34" height="61.44300954519933" rx="3" fill="#2563eb" opacity="0.9"/>
+  <text x="358.25" y="313.55699045480065" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">706</text>
+  <text x="508.75" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">500r@5c</text>
+  <rect x="472.75" y="147.71757439640652" width="34" height="232.28242560359348" rx="3" fill="#64748b" opacity="0.9"/>
+  <text x="489.75" y="142.71757439640652" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">2669</text>
+  <rect x="508.75" y="325.17125210555866" width="34" height="54.82874789444133" rx="3" fill="#2563eb" opacity="0.9"/>
+  <text x="525.75" y="320.17125210555866" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">630</text>
+  <text x="676.25" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">500r@15c</text>
+  <rect x="640.25" y="110.46883773161147" width="34" height="269.5311622683885" rx="3" fill="#64748b" opacity="0.9"/>
+  <text x="657.25" y="105.46883773161147" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">3097</text>
+  <rect x="676.25" y="316.4682762492981" width="34" height="63.53172375070185" rx="3" fill="#2563eb" opacity="0.9"/>
+  <text x="693.25" y="311.4682762492981" text-anchor="middle" font-size="10" font-weight="700" fill="#1e293b">730</text>
+  <rect x="280" y="422" width="12" height="12" rx="2" fill="#64748b"/>
+  <text x="298" y="432" font-size="11" font-weight="600" fill="#334155">Baseline Express</text>
+  <rect x="420" y="422" width="12" height="12" rx="2" fill="#2563eb"/>
+  <text x="438" y="432" font-size="11" font-weight="600" fill="#334155">Express + iri-shield</text>
+</svg>

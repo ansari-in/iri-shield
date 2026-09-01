@@ -1,0 +1,110 @@
+{
+  "timestamp": "2026-08-31T19:53:09.196Z",
+  "totalAttacks": 220,
+  "totalMitigated": 214,
+  "totalBlocked": 213,
+  "totalRateLimited": 0,
+  "totalMissed": 6,
+  "detectionRatePct": 97.3,
+  "blockingRatePct": 96.8,
+  "categories": {
+    "SQL_INJECTION": {
+      "total": 45,
+      "mitigated": 45,
+      "blocked": 45,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "XSS": {
+      "total": 39,
+      "mitigated": 39,
+      "blocked": 39,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "PATH_TRAVERSAL": {
+      "total": 30,
+      "mitigated": 30,
+      "blocked": 30,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "COMMAND_INJECTION": {
+      "total": 30,
+      "mitigated": 30,
+      "blocked": 30,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "SSTI": {
+      "total": 16,
+      "mitigated": 16,
+      "blocked": 16,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "NOSQL_INJECTION": {
+      "total": 8,
+      "mitigated": 8,
+      "blocked": 8,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "SCANNER_BOT": {
+      "total": 15,
+      "mitigated": 13,
+      "blocked": 13,
+      "rateLimited": 0,
+      "missed": 2
+    },
+    "SECRET_PROBE": {
+      "total": 12,
+      "mitigated": 12,
+      "blocked": 12,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "BRUTE_FORCE": {
+      "total": 8,
+      "mitigated": 4,
+      "blocked": 4,
+      "rateLimited": 0,
+      "missed": 4
+    },
+    "HEADER_INJECTION": {
+      "total": 3,
+      "mitigated": 3,
+      "blocked": 2,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "XXE": {
+      "total": 4,
+      "mitigated": 4,
+      "blocked": 4,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "LDAP_INJECTION": {
+      "total": 4,
+      "mitigated": 4,
+      "blocked": 4,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "OPEN_REDIRECT": {
+      "total": 4,
+      "mitigated": 4,
+      "blocked": 4,
+      "rateLimited": 0,
+      "missed": 0
+    },
+    "BASE64_PAYLOAD": {
+      "total": 2,
+      "mitigated": 2,
+      "blocked": 2,
+      "rateLimited": 0,
+      "missed": 0
+    }
+  }
+}

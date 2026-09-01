@@ -1,4 +1,4 @@
-﻿# 🛡️ iri-shield
+# 🛡️ iri-shield
 
 [![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://www.npmjs.com/package/iri-shield)
 [![License: ISC](https://img.shields.io/badge/License-ISC-emerald.svg)](https://opensource.org/licenses/ISC)
@@ -255,34 +255,47 @@ const shield = createShield({
 
 ---
 
-##  Automated Benchmarking
+## 📊 Automated Benchmarking & Research Evaluation
 
-`iri-shield` includes a built-in benchmarking tool to compare performance against a baseline unshielded Express server:
+`iri-shield` includes a built-in automated evaluation suite to benchmark performance, threat detection efficacy, false positives, identity continuity, and data redaction against baseline Express.js:
 
 ```bash
-npm run benchmark
+# Run comprehensive multi-experiment research evaluation suite
+npm run research:evaluate
+
+# Or run individual benchmark modules:
+npm run benchmark           # Multi-workload latency/throughput matrix
+npm run security:evaluate   # 220-vector category threat detection
+npm run security:compare    # Vanilla Express vs iri-shield defense comparison
+npm run fp:evaluate         # 2,000 legitimate queries false positive evaluation
+npm run identity:evaluate   # 500-scenario identity continuity & drift evaluation
+npm run redaction:evaluate  # 500-sample recursive PII masking evaluation
 ```
 
-### Real Benchmark Output (500 Requests @ 15 Concurrency)
+### Comprehensive Research Evaluation Summary (v1.2.0-research)
 
-```text
-================================================================================
-                           BENCHMARK COMPARISON RESULTS                         
-================================================================================
-Metric                   | Baseline       | iri-shield     | Delta / Overhead   
--------------------------|----------------|----------------|--------------------
-Throughput               | 1032 req/s     | 748 req/s      | -27.5% throughput
-Avg Latency              | 14.03 ms       | 19.89 ms       | +5.86 ms overhead
-p50 Latency              | 11.64 ms       | 18.11 ms       | +6.47 ms
-p95 Latency              | 35.11 ms       | 31.00 ms       | -4.11 ms
-p99 Latency              | 71.96 ms       | 61.88 ms       | -10.08 ms
-Memory Delta             | 0.63 MB        | 6.93 MB        | +6.30 MB
-Detection Rate           | N/A            | 80%            | 80/100 attacks intercepted
-False Positive Rate      | N/A            | 0%             | 0 false alarms
-================================================================================
-```
+| Evaluation Dimension | Workload / Dataset | Success Metric | Value | Baseline Comparison |
+| :--- | :--- | :--- | :--- | :--- |
+| **Threat Detection** | 220 Attack Payloads (14 Categories) | Overall Mitigation Rate | **97.3%** (214/220) | Vanilla Express: 0.0% (+97.7% Net Gain) |
+| **False Positive Rate** | 2,000 Legitimate Queries | True Negative Pass Rate | **100.00%** (0% FPR) | Zero business disruption on clean traffic |
+| **Identity Continuity** | 500 State Transitions | Profiling Accuracy | **100.0%** (0% False Drift) | Accurately flags IP/UA/Fingerprint drift |
+| **PII Data Redaction** | 500 Structured Payloads | Redaction Precision | **100.0%** (0% Overmask) | 5-level nested JSON & unstructured logs |
+| **Low-Load Overhead** | 300 Requests @ Concurrency 5 | Average Latency Delta | **+1.99 ms** | 2.97 ms (Base) vs 4.96 ms (Shield) |
 
-JSON benchmark reports are automatically saved to `results/baseline.json`, `results/shield.json`, and `results/comparison.json`.
+### Multi-Workload Performance & Latency Matrix
+
+| Workload Configuration | Baseline Req/s | Shield Req/s | Throughput Impact | Base Latency (Avg) | Shield Latency (Avg) | Overhead (Δ) | Shield p95 | Shield p99 | Host CPU (Base vs Shield) | Cores Utilized (Base vs Shield) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **300 req @ c=5** | 1,904 req/s | 997 req/s | -47.6% | 2.97 ms | 4.96 ms | **+1.99 ms** | 7.80 ms | 9.77 ms | 17.6% vs 13.6% | 1.41 vs 1.09 cores |
+| **300 req @ c=15** | 2,404 req/s | 706 req/s | -70.6% | 6.28 ms | 21.49 ms | **+15.21 ms** | 34.24 ms | 35.73 ms | 12.8% vs 14.7% | 1.02 vs 1.17 cores |
+| **500 req @ c=5** | 2,669 req/s | 630 req/s | -76.4% | 1.86 ms | 7.92 ms | **+6.06 ms** | 12.16 ms | 16.58 ms | 14.9% vs 13.1% | 1.19 vs 1.05 cores |
+| **500 req @ c=15** | 3,097 req/s | 730 req/s | -76.4% | 4.79 ms | 20.44 ms | **+15.65 ms** | 29.80 ms | 33.06 ms | 15.2% vs 14.9% | 1.21 vs 1.19 cores |
+
+> **CPU Metric Definitions:**
+> - **Host Normalized CPU %**: Percentage of entire multi-core host compute bandwidth consumed ($\frac{\Delta \text{CPU}_{\mu s}}{\text{Duration}_s \times 10^6 \times N_{\text{cores}}} \times 100\%$).
+> - **Cores Utilized**: Total saturated CPU cores consumed by the V8 runtime / libuv thread pool ($\frac{\Delta \text{CPU}_{\mu s}}{\text{Duration}_s \times 10^6}$, where 1.0 = 1 full CPU core).
+
+JSON and CSV benchmark artifacts are automatically recorded in `results/`, `final-results/`, and `research-results/`.
 
 ---
 

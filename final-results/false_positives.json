@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-08-31T19:53:13.151Z",
+  "totalRequests": 2000,
+  "passedCount": 2000,
+  "falsePositiveCount": 0,
+  "falsePositiveRatePct": 0,
+  "durationSec": 3.44,
+  "throughputReqSec": 581
+}

@@ -1,0 +1,18 @@
+{
+  "totalRequests": 1000,
+  "durationSec": 0.34,
+  "throughputReqSec": 2972,
+  "latency": {
+    "avgMs": 6.54,
+    "p50Ms": 5.48,
+    "p90Ms": 8.46,
+    "p95Ms": 9.21,
+    "p99Ms": 38.43
+  },
+  "memory": {
+    "heapUsedMbBefore": 10.65,
+    "heapUsedMbAfter": 14.75,
+    "diffMb": 4.1
+  },
+  "security": null
+}

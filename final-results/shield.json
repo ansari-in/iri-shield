@@ -1,0 +1,25 @@
+{
+  "totalRequests": 1000,
+  "durationSec": 0.5,
+  "throughputReqSec": 1982,
+  "latency": {
+    "avgMs": 10.04,
+    "p50Ms": 9.09,
+    "p90Ms": 11.44,
+    "p95Ms": 12.73,
+    "p99Ms": 36.83
+  },
+  "memory": {
+    "heapUsedMbBefore": 14.94,
+    "heapUsedMbAfter": 24.55,
+    "diffMb": 9.61
+  },
+  "security": {
+    "totalAttacksSent": 200,
+    "attacksMitigated": 180,
+    "detectionRatePct": 90,
+    "cleanRequestsSent": 800,
+    "falsePositives": 0,
+    "falsePositiveRatePct": 0
+  }
+}
