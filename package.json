@@ -17,7 +17,7 @@
     "redaction",
     "dashboard"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "author": "ansari-in",
   "type": "commonjs",
   "main": "index.js",
