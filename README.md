@@ -1,7 +1,7 @@
 # 🛡️ iri-shield
 
 [![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://www.npmjs.com/package/iri-shield)
-[![License: ISC](https://img.shields.io/badge/License-ISC-emerald.svg)](https://opensource.org/licenses/ISC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-purple.svg)](https://nodejs.org)
 [![Security](https://img.shields.io/badge/security-explainable--ai-orange.svg)](#-explainable-risk-scoring)
 [![Privacy](https://img.shields.io/badge/privacy-by--design-teal.svg)](#-privacy-by-design)
@@ -41,24 +41,21 @@
   - [📄 License](#-license)
 
 ---
-
 ## 🏛️ Architectural Philosophy
 
-Modern web threats exploit fragmented signals across rotating IP pools, forged User-Agents, and multi-step evasion techniques. Traditional WAFs rely solely on static signatures or opaque binary decisions.
+`iri-shield` follows a **transparent, multi-layered security architecture**.
+Instead of relying on a single detection mechanism, it combines identity signals, configurable security rules, behavioural analysis, attack correlation, explainable risk scoring, and automated mitigation.
 
-`iri-shield` introduces a **transparent, multi-layered defense model**:
-
-```text
-Incoming HTTP Request
-         │
-         ├──► 1. Base Security (Helmet Headers, CORS, Fail-Safe Policy)
-         ├──► 2. Identity Continuity Engine (IP + Session + Client Hints + Drift Analysis)
-         ├──► 3. Configurable Rule Engine (SQLi, XSS, Path Traversal, SSTI, Custom Rules)
-         ├──► 4. Behavioural Baseline (Rolling 5-min RPM & Deviation Tracking)
-         ├──► 5. Attack Sequence Correlation (Multi-Step Recon & Takeover Chains)
-         ├──► 6. Explainable Risk Scorer (Transparent Point Breakdown + Confidence Score)
-         ├──► 7. Automated Mitigation (Rate-Limit, Temporary Block, Permanent Block)
-         └──► 8. Automated Response & Log Redaction (PII Masking)
+```mermaid
+flowchart TD
+    A[Incoming HTTP Request] --> B[Base Security<br/>Helmet • CORS • Fail-Safe Policy]
+    B --> C[Identity Continuity<br/>IP • Session • Client Hints • Drift Analysis]
+    C --> D[Security Rule Engine<br/>SQLi • XSS • SSTI • Path Traversal • Custom Rules]
+    D --> E[Behavioural Analysis<br/>Rolling Baseline • Anomaly Detection]
+    E --> F[Attack Sequence Correlation<br/>Multi-Step Attack Detection]
+    F --> G[Explainable Risk Scoring<br/>Risk Score • Confidence • Breakdown]
+    G --> H[Automated Mitigation<br/>Rate Limit • Temporary/Permanent Block]
+    H --> I[Secure Response & Redaction<br/>PII • Secrets • Sensitive Logs]
 ```
 
 ---
