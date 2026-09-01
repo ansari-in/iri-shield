@@ -1,4 +1,4 @@
-# 🛡️ iri-shield
+# iri-shield
 
 [![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://www.npmjs.com/package/iri-shield)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
@@ -15,33 +15,33 @@
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
-- [🛡️ iri-shield](#️-iri-shield)
-  - [📑 Table of Contents](#-table-of-contents)
-  - [🏛️ Architectural Philosophy](#️-architectural-philosophy)
-  - [✨ Key Features](#-key-features)
-  - [📦 Installation](#-installation)
-  - [⚡ Quick Start](#-quick-start)
-  - [🔍 Explainable Risk Scoring](#-explainable-risk-scoring)
-  - [🧬 Multi-Signal Identity Continuity](#-multi-signal-identity-continuity)
-  - [⚙️ Security Rule Engine](#️-security-rule-engine)
-  - [📈 Behavioural Anomaly \& Correlation](#-behavioural-anomaly--correlation)
+- [iri-shield](#iri-shield)
+  - [Table of Contents](#table-of-contents)
+  - [Architectural Philosophy](#architectural-philosophy)
+  - [Key Features](#key-features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Explainable Risk Scoring](#explainable-risk-scoring)
+  - [Multi-Signal Identity Continuity](#multi-signal-identity-continuity)
+  - [Security Rule Engine](#security-rule-engine)
+  - [Behavioural Anomaly \& Correlation](#behavioural-anomaly--correlation)
     - [1. Rolling Behaviour Baseline](#1-rolling-behaviour-baseline)
     - [2. Attack Sequence Correlation](#2-attack-sequence-correlation)
-  - [🔒 Privacy Controls \& Fail-Safe Modes](#-privacy-controls--fail-safe-modes)
-  - [📊 Automated Benchmarking \& Research Evaluation](#-automated-benchmarking--research-evaluation)
+  - [Privacy Controls \& Fail-Safe Modes](#privacy-controls--fail-safe-modes)
+  - [Automated Benchmarking \& Research Evaluation](#automated-benchmarking--research-evaluation)
     - [Comprehensive Research Evaluation Summary (v1.2.0-research)](#comprehensive-research-evaluation-summary-v120-research)
     - [Multi-Workload Performance \& Latency Matrix](#multi-workload-performance--latency-matrix)
-  - [🖥️ Interactive Admin Dashboard](#️-interactive-admin-dashboard)
-  - [⚙️ Full Configuration Reference](#️-full-configuration-reference)
-  - [🛡️ Security \& Auth Utilities](#️-security--auth-utilities)
-  - [🎓 Academic \& Research Defense](#-academic--research-defense)
+  - [Interactive Admin Dashboard](#interactive-admin-dashboard)
+  - [Full Configuration Reference](#full-configuration-reference)
+  - [Security \& Auth Utilities](#security--auth-utilities)
+  - [Academic \& Research Defense](#academic--research-defense)
     - [Theoretical Foundation](#theoretical-foundation)
-  - [📄 License](#-license)
+  - [License](#license)
 
 ---
-## 🏛️ Architectural Philosophy
+##  Architectural Philosophy
 
 `iri-shield` follows a **transparent, multi-layered security architecture**.
 Instead of relying on a single detection mechanism, it combines identity signals, configurable security rules, behavioural analysis, attack correlation, explainable risk scoring, and automated mitigation.
@@ -60,24 +60,24 @@ flowchart TD
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 | Capability | Description |
 | :--- | :--- |
-| **🔍 Explainable Risk Scoring** | Provides a transparent, auditable breakdown table (`+30 SQLi`, `+20 Sensitive Endpoint`, `+15 Identity Drift`) with a mathematical **Confidence Score (0-100%)**. |
-| **🧬 Multi-Signal Profiling** | Evaluates **Identity Continuity** using IP address, session tokens, Client Hints (`sec-ch-ua`, `sec-ch-ua-platform`), user-agents, accept headers, and device context to detect evasion attempts without violating user privacy. |
-| **⚙️ Configurable Rule Engine** | Individually toggle built-in threat detection rules or declare flexible **Custom Rules** (by endpoint, method, IP prefix, user-agent regex, or body fields). |
-| **📈 Behavioural Baselining** | Continuously learns normal per-endpoint request rates (RPM) and flags statistical anomalies (`Behaviour deviation: 92%`). |
+| **Explainable Risk Scoring** | Provides a transparent, auditable breakdown table (`+30 SQLi`, `+20 Sensitive Endpoint`, `+15 Identity Drift`) with a mathematical **Confidence Score (0-100%)**. |
+| **Multi-Signal Profiling** | Evaluates **Identity Continuity** using IP address, session tokens, Client Hints (`sec-ch-ua`, `sec-ch-ua-platform`), user-agents, accept headers, and device context to detect evasion attempts without violating user privacy. |
+| **Configurable Rule Engine** | Individually toggle built-in threat detection rules or declare flexible **Custom Rules** (by endpoint, method, IP prefix, user-agent regex, or body fields). |
+| **Behavioural Baselining** | Continuously learns normal per-endpoint request rates (RPM) and flags statistical anomalies (`Behaviour deviation: 92%`). |
 | **🔗 Attack Sequence Correlation** | Evaluates ordered request chains to detect advanced multi-step campaigns (e.g., *Failed Auth ×3 → User Enumeration → Admin Access*). |
-| **🔒 Privacy by Design** | Built-in SHA-256 IP hashing for persistent storage and automatic FIFO retention purging (`retentionDays: 30`). |
-| **🛡️ Fail-Safe Policies** | Choose between `fail-open` (resilience first) and `fail-closed` (strict containment) on internal subsystem failures. |
+| **Privacy by Design** | Built-in SHA-256 IP hashing for persistent storage and automatic FIFO retention purging (`retentionDays: 30`). |
+| ** Fail-Safe Policies** | Choose between `fail-open` (resilience first) and `fail-closed` (strict containment) on internal subsystem failures. |
 | ** Built-in Benchmark Suite** | Automated performance comparison against baseline unshielded servers (`npm run benchmark`) measuring throughput, latency percentiles (p50/p95/p99), and defense efficacy. |
-| **🖥️ Light-Theme Dashboard** | Enterprise management interface for real-time monitoring, reactive IP block/unblock, active alerts, security event forensics, and live configuration updates. |
-| **🎭 Deep PII/Secret Redaction** | Deep redaction for passwords, API keys, bearer tokens, emails, phone numbers, SSNs, Aadhaar numbers, and credit cards across responses and log storage. |
+| **Light-Theme Dashboard** | Enterprise management interface for real-time monitoring, reactive IP block/unblock, active alerts, security event forensics, and live configuration updates. |
+| **Deep PII/Secret Redaction** | Deep redaction for passwords, API keys, bearer tokens, emails, phone numbers, SSNs, Aadhaar numbers, and credit cards across responses and log storage. |
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 npm install iri-shield
@@ -87,7 +87,7 @@ npm install iri-shield
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```js
 const express = require('express');
@@ -135,7 +135,7 @@ app.listen(3000, () => {
 
 ---
 
-## 🔍 Explainable Risk Scoring
+## Explainable Risk Scoring
 
 Every intercepted security event produces a transparent **Score Breakdown**:
 
@@ -157,7 +157,7 @@ In the **Admin Dashboard**, expanding any Security Event displays this structure
 
 ---
 
-## 🧬 Multi-Signal Identity Continuity
+## Multi-Signal Identity Continuity
 
 Rather than claiming "guaranteed unique identification" (which is technically invalid across modern NATs and VPNs), `iri-shield` evaluates **Identity Continuity**:
 
@@ -179,7 +179,7 @@ Action: Risk Score Penalty (+15 pts) applied to request
 
 ---
 
-## ⚙️ Security Rule Engine
+## Security Rule Engine
 
 Toggle built-in detection modules or supply flexible custom rules:
 
@@ -225,7 +225,7 @@ const shield = createShield({
 
 ---
 
-## 📈 Behavioural Anomaly & Correlation
+## Behavioural Anomaly & Correlation
 
 ### 1. Rolling Behaviour Baseline
 Maintains a 5-minute rolling request rate (RPM) profile per IP and endpoint. Sudden traffic spikes (>3× baseline) trigger a proportional anomaly score penalty:
@@ -246,7 +246,7 @@ Detects multi-step attack patterns across request sequences:
 
 ---
 
-## 🔒 Privacy Controls & Fail-Safe Modes
+## Privacy Controls & Fail-Safe Modes
 
 ```js
 const shield = createShield({
@@ -264,7 +264,7 @@ const shield = createShield({
 
 ---
 
-## 📊 Automated Benchmarking & Research Evaluation
+## Automated Benchmarking & Research Evaluation
 
 `iri-shield` includes a built-in automated evaluation suite to benchmark performance, threat detection efficacy, false positives, identity continuity, and data redaction against baseline Express.js:
 
@@ -294,10 +294,10 @@ npm run redaction:evaluate  # 500-sample recursive PII masking evaluation
 ### Multi-Workload Performance & Latency Matrix
 
 | Workload Configuration | Baseline Req/s | Shield Req/s | Throughput Impact | Base Latency (Avg) | Shield Latency (Avg) | Overhead (Δ) | Shield p95 | Shield p99 | Host CPU (Base vs Shield) | Cores Utilized (Base vs Shield) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **300 req @ c=5** | 1,904 req/s | 997 req/s | -47.6% | 2.97 ms | 4.96 ms | **+1.99 ms** | 7.80 ms | 9.77 ms | 17.6% vs 13.6% | 1.41 vs 1.09 cores |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **300 req @ c=5**  | 1,904 req/s | 997 req/s | -47.6% | 2.97 ms | 4.96 ms | **+1.99 ms** | 7.80 ms | 9.77 ms | 17.6% vs 13.6% | 1.41 vs 1.09 cores |
 | **300 req @ c=15** | 2,404 req/s | 706 req/s | -70.6% | 6.28 ms | 21.49 ms | **+15.21 ms** | 34.24 ms | 35.73 ms | 12.8% vs 14.7% | 1.02 vs 1.17 cores |
-| **500 req @ c=5** | 2,669 req/s | 630 req/s | -76.4% | 1.86 ms | 7.92 ms | **+6.06 ms** | 12.16 ms | 16.58 ms | 14.9% vs 13.1% | 1.19 vs 1.05 cores |
+| **500 req @ c=5**  | 2,669 req/s | 630 req/s | -76.4% | 1.86 ms | 7.92 ms | **+6.06 ms** | 12.16 ms | 16.58 ms | 14.9% vs 13.1% | 1.19 vs 1.05 cores |
 | **500 req @ c=15** | 3,097 req/s | 730 req/s | -76.4% | 4.79 ms | 20.44 ms | **+15.65 ms** | 29.80 ms | 33.06 ms | 15.2% vs 14.9% | 1.21 vs 1.19 cores |
 
 > **CPU Metric Definitions:**
@@ -308,12 +308,12 @@ JSON and CSV benchmark artifacts are automatically recorded in `results/`, `fina
 
 ---
 
-## 🖥️ Interactive Admin Dashboard
+## Interactive Admin Dashboard
 
 Access the real-time security dashboard at `/iri-shield`:
 
 - **Overview Panel**: Live requests, mitigated threats, latency gauges, threat distribution donut charts, and top endpoint statistics.
-- **Alerts ⚡**: Active suspicious client queue with one-click **Block IP** and **Dismiss** actions.
+- **Alerts**: Active suspicious client queue with one-click **Block IP** and **Dismiss** actions.
 - **Security Events**: Filterable by risk level (`critical`, `high`, `medium`, `low`) with expandable **Risk Breakdown Tables**, **Confidence Badges**, and **Correlation Banners**.
 - **Client Identity**: Identity continuity records, platform breakdown, IP rotation count, and anomaly histories.
 - **Blocked IPs**: Full persistent blocklist management with instant **Unblock** and manual block creation modal.
@@ -321,7 +321,7 @@ Access the real-time security dashboard at `/iri-shield`:
 
 ---
 
-## ⚙️ Full Configuration Reference
+## Full Configuration Reference
 
 ```js
 const shield = createShield({
@@ -425,7 +425,7 @@ const shield = createShield({
 
 ---
 
-## 🛡️ Security & Auth Utilities
+##  Security & Auth Utilities
 
 `iri-shield` ships with built-in cryptographic security utilities:
 
@@ -451,7 +451,7 @@ const isValid = await comparePassword('input-password', hashed);
 
 ---
 
-## 🎓 Academic & Research Defense
+## Academic & Research Defense
 
 When presenting or publishing research using `iri-shield`:
 
@@ -463,6 +463,6 @@ When presenting or publishing research using `iri-shield`:
 
 ---
 
-## 📄 License
+## License
 
 MIT License © [ansari-in](https://github.com/ansari-in/iri-shield/blob/main/LICENSE)
