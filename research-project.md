@@ -160,7 +160,7 @@ mindmap
       Zero External Infrastructure
       Native Express Middleware
       Fail-Safe Resilience Modes
-    Explainable AI Telemetry
+    Explainable Risk Scoring
       Per-Rule Confidence Metrics
       Transparent Forensic Score Breakdowns
       Auditable Security Log Schema
@@ -169,7 +169,7 @@ mindmap
       Client Hints & Platform Telemetry
       Zero Absolute Fingerprint Overreach
     Stateful Attack Correlation
-      Markovian Chain Detection
+      Stateful Attack Sequence Correlation
       Brute-Force Escalation Tracking
       Automated Temporary IP Lockouts
     Deep Recursive Redaction

@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://www.npmjs.com/package/iri-shield)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-purple.svg)](https://nodejs.org)
-[![Security](https://img.shields.io/badge/security-explainable--ai-orange.svg)](#-explainable-risk-scoring)
+[![Security](https://img.shields.io/badge/security-risk--scoring-orange.svg)](#-explainable-risk-scoring)
 [![Privacy](https://img.shields.io/badge/privacy-by--design-teal.svg)](#-privacy-by-design)
 
 <p align="center">
@@ -11,7 +11,7 @@
 </p>
 
 
-> **Enterprise-grade API security middleware for Express.js** featuring **Explainable Risk Scoring**, **Multi-Signal Identity Continuity Analysis**, **Behavioural Anomaly Detection**, **Attack Sequence Correlation**, **Configurable Rule Engine**, **Automated PII/Secret Redaction**, and an **Interactive Real-Time Admin Dashboard**.
+> **Open-source API security middleware for Express.js** featuring **Explainable Risk Scoring**, **Multi-Signal Identity Continuity Analysis**, **Behavioural Anomaly Detection**, **Attack Sequence Correlation**, **Configurable Rule Engine**, **Automated PII/Secret Redaction**, and an **Interactive Real-Time Admin Dashboard**.
 
 ---
 
@@ -34,6 +34,11 @@
     - [Comprehensive Research Evaluation Summary (v1.2.0-research)](#comprehensive-research-evaluation-summary-v120-research)
     - [Multi-Workload Performance \& Latency Matrix](#multi-workload-performance--latency-matrix)
   - [Interactive Admin Dashboard](#interactive-admin-dashboard)
+  - [Real-World & Production Deployment Guide](#-real-world--production-deployment-guide)
+    - [1. Disabling Testing Mode for Real Traffic](#1-disabling-testing-mode-for-real-traffic)
+    - [2. Reverse Proxy & Real Client IP (`trustProxy`)](#2-reverse-proxy--real-client-ip-trustproxy)
+    - [3. Securing Admin Dashboard Credentials](#3-securing-admin-dashboard-credentials)
+    - [4. Production Ready Configuration Example](#4-production-ready-configuration-example)
   - [Full Configuration Reference](#full-configuration-reference)
   - [Security \& Auth Utilities](#security--auth-utilities)
   - [Academic \& Research Defense](#academic--research-defense)
@@ -321,14 +326,116 @@ Access the real-time security dashboard at `/iri-shield`:
 
 ---
 
+## 🚀 Real-World & Production Deployment Guide
+
+`iri-shield` is built to protect production Express.js APIs against real-world threats. When moving from local testing or dataset benchmarks to production, follow these steps:
+
+### 1. Disabling Testing Mode for Real Traffic
+By default in `iri-shield`, **testing mode is already disabled** (`enabled: false`). However, if you enabled it during local simulation or integration testing, ensure it is set to `false` or removed in production.
+
+> [!WARNING]
+> When `testing.enabled: true`, clients can spoof their IP, User-Agent, and Session ID via custom headers (`x-iri-test-ip`, `x-iri-test-user-agent`, etc.) for benchmark replay. **Never enable testing mode in production environments!**
+
+```js
+const shield = createShield({
+  appName: 'my-production-api',
+  // Ensure testing mode is off (or simply omit the testing property)
+  testing: {
+    enabled: false,
+    allowClientOverrides: false
+  },
+  // ...
+});
+```
+
+### 2. Reverse Proxy & Real Client IP (`trustProxy`)
+If your application runs behind a reverse proxy, load balancer, or CDN (such as **Nginx**, **Cloudflare**, **AWS ALB**, or **Heroku**):
+- Set `trustProxy: true` (or express `app.set('trust-proxy', 1)`) so `iri-shield` reads real client IPs from `CF-Connecting-IP`, `X-Forwarded-For`, or `X-Real-IP`.
+
+```js
+const app = express();
+app.set('trust proxy', true);
+
+const shield = createShield({
+  appName: 'my-production-api',
+  trustProxy: true,
+  // ...
+});
+```
+
+### 3. Securing Admin Dashboard Credentials
+Never hardcode default credentials in production code. Load admin username and password from environment variables:
+
+```js
+dashboard: {
+  enabled: true,
+  path: '/iri-shield',
+  username: process.env.SHIELD_ADMIN_USER || 'admin',
+  password: process.env.SHIELD_ADMIN_PASSWORD, // enforce strong secret via .env
+  refreshMs: 60 * 1000
+}
+```
+
+### 4. Production Ready Configuration Example
+
+```js
+const express = require('express');
+const { createShield } = require('iri-shield');
+
+const app = express();
+const isProd = process.env.NODE_ENV === 'production';
+
+if (isProd) {
+  app.set('trust proxy', true);
+}
+
+const shield = createShield({
+  appName: process.env.APP_NAME || 'my-api',
+  security: isProd ? 'high' : 'medium', // 'low' | 'medium' | 'high'
+  trustProxy: isProd,
+  failureMode: 'fail-open', // resilient: won't bring down app on errors
+
+  // Testing mode — automatically OFF in production
+  testing: {
+    enabled: !isProd,
+    allowClientOverrides: !isProd
+  },
+
+  // Persistent storage for production blocks and analytics
+  storage: {
+    mode: process.env.STORAGE_MODE || 'sqlite', // 'sqlite' or 'mongodb'
+    sqliteFile: process.env.SQLITE_PATH || './data/iri-shield.sqlite'
+  },
+
+  // Secure Dashboard
+  dashboard: {
+    enabled: true,
+    path: '/iri-shield',
+    username: process.env.SHIELD_ADMIN_USER || 'admin',
+    password: process.env.SHIELD_ADMIN_PASSWORD || 'ChangeThisSecret123!'
+  }
+});
+
+app.use(shield.middleware);
+app.use('/iri-shield', shield.dashboard);
+```
+
+---
+
 ## Full Configuration Reference
 
 ```js
 const shield = createShield({
   appName: 'iri-shield',
   security: 'medium',            // 'low' | 'medium' | 'high'
-  trustProxy: false,
+  trustProxy: false,             // Set true if behind Cloudflare, Nginx, or AWS ALB
   failureMode: 'fail-open',      // 'fail-open' | 'fail-closed'
+
+  // Testing Mode (False by default — enables header/body overrides for testing)
+  testing: {
+    enabled: false,              // Keep FALSE in production
+    allowClientOverrides: false
+  },
 
   // HTTP Security Headers & CORS
   helmet: {
