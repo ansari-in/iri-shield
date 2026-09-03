@@ -1,6 +1,6 @@
 # iri-shield
 
-[![npm version](https://img.shields.io/badge/npm-v1.2.0-blue.svg)](https://www.npmjs.com/package/iri-shield)
+[![npm version](https://img.shields.io/badge/npm-v1.2.2-blue.svg)](https://www.npmjs.com/package/iri-shield)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-purple.svg)](https://nodejs.org)
 [![Security](https://img.shields.io/badge/security-risk--scoring-orange.svg)](#-explainable-risk-scoring)
@@ -34,9 +34,9 @@
     - [Comprehensive Research Evaluation Summary (v1.2.0-research)](#comprehensive-research-evaluation-summary-v120-research)
     - [Multi-Workload Performance \& Latency Matrix](#multi-workload-performance--latency-matrix)
   - [Interactive Admin Dashboard](#interactive-admin-dashboard)
-  - [Real-World & Production Deployment Guide](#-real-world--production-deployment-guide)
+  - [🚀 Real-World \& Production Deployment Guide](#-real-world--production-deployment-guide)
     - [1. Disabling Testing Mode for Real Traffic](#1-disabling-testing-mode-for-real-traffic)
-    - [2. Reverse Proxy & Real Client IP (`trustProxy`)](#2-reverse-proxy--real-client-ip-trustproxy)
+    - [2. Reverse Proxy \& Real Client IP (`trustProxy`)](#2-reverse-proxy--real-client-ip-trustproxy)
     - [3. Securing Admin Dashboard Credentials](#3-securing-admin-dashboard-credentials)
     - [4. Production Ready Configuration Example](#4-production-ready-configuration-example)
   - [Full Configuration Reference](#full-configuration-reference)
