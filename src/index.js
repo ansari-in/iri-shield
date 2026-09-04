@@ -544,12 +544,14 @@ function patchResponse(res, storage, config) {
   const originalSend = res.send.bind(res);
 
   res.json = function(payload) {
+    if (res.locals.iriShieldSkipRedaction) return originalJson(payload);
     const result = redactPayload(payload, config.redaction);
     if (result.redactions > 0) storage.recordRedaction(result.redactions);
     return originalJson(result.value);
   };
 
   res.send = function(payload) {
+    if (res.locals.iriShieldSkipRedaction) return originalSend(payload);
     if (typeof payload !== 'string') return originalSend(payload);
     const result = redactPayload(payload, config.redaction);
     if (result.redactions > 0) storage.recordRedaction(result.redactions);
